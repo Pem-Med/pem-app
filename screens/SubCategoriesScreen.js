@@ -8,6 +8,8 @@ import CategoryGridTile from '../components/CategoryGridTile';
 import { useSelector, useDispatch } from 'react-redux';
 import * as CatContentActions from '.././store/actions/catContent';
 import Colors from '../constants/Colors';
+import SubCatListItem from "./SubCatListItem";
+
 const SubCategoriesScreen = props => {
   const [loading, setLoading] = useState(false);
 
@@ -26,12 +28,13 @@ const SubCategoriesScreen = props => {
     
   },[dispatch, setLoading]);
 
-  const selectSubCategoryHandler = (id, title) => {
+  const selectSubCategoryHandler = (id, title, icon) => {
       props.navigation.navigate({
         routeName: 'CatContent',
         params: {
           subcategoryId: id,
-          subcategoryTitle: title
+          subcategoryTitle: title,
+          subcategoryIcon: icon,
         }
       });
   };
@@ -47,11 +50,12 @@ const SubCategoriesScreen = props => {
       keyExtractor={item => item.id}
       numColumns={1}
       renderItem={itemData =>
-        <CategoryGridTile
+        <SubCatListItem
           title={itemData.item.title}
           color={itemData.item.color}
+          icon={itemData.item.icon}
           onSelect={() => {
-            selectSubCategoryHandler(itemData.item.id, itemData.item.title)
+            selectSubCategoryHandler(itemData.item.id, itemData.item.title, itemData.item.icon)
           }}
         />
       }
