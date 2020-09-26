@@ -5,12 +5,38 @@ import {
   Text,
   StyleSheet,
   Platform,
-  TouchableNativeFeedback
+  TouchableNativeFeedback, Image, Dimensions, ImageBackground
 } from 'react-native';
+
+
+
 
 const CategoryGridTile = props => {
   let TouchableCmp = TouchableOpacity;
-
+  //console.log("***Props PER ITEM***: ", props)
+  let image = undefined
+  switch (props.title) {
+    case "Medical":
+      image = require('../assets/icons/medical-icon-color-80.png')
+      break
+    case "Surgical":
+        image = require('../assets/icons/surgical-icon-color-80.png')
+          break
+    case "Trauma":
+        image = require('../assets/icons/trauma-icon-color-80.png')
+          break
+    case "Toxicology":
+        image = require('../assets/icons/toxicology-icon-color-80.png')
+          break
+    case "Foreign Ingestion":
+        image = require('../assets/icons/foreign-ingestion-icon-color-80.png')
+          break
+    case "Emergent Rashes":
+        image = require('../assets/icons/emergent-rashes-icon-64.png')
+          break
+  }
+  console.log("Title in props: ", props.title)
+  console.log("content in image: ", image)
   if (Platform.OS === 'android' && Platform.Version >= 21) {
     TouchableCmp = TouchableNativeFeedback;
   }
@@ -21,6 +47,9 @@ const CategoryGridTile = props => {
             <TouchableCmp onPress={props.onSelect} useForeground>
               <View style={styles.infoContainer}>
                 <View style={styles.textContainer}>
+                  <View style={styles.profileImage}>
+                    <Image source={image} style={styles.avatar} resizeMode="cover" />
+                  </View>
                   <Text style={styles.title}>
                     {props.title}
                   </Text>
@@ -29,7 +58,6 @@ const CategoryGridTile = props => {
             </TouchableCmp>
           </View>
         </View>
-
     </View>
   );
 };
@@ -39,24 +67,25 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: 20,
     paddingBottom: 5,
-    height: 80,
+    height: 175,
   },
   container: {
     flex: 1,
     shadowColor: 'black',
-    shadowOpacity: 0.26,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 8,
-    elevation: 5,
-    borderRadius: 25,
+    shadowOpacity: 0.05,
+    shadowOffset: { width: 0, height: 1 },
+    shadowRadius: 3,
+    elevation: 2,
+   // borderRadius: 2,
     backgroundColor: 'white',
-    // height: 30,
-    marginHorizontal: 30,
+    //height: 30,
+    marginHorizontal: 40,
+
   },
   textContainer: {
     // width: '100%',
     // height: '60%',
-    // alignItems: 'center',
+     alignItems: 'center',
     // padding: 30
   },
   infoContainer: {
@@ -70,11 +99,12 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   title: {
-    fontFamily: 'open-sans',
-    fontSize: 30,
+    fontFamily: 'helvetica',
+    fontSize: 20,
     fontWeight: '500',
     textAlign: 'center',
   }
+
 });
 
 export default CategoryGridTile;

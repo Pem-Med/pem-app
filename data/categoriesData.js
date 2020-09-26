@@ -1,17 +1,29 @@
 import Category from "../models/category";
 import CatContent from "../models/catContent";
 import Colors from "../constants/Colors";
+import {Image} from "react-native";
+import React from "react";
+
 //import SubCategory from '../models/catContent';
 
 //color codes taken from https://www.w3schools.com/cssref/css_colors.asp
 
+const [medicalIcon, surgicalIcon, traumaIcon, toxicologyIcon, foreignIngestionIcon, emergentRashesIcon] =[
+  <Image source={require('../assets/icons/medical-icon-80.png')}/>,
+  <Image source={require('../assets/icons/surgical-icon-80.png')}/>,
+  <Image source={require('../assets/icons/trauma-icon-80.png')}/>,
+  <Image source={require('../assets/icons/toxicology-icon-80.png')}/>,
+  <Image source={require('../assets/icons/foreign-ingestion-icon-80.png')}/>,
+  <Image source={require('../assets/icons/emergent-rashes-icon-64.png')}/>
+]
+
 export const CATEGORIES = [
-  new Category("c1", "🏥 Medical", Colors.medical),
-  new Category("c2", "🔪 Surgical", Colors.surgical),
-  new Category("c3", "🤕 Trauma", Colors.trauma),
-  new Category("c4", "💊 Toxicology", Colors.toxicology),
-  new Category("c5", "🤢 Foreign Ingestion", Colors.foreign),
-  new Category("c6", "🥵 Emergent Rashes", Colors.emergent),
+  new Category("c1", "Medical", medicalIcon, Colors.white),
+  new Category("c2", "Surgical", surgicalIcon ,Colors.surgical),
+  new Category("c3", "Trauma", traumaIcon,Colors.trauma),
+  new Category("c4", "Toxicology", toxicologyIcon, Colors.toxicology),
+  new Category("c5", "Foreign Ingestion", foreignIngestionIcon, Colors.foreign),
+  //new Category("c6", "Emergent Rashes", emergentRashesIcon, Colors.emergent),
   // new Category("c7", "[Category 7]", Colors.cat7),
   // new Category("c8", "[Category 8]", Colors.cat8),
 ];
@@ -76,7 +88,8 @@ export const CATCONTENT = [
     "management",
     "medications",
     "references",
-    "image"
+    "image",
+    "../assets/icons/pneumonia-icon-100.png",
   ),
   new CatContent(
     "c1-6",
