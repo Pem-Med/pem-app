@@ -17,6 +17,19 @@ export default {
         //----------OTHERS----------
         googleBlue:'#4285F4',
         DeleteColor: '#cd5c5c',
-        white: '#ffffff'
- 
-}; 
+        white: '#ffffff',
+        //*********CATEGORIES CONTAINERS 45% Darker
+        foreignTile: '#00d2e6',
+        medicalTile: '#e60000',
+        surgicalTile: '#e67e00',
+        toxicologyTile: '#107C10',
+        traumaTile: '#ffcb2d',
+        homeBG: '#ab9b00',
+
+        //**********CATEGORIES LIGHTER 90%
+        foreignLighter: '#ccfbff',
+        medicalLighter: '#ffcccc',
+        surgicalLighter: '#ffe8cc',
+        toxicologyLighter: '#d5ffcc',
+        traumaLighter: '#fdffcc',
+};

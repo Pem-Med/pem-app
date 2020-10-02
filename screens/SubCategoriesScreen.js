@@ -9,6 +9,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import * as CatContentActions from '.././store/actions/catContent';
 import Colors from '../constants/Colors';
 import SubCatListItem from "./SubCatListItem";
+import {backgroundColor} from "react-native-calendars/src/style";
 
 const SubCategoriesScreen = props => {
   const [loading, setLoading] = useState(false);
@@ -25,9 +26,32 @@ const SubCategoriesScreen = props => {
       setLoading(false);
     };
     loadingCatContent();
-    
+
   },[dispatch, setLoading]);
 
+  function screenBackgroundColor() {
+    let title = props.navigation.getParam('categoryTitle') //get category title
+
+      switch (title) {
+        case "Medical":
+          return Colors.medicalLighter
+          break
+        case "Surgical":
+          return Colors.surgicalLighter
+          break
+        case "Trauma":
+          return Colors.traumaLighter
+          break
+        case "Toxicology":
+          return Colors.toxicologyLighter
+          break
+        case "Foreign Ingestion":
+          return Colors.foreignLighter
+          break
+        default:
+          return Colors.white
+      }
+  }
   const selectSubCategoryHandler = (id, title, icon) => {
       props.navigation.navigate({
         routeName: 'CatContent',
@@ -38,13 +62,15 @@ const SubCategoriesScreen = props => {
         }
       });
   };
- 
+  let subCatBackgroundColor = screenBackgroundColor()
+
   if(loading){
     return <View style ={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
       <ActivityIndicator size = 'large' color ={Colors.primaryColor}/>
     </View>
   }
   return (
+      <View style={{backgroundColor : subCatBackgroundColor}}>
     <FlatList
       data={selectedSubCategories}
       keyExtractor={item => item.id}
@@ -60,6 +86,7 @@ const SubCategoriesScreen = props => {
         />
       }
     />
+      </View>
   );
 };
 

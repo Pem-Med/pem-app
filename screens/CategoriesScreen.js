@@ -6,8 +6,9 @@ import CustomHeaderButton from '../components/CustomHeaderButton';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import Search from '../screens/SearchScreen';
 
-// using react redux to access data 
+// using react redux to access data
 import { useSelector, useDispatch } from 'react-redux';
+import Colors from "../constants/Colors";
 
 const CategoriesScreen = props => {
 
@@ -20,7 +21,7 @@ const CategoriesScreen = props => {
   };
 
   return (
-
+<View style={styles.screenContainer}>
     <FlatList
       data={categories}
       keyExtractor={item => item.id}
@@ -35,6 +36,7 @@ const CategoriesScreen = props => {
         />
       }
     />
+</View>
   );
 };
 
@@ -60,4 +62,11 @@ CategoriesScreen.navigationOptions = navigationdata => {
   }
 }
 
+const styles = StyleSheet.create({
+
+    screenContainer :{
+        marginTop: 5,
+    }
+
+});
 export default CategoriesScreen;

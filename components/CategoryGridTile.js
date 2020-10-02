@@ -7,9 +7,35 @@ import {
   Platform,
   TouchableNativeFeedback, Image, Dimensions, ImageBackground
 } from 'react-native';
+import CardFlip from 'react-native-card-flip'
+import { Tile, Icon } from 'react-native-elements';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
+import { faCoffee } from '@fortawesome/free-solid-svg-icons'
 
 
+import Colors from "../constants/Colors";
 
+function backgroundTileColor(props){
+  switch (props.title) {
+    case "Medical":
+      return Colors.medicalTile
+          break
+    case "Surgical":
+      return Colors.surgicalTile
+          break
+    case "Trauma":
+      return Colors.traumaTile
+          break
+    case "Toxicology":
+      return Colors.toxicologyTile
+          break
+    case "Foreign Ingestion":
+      return Colors.foreignTile
+          break
+    default:
+      return 'white'
+  }
+}
 
 const CategoryGridTile = props => {
   let TouchableCmp = TouchableOpacity;
@@ -17,32 +43,32 @@ const CategoryGridTile = props => {
   let image = undefined
   switch (props.title) {
     case "Medical":
-      image = require('../assets/icons/medical-icon-color-80.png')
+      image = require('../assets/icons/medical-icon-white-filled-96.png')
       break
     case "Surgical":
-        image = require('../assets/icons/surgical-icon-color-80.png')
+        image = require('../assets/icons/surgical-icon-white-80.png')
           break
     case "Trauma":
-        image = require('../assets/icons/trauma-icon-color-80.png')
+        image = require('../assets/icons/trauma-icon-white-80.png')
           break
     case "Toxicology":
-        image = require('../assets/icons/toxicology-icon-color-80.png')
+        image = require('../assets/icons/toxicology-icon-white-80.png')
           break
     case "Foreign Ingestion":
-        image = require('../assets/icons/foreign-ingestion-icon-color-80.png')
+        image = require('../assets/icons/foreign-ingestion-icon-white-96.png')
           break
     case "Emergent Rashes":
         image = require('../assets/icons/emergent-rashes-icon-64.png')
           break
   }
-  console.log("Title in props: ", props.title)
-  console.log("content in image: ", image)
+  let tileBackGroundColor = backgroundTileColor(props);
+  //console.log("content in image: ", image)
   if (Platform.OS === 'android' && Platform.Version >= 21) {
     TouchableCmp = TouchableNativeFeedback;
   }
   return (
       <View style={styles.gridItem}>
-        <View style={{ ...styles.container, ...{ backgroundColor: props.color } }}>
+        <View style={{ ...styles.container, ...{ backgroundColor:tileBackGroundColor } }}>
           <View style={styles.touchable}>
             <TouchableCmp onPress={props.onSelect} useForeground>
               <View style={styles.infoContainer}>
@@ -59,13 +85,33 @@ const CategoryGridTile = props => {
           </View>
         </View>
     </View>
+
+    /*  <View style={styles.gridItem}>
+        <View style={{ ...styles.container, ...{ backgroundColor: props.color } }}>
+          <View style={styles.touchable}>
+            <TouchableCmp onPress={props.onSelect} useForeground>
+              <View style={styles.infoContainer}>
+                <View style={styles.textContainer}>
+                <Tile
+                    width={190}
+                    imageSrc={require('../components/img/colors3.jpeg')}
+                    icon={faCoffee}
+                    featured
+                    caption={props.title}>
+                </Tile>
+              </View>
+              </View>
+            </TouchableCmp>
+          </View>
+        </View>
+      </View>*/
   );
 };
 
 const styles = StyleSheet.create({
   gridItem:{
     flex: 1,
-    marginTop: 20,
+    //marginTop: 20,
     paddingBottom: 5,
     height: 175,
   },
@@ -75,11 +121,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.05,
     shadowOffset: { width: 0, height: 1 },
     shadowRadius: 3,
-    elevation: 2,
-   // borderRadius: 2,
-    backgroundColor: 'white',
+    elevation: 1,
     //height: 30,
-    marginHorizontal: 40,
+    //Used with TILE Element
+    marginLeft: 5,
+    width: 197.5,
 
   },
   textContainer: {
@@ -103,6 +149,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '500',
     textAlign: 'center',
+    color: 'white'
   }
 
 });
