@@ -86,7 +86,7 @@ const ChatNavigator = createStackNavigator(
       let tabBarVisible
 
       if (navigation.state.routes.length > 1) {
-        navigation.state.routes.map((route) => {
+        navigation.state.routes.foreach((route) => {
           if (route.routeName === 'Chatroom') {
             tabBarVisible = false
           } else {

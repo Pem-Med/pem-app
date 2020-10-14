@@ -1,11 +1,10 @@
 import React from 'react'
 import {
-  View, Text, StyleSheet, ScrollView, Image,
+  View, StyleSheet, ScrollView, Image, Platform,
 } from 'react-native'
-import * as firebase from 'firebase'
+import PropTypes from 'prop-types'
 import 'firebase/firestore'
-import { useSelector, useDispatch } from 'react-redux'
-import CategoriesScreen from './CategoriesScreen'
+import { useSelector } from 'react-redux'
 import CatContentLayout from '../components/CatContentLayout'
 import Colors from '../constants/Colors'
 
@@ -46,6 +45,14 @@ const CatContentScreen = (props) => {
 
   )
 }
+
+CatContentScreen.propTypes = {
+  navigation: PropTypes.shape({
+    getParam: PropTypes.func.isRequired,
+    navigate: PropTypes.func.isRequired,
+  }).isRequired,
+}
+
 const styles = StyleSheet.create({
   imageContainer: {
     alignItems:        'center',
