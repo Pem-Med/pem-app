@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { View, Button, Text, StyleSheet, Platform, FlatList, Image } from 'react-native';
+import React, { Component, useLayoutEffect } from 'react';
+import { View, Button, Alert, Text, StyleSheet, Platform, FlatList, Image } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import CustomHeaderButton from '../components/CustomHeaderButton';
 import Chat from '../components/Chat';
@@ -8,6 +8,10 @@ import * as firebase from 'firebase'
 import 'firebase/firestore';
 import Firebase from '../backend/firebase'
 import Colors from '../constants/Colors';
+import SimpleLineIcon from 'react-native-vector-icons/SimpleLineIcons';
+import {color} from '../utility/colors'
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import SignOut from '../screens/SignOut';
 //import {HeaderButtons, Item } from 'react-navigation-header-buttons';
 //import CustomHeaderButton from '../components/CustomHeaderButton';
 
@@ -63,6 +67,31 @@ ChatTabScreen.navigationOptions = navigationData => {
                 />
             </HeaderButtons>
         ),
+
+        headerRight: ()=>(
+            <SimpleLineIcon name ="logout" size={20} color={Colors.googleBlue}
+            onPress={() =>
+                Alert.alert(
+                    'Log out',
+                    'Do you want to logout?',
+                    [
+                        { text: 'Cancel', onPress: () => { return null } },
+                        {
+                            text: 'Confirm', onPress: () => {
+                                new SignOut().signOut(props)
+                            }
+                        },
+                    ],
+                    { cancelable: false }
+                )
+            }>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                <MaterialCommunityIcons name="exit-to-app" size={23} style={{ color: Colors.primary }}></MaterialCommunityIcons>
+                <Text style={[styles.signText, { color: Colors.primary }]} > Logout</Text>
+            </View>
+            </SimpleLineIcon>
+
+        )
 
     }
 };
