@@ -16,5 +16,6 @@ export default {
   // ----------OTHERS----------
   googleBlue:         '#4285F4',
   DeleteColor:        '#cd5c5c',
+  white:              '#ffffff',
 
 }

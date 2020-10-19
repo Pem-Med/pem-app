@@ -28,7 +28,8 @@ module.exports = {
     fetch: false,
   },
   rules: {
-    semi: [
+    'linebreak-style': 0,
+    semi:              [
       'error',
       'never',
     ],

@@ -138,7 +138,7 @@ const ProfileScreen = (props) => {
                 </TouchableCmp>
               </View>
               <View style={styles.infoContainer}>
-                <Text style={[styles.text, { fontWeight: '200', fontSize: 20, fontWeight: 'bold' }]}>{name}</Text>
+                <Text style={[styles.text, { fontWeight: "200", fontSize: 20/*, fontWeight: "bold"*/ }]}>{name}</Text>
                 <Text style={[styles.text, { fontSize: 16 }]}>{title}</Text>
               </View>
               <View style={styles.statusContainer}>
