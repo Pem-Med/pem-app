@@ -3,21 +3,15 @@ import { View, Button, Alert, Text, StyleSheet, Platform, FlatList, Image } from
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import CustomHeaderButton from '../components/CustomHeaderButton';
 import Chat from '../components/Chat';
-import Chatroom from '../screens/ChatroomScreen';
-import * as firebase from 'firebase'
 import 'firebase/firestore';
-import Firebase from '../backend/firebase'
 import Colors from '../constants/Colors';
-import SimpleLineIcon from 'react-native-vector-icons/SimpleLineIcons';
-import {color} from '../utility/colors'
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import SignOut from '../screens/SignOut';
+import { IconButton } from 'react-native-paper';
 //import {HeaderButtons, Item } from 'react-navigation-header-buttons';
 //import CustomHeaderButton from '../components/CustomHeaderButton';
 
 /**
  * The ChatTabScreen component is the first thing in the hierarchy of the chat's functionality. It's the first thing 
- * a user sees when they click on the chat section, and is meant to display all the user's chats. 
+ * a user sees when they click on the chat section, and is meant to display all the chat rooms
  */
 class ChatTabScreen extends Component {
     constructor(props) {
@@ -69,30 +63,14 @@ ChatTabScreen.navigationOptions = navigationData => {
         ),
 
         headerRight: ()=>(
-            <SimpleLineIcon name ="logout" size={20} color={Colors.googleBlue}
-            onPress={() =>
-                Alert.alert(
-                    'Log out',
-                    'Do you want to logout?',
-                    [
-                        { text: 'Cancel', onPress: () => { return null } },
-                        {
-                            text: 'Confirm', onPress: () => {
-                                new SignOut().signOut(props)
-                            }
-                        },
-                    ],
-                    { cancelable: false }
-                )
-            }>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                <MaterialCommunityIcons name="exit-to-app" size={23} style={{ color: Colors.primary }}></MaterialCommunityIcons>
-                <Text style={[styles.signText, { color: Colors.primary }]} > Logout</Text>
-            </View>
-            </SimpleLineIcon>
-
+            <IconButton
+                icon='message-plus'
+                size={28}
+                color={Colors.googleBlue}
+                onPress={() => navigationData.navigation.navigate('AddRoom')}
+                //onPress={() => props.navigation.navigate({ routeName: 'AddRoom' })}
+            />
         )
-
     }
 };
 
