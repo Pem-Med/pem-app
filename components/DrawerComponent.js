@@ -10,16 +10,15 @@ import {
   Button,
   StyleSheet,
   ActivityIndicator,
-  ImageBackground,
-  ImageStore,
-} from 'react-native'
-import { DrawerItems } from 'react-navigation-drawer'
-import { MaterialCommunityIcons } from '@expo/vector-icons'
-import * as firebase from 'firebase'
-import { color } from 'react-native-reanimated'
-import { backgroundColor } from 'react-native-calendars/src/style'
-import SignOut from '../screens/SignOut'
-import Colors from '../constants/Colors'
+  ImageBackground
+} from 'react-native';
+import { DrawerItems } from "react-navigation-drawer";
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import Colors from '../constants/Colors';
+import SignOut from '../screens/SignOut';
+import * as firebase from 'firebase';
+import { color } from "react-native-reanimated";
+import { backgroundColor } from "react-native-calendars/src/style";
 
 const DrawerComponent = (props) => {
   const user = firebase.auth().currentUser
@@ -52,31 +51,24 @@ const DrawerComponent = (props) => {
 
   const TouchableCmp = TouchableOpacity
 
-  const image = !avatar ? require('./img/default-profile-pic.jpg') : { uri: avatar }
+  const image = !avatar ? require('./img/default-profile-pic.jpg') : { uri: avatar };
+  // backgroundColor: Colors.primaryColor
   return (
-    <View style={styles.container}>
+    <View style={styles.container} >
       <SafeAreaView style={styles.padd}>
         <ScrollView>
-          <View style={{ height: '46%' }}>
-            <ImageBackground
-              source={require('./img/colors0.jpeg')}
-              style={{ width: '100%', height: '100%' }}
-            >
-              <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: '5%' }}>
-                <Image source={image} style={styles.profileImage} />
-                <TouchableCmp>
-                  <View style={styles.active} backgroundColor={buttonColor} />
-                </TouchableCmp>
-                <Text style={[styles.signText, { marginTop: '2%' }]}>{name}</Text>
-                <Text
-                  style={{
-                    color: 'black', fontFamily: 'open-sans', fontWeight: '200', fontSize: 14,
-                  }}
-                >
-                  {user.email}
-                </Text>
-              </View>
-            </ImageBackground>
+          <View style={{ height: "46%", backgroundColor: Colors.primaryColor }}>
+            {/* <ImageBackground source={require('../components/img/colors0.jpeg')}
+                            style={{ width: '100%', height: '100%' }}> */}
+            <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: "5%" }}>
+              <Image source={image} style={styles.profileImage} />
+              <TouchableCmp>
+                <View style={styles.active} backgroundColor={buttonColor}></View>
+              </TouchableCmp>
+              <Text style={[styles.signText, { marginTop: "2%" }]}>{name}</Text>
+              <Text style={{ color: 'white', fontFamily: 'open-sans', fontWeight: '200', fontSize: 14 }}>{user.email}</Text>
+            </View>
+            {/* </ImageBackground> */}
           </View>
 
           <View style={{ marginTop: '2%' }}>
@@ -93,7 +85,7 @@ const DrawerComponent = (props) => {
           [
             { text: 'Cancel', onPress: () => null },
             {
-              text:    'Confirm',
+              text: 'Confirm',
               onPress: () => {
                 new SignOut().signOut(props)
               },
@@ -115,33 +107,33 @@ const DrawerComponent = (props) => {
 const styles = StyleSheet.create({
   signText: {
     fontWeight: 'bold',
-    fontSize:   16,
-    color:      'black',
+    fontSize: 16,
+    color: 'black',
   },
   touchable: {
     position: 'absolute',
-    bottom:   0,
-    margin:   10,
+    bottom: 0,
+    margin: 10,
   },
   container: {
-    flex:       1,
+    flex: 1,
     paddingTop: '10%',
   },
   profileImage: {
-    height:       90,
-    width:        90,
-    aspectRatio:  1,
-    overflow:     'hidden',
+    height: 90,
+    width: 90,
+    aspectRatio: 1,
+    overflow: 'hidden',
     borderRadius: 100,
-    borderWidth:  2,
-    borderColor:  'white',
+    borderWidth: 2,
+    borderColor: 'white',
   },
   active: {
-    position:     'absolute',
-    bottom:       12,
-    padding:      9,
+    position: 'absolute',
+    bottom: 12,
+    padding: 9,
     borderRadius: 25,
-    right:        '10%',
+    right: '10%',
   },
 })
 
