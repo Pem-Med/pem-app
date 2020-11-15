@@ -3,10 +3,27 @@ import { View, StyleSheet } from 'react-native';
 import { IconButton, Title } from 'react-native-paper';
 import FormInput from '../components/FormInput';
 import FormButton from './FormButton';
+import 'firebase/firestore';
+import firestore from '@react-native-firebase/firestore';;
+import * as firebase from 'firebase'
 
 export default function AddRoomScreen({ navigation }) {
   const [roomName, setRoomName] = useState('');
+  
   // ... Firestore query will come here later
+
+  function handleButtonPress() {
+    if (roomName.length > 0) {
+      firestore()
+        .collection('THREADS')
+        .add({
+          name: roomName         
+        })
+        .then(() => {
+          navigation.navigate('Home');
+        });
+    }
+  }
 
   return (
     <View style={styles.rootContainer}>
