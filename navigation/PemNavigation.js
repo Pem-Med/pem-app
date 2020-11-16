@@ -28,7 +28,9 @@ import EditProfileScreen from '../screens/ProfileScreens/EditProfileScreen';
 import DrawerComponent from "../components/DrawerComponent";
 //import AppContainer from '../screens/ChatTabScreen'
 //import SignOut from '../screens/SignOut'
+import RoomScreen from '../screens/RoomScreen';
 import AddRoomScreen from '../components/AddRoomScreen';
+
 
 const defaultStackNavOptions = {
   headerStyle: {
@@ -81,6 +83,9 @@ const ChatNavigator = createStackNavigator(
     },
     Chatroom: {
       screen: ChatroomScreen,
+    },
+    Room: {
+      screen: RoomScreen,
     },
     UserProfile: {
       screen: UserProfileScreen
