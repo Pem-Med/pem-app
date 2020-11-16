@@ -18,6 +18,12 @@ import { Provider } from 'react-redux';
 import categoriesReducer from './store/reducers/categories';
 import catContentReducer from './store/reducers/catContent';
 
+import {decode, encode} from 'base-64'
+
+if (!global.btoa) {  global.btoa = encode }
+
+if (!global.atob) { global.atob = decode }
+
 
 /*
 I've been getting an error ever since I ran npm `install react-native-dialog-input`.
