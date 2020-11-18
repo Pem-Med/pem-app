@@ -62,6 +62,14 @@ export default function RoomScreen() {
     );
   }
 
+  function scrollToBottomComponent() {
+    return (
+      <View style={styles.bottomComponentContainer}>
+        <IconButton icon='chevron-double-down' size={36} color='#6646ee' />
+      </View>
+    );
+  }
+
   return (
     <GiftedChat
       messages={messages}
@@ -72,12 +80,18 @@ export default function RoomScreen() {
       showUserAvatar
       alwaysShowSend
       renderSend={renderSend}
+      scrollToBottom
+      scrollToBottomComponent={scrollToBottomComponent}
     />
   );
 }
 
 const styles = StyleSheet.create({
   sendingContainer: {
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  bottomComponentContainer: {
     justifyContent: 'center',
     alignItems: 'center'
   }
