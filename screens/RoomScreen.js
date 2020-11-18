@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { GiftedChat, Bubble } from 'react-native-gifted-chat';
+import { GiftedChat, Bubble, Send } from 'react-native-gifted-chat';
+import { View, StyleSheet } from 'react-native';
+import { IconButton } from 'react-native-paper';
 
 export default function RoomScreen() {
   const [messages, setMessages] = useState([
@@ -50,6 +52,16 @@ export default function RoomScreen() {
     );
   }
 
+  function renderSend(props) {
+    return (
+      <Send {...props}>
+        <View style={styles.sendingContainer}>
+          <IconButton icon='send-circle' size={32} color='#6646ee' />
+        </View>
+      </Send>
+    );
+  }
+
   return (
     <GiftedChat
       messages={messages}
@@ -59,8 +71,15 @@ export default function RoomScreen() {
       placeholder='Type your message here...'
       showUserAvatar
       alwaysShowSend
-      
+      renderSend={renderSend}
     />
   );
 }
+
+const styles = StyleSheet.create({
+  sendingContainer: {
+    justifyContent: 'center',
+    alignItems: 'center'
+  }
+});
 
