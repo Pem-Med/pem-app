@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { GiftedChat, Bubble, Send } from 'react-native-gifted-chat';
-import { View, StyleSheet } from 'react-native';
+import { ActivityIndicator, View, StyleSheet } from 'react-native';
 import { IconButton } from 'react-native-paper';
 
 export default function RoomScreen() {
@@ -70,6 +70,14 @@ export default function RoomScreen() {
     );
   }
 
+  function renderLoading() {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size='large' color='#6646ee' />
+      </View>
+    );
+  }
+
   return (
     <GiftedChat
       messages={messages}
@@ -82,6 +90,7 @@ export default function RoomScreen() {
       renderSend={renderSend}
       scrollToBottom
       scrollToBottomComponent={scrollToBottomComponent}
+      renderLoading={renderLoading}
     />
   );
 }
@@ -94,6 +103,11 @@ const styles = StyleSheet.create({
   bottomComponentContainer: {
     justifyContent: 'center',
     alignItems: 'center'
+  },
+  loadingContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center'
   }
 });
 
