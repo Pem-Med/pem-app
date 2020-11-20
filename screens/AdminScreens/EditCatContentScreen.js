@@ -19,7 +19,7 @@ const EditCatContentScreen = props => {
         state.categories.categories.find(prod => prod.id === categoryId)
     );
 
-    const SelectedSubCategories = useSelector(state => 
+    const SelectedSubCategories = useSelector(state =>
         state.categoriesContent.categoriesContent
     );
     const dispatch = useDispatch();
@@ -49,7 +49,7 @@ const EditCatContentScreen = props => {
     }, [submitHandler]);
 
 
-    // The purpose of useEffect here is to be able 
+    // The purpose of useEffect here is to be able
     //to solve the issue of clipboard functionality within TextInput.
     useEffect(() => {
         setTimeout(() => {
@@ -81,7 +81,7 @@ const EditCatContentScreen = props => {
     };
 
     const removeImage = () => {
-       
+
         setImage( Platform.OS === 'android' ? null : " ");
     }
 
@@ -171,7 +171,7 @@ const EditCatContentScreen = props => {
                             title='Attach Image'
                             onPress={pickImage}
                         />
-                       
+
                     </View>
                     <View style={styles.buttonRemove}>
                          <Button
@@ -224,7 +224,7 @@ const styles = StyleSheet.create({
         width: '100%',
         paddingVertical: 10,
         paddingHorizontal: 15,
-       
+        marginTop: 25,
     },
     ImageSize: {
         width: '100%',

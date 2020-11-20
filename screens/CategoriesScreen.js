@@ -5,8 +5,9 @@ import CategoryGridTile from '../components/CategoryGridTile';
 import CustomHeaderButton from '../components/CustomHeaderButton';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import Search from '../screens/SearchScreen';
+import Colors from "../constants/Colors";
 
-// using react redux to access data 
+// using react redux to access data
 import { useSelector, useDispatch } from 'react-redux';
 
 const CategoriesScreen = props => {
@@ -15,24 +16,29 @@ const CategoriesScreen = props => {
   const categories = useSelector(state => state.categories.categories);
 
   //method to handle what category is selected
-  const selectCategoryHandler = (id, title) => {
-    props.navigation.navigate({ routeName: 'SubCategories', params: { categoryId: id, categoryTitle: title } });
+  const selectCategoryHandler = (id, title, icon) => {
+    props.navigation.navigate({ routeName: 'SubCategories', params: { categoryId: id, categoryTitle: title, categoryIcon: icon } });
   };
 
   return (
+<View style={styles.screenContainer}>
+    <View style={styles.separator}>
     <FlatList
       data={categories}
       keyExtractor={item => item.id}
-      numColumns={1}
+      numColumns={2}
       renderItem={itemData =>
         <CategoryGridTile
           title={itemData.item.title}
+          icon={itemData.item.icon}
           color={itemData.item.color}
           //onSelect func name triggers on component
-          onSelect={() => { selectCategoryHandler(itemData.item.id, itemData.item.title) }}
+          onSelect={() => { selectCategoryHandler(itemData.item.id,itemData.item.title, itemData.item.icon) }}
         />
       }
     />
+    </View>
+</View>
   );
 };
 
@@ -58,4 +64,16 @@ CategoriesScreen.navigationOptions = navigationdata => {
   }
 }
 
+const styles = StyleSheet.create({
+
+    screenContainer :{
+        height: '100%',
+        backgroundColor: Colors.darkBackgroundColor
+    },
+
+    separator :{
+        marginTop: 5,
+    }
+
+});
 export default CategoriesScreen;
