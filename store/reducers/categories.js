@@ -1,10 +1,13 @@
-import { CATEGORIES } from '../../data/categoriesData'
-import category from '../../models/category'
+import {CATEGORIES} from '../../data/categoriesData';
+import category from '../../models/category';
+
 
 const initialState = {
-  categories: CATEGORIES,
+    categories: CATEGORIES,
+};
+
+const categoriesReducer = (state = initialState, action) =>{
+    return state;
 }
 
-const categoriesReducer = (state = initialState, action) => state
-
-export default categoriesReducer
+export default categoriesReducer;

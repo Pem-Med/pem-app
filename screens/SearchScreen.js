@@ -1,82 +1,83 @@
-import React, { useState, Component } from 'react'
-import {
-  StyleSheet, Text, View, TextInput, Button, FlatList,
-} from 'react-native'
-import { useSelector } from 'react-redux'
-import { Ionicons } from '@expo/vector-icons'
-import { CONTENT, SUBCATEGORIES } from '../data/categoriesData'
-import SearchGridtile from '../components/SearchGridTile'
+import React, { useState, Component } from 'react';
+import { StyleSheet, Text, View, TextInput, Button, FlatList } from 'react-native';
+import { CONTENT, SUBCATEGORIES } from '../data/categoriesData';
+import SearchGridtile from '../components/SearchGridTile';
+import { useSelector} from 'react-redux';
+import { Ionicons } from '@expo/vector-icons';
 
-const SearchScreen = (props) => { // to be call Search
-  const changingText = ''
-  const [enteredSearch, setEnteredSearch] = useState('')
-  const [search, setSearch] = useState([])
-  const [result, setResult] = useState('null')// use null value because if it's empty, filter will display all
+
+const SearchScreen = props => {// to be call Search
+
+  let changingText = '';
+  const [enteredSearch, setEnteredSearch] = useState('');
+  const [search, setSearch] = useState([]);
+  const [result, setResult] = useState('null');//use null value because if it's empty, filter will display all
 
   const searchInputHandler = (enteredText) => {
     setEnteredSearch(enteredText)
-  }
+  };
 
   const searchWord = () => {
     setResult(enteredSearch)
-  }
+  };
 
-  const selectedSubCategories = useSelector((state) => state.categoriesContent.categoriesContent,
-  )
-  const displaySub = selectedSubCategories.filter((cat) => ((cat.title).toLowerCase().indexOf(result.toLowerCase()) >= 0) && cat.title != 'Chatroom' && cat.title != 'CME')
+  const selectedSubCategories = useSelector(state =>
+    state.categoriesContent.categoriesContent
+  ); 
+  const displaySub = selectedSubCategories.filter(cat => ((cat.title).toLowerCase().indexOf(result.toLowerCase()) >= 0) && cat.title != 'Chatroom' && cat.title != 'CME');
 
-  const renederGridItem = (itemData) => (
-    <SearchGridtile
-      title={itemData.item.title}
-      color={itemData.item.color}
-      onSelect={() => { // onSelect func name trigget on component
-        props.navigation.navigate({
-          routeName: 'CatContent',
-          params:    {
-            subcategoryId: itemData.item.id,
-          },
-        })
-      }}
-    />
-  )
+  const renederGridItem = (itemData) => {
+    return (
+      <SearchGridtile
+        title={itemData.item.title}
+        color={itemData.item.color}
+        onSelect={() => { //onSelect func name trigget on component
+          props.navigation.navigate({
+            routeName: 'CatContent',
+            params: {
+              subcategoryId: itemData.item.id
+            }
+          });
+        }}
+      />
+    );
+  };
+
 
   return (
     <View style={styles.screen}>
       <View style={styles.inputContainer}>
-        <Ionicons name={Platform.OS === 'android' ? 'ios-search' : 'md-search'} size={20} />
-        <TextInput
-          placeholder={'Search '}
-          style={styles.input}
-          onChangeText={searchInputHandler}
-          Value={enteredSearch}
-        />
-        <Button title={'Search'} style={styles.searchButton} onPress={searchWord} />
+        <Ionicons name={Platform.OS === 'android' ? 'ios-search' : 'md-search'} size={20}></Ionicons>
+        <TextInput placeholder="Search "
+          style={styles.input} onChangeText={searchInputHandler} Value={enteredSearch} />
+        <Button title="Search" style={styles.searchButton} onPress={searchWord} />
       </View>
       <FlatList data={displaySub} renderItem={renederGridItem} numColumns={1} />
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
 
-  screen: {
-    padding: 50,
+  screen: { 
+    padding: 50 
   },
-  inputContainer: {
-    flexDirection:  'row',
-    justifyContent: 'space-between',
-    alignItems:     'center',
+  inputContainer: { 
+    flexDirection: 'row', 
+    justifyContent: 'space-between', 
+    alignItems: 'center' 
   },
-  input: {
-    width:             '80%',
-    borderBottomColor: 'blue',
-    borderBottomWidth: 1,
+  input: { 
+    width: '80%', 
+    borderBottomColor: 'blue', 
+    borderBottomWidth: 1 
   },
-  searchButton: {
-    borderStyle: 'solid',
-    borderColor: 'blue',
-  },
+  searchButton: { 
+    borderStyle: 'solid', 
+    borderColor: 'blue' 
+  }
 
-})
+});
 
-export default SearchScreen
+
+export default SearchScreen;
