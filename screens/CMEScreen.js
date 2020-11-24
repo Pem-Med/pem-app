@@ -12,10 +12,19 @@ import {
   Button,
   TouchableOpacity,
   Alert,
+<<<<<<< Updated upstream
 } from "react-native";
 import * as firebase from "firebase";
 import "firebase/firestore";
 import Firebase from "../backend/firebase";
+=======
+} from 'react-native'
+import * as firebase from 'firebase'
+import Colors from '../constants/Colors'
+import 'firebase/firestore'
+import Firebase from '../backend/firebase'
+import 'firebase/storage';
+>>>>>>> Stashed changes
 
 //This will be the list of all CMEs the user has.
 let cmes = [];
@@ -73,7 +82,11 @@ export default class CME extends Component {
   }
 
   handleCmePic(text) {
+<<<<<<< Updated upstream
     newPic.newCmePic = text;
+=======
+    newCme.newCmePic = text
+>>>>>>> Stashed changes
   }
 
   /**
@@ -125,6 +138,7 @@ export default class CME extends Component {
    * newCme is added and this.state.cmes is set to the cmes list. It also
    * sets the userCmes in Firebase to the cmes list.
    */
+<<<<<<< Updated upstream
   addCme() {
     console.log("NEWCME:", newCme);
     if (newCme.newCmeCert != "" && this.isValidDate(newCme.newCmeExp)) {
@@ -133,6 +147,15 @@ export default class CME extends Component {
         exp: newCme.newCmeExp,
 
       });
+=======
+  addCme()  {
+    console.log('NEWCME:', newCme)
+    if (newCme.newCmeCert != '' && this.isValidDate(newCme.newCmeExp)) {
+      cmes.push({
+        cert: newCme.newCmeCert,
+        exp:  newCme.newCmeExp,
+      })
+>>>>>>> Stashed changes
 
       this.setState({
         cmes: cmes,
@@ -145,15 +168,67 @@ export default class CME extends Component {
         .set({
           cmes: cmes,
         })
+<<<<<<< Updated upstream
         .catch(function (err) {
           console.log("ERROR IN SETTING userCmes/userId:", err);
         });
+=======
+        this.uriToBlob(newCme.newCmePic).then((blob) => this.uploadToFirebase(blob));
+>>>>>>> Stashed changes
     } else {
       console.log(
         "One or both of the fields in newCme are empty. We can't have that."
       );
     }
   }
+
+  uriToBlob = (uri) => {
+
+    return new Promise((resolve, reject) => {
+  
+      const xhr = new XMLHttpRequest();
+  
+      xhr.onload = function() {
+        // return the blob
+        resolve(xhr.response);
+      };
+      
+      xhr.onerror = function() {
+        // something went wrong
+        reject(new Error('uriToBlob failed'));
+      };
+  
+      // this helps us get a blob
+      xhr.responseType = 'blob';
+  
+      xhr.open('GET', uri, true);
+      xhr.send(null);
+  
+    });
+  }
+  
+  uploadToFirebase = (blob) => {
+  
+    return new Promise((resolve, reject)=>{
+  
+      var storageRef = firebase.storage().ref();
+  
+      storageRef.child('uploads/uuui.jpg').put(blob, {
+        contentType: 'image/jpeg'
+      }).then((snapshot)=>{
+  
+        blob.close();
+  
+        resolve(snapshot);
+  
+      }).catch((error)=>{
+  
+        reject(error);
+  
+      });
+  
+    });
+  } 
 
   render() {
     return (
@@ -187,11 +262,20 @@ export default class CME extends Component {
           <Text style={styles.header}>Renewal Date</Text>
           <DatePicker
             style={{
+<<<<<<< Updated upstream
               flex: 1,
               alignSelf: "center",
               width: "80%",
               marginRight: "9%",
               marginTop: "2%"
+=======
+              flex:        1,
+              alignSelf:   'center',
+              width:       '80%',
+              marginRight: '9%',
+              marginTop:   '2%',
+              color: 'black',
+>>>>>>> Stashed changes
             }}
             date={this.state.date} //initial date from state
             mode="date"
@@ -216,7 +300,7 @@ export default class CME extends Component {
 
         <View style={{ flexDirection: "column", marginTop: "15%" }}>
           <View style={[styles.addCmeButton, { flexDirection: 'column', backgroundColor: Colors.primaryColor }]}>
-            <TouchableOpacity style={styles.buttonText} onPress={pickImage}>
+            <TouchableOpacity style={styles.buttonText} onPress={this.pickImage}>
               <Text style={styles.text}>Upload Image</Text>
             </TouchableOpacity>
           </View>
@@ -227,8 +311,8 @@ export default class CME extends Component {
       </View>
     );
   }
-}
 
+<<<<<<< Updated upstream
 
 const pickImage = async () => {
   let selectedImage = await ImagePicker.launchImageLibraryAsync({
@@ -238,8 +322,27 @@ const pickImage = async () => {
   });
   if (!selectedImage.cancelled) {
     //setAvatar(selectedImage.uri);
+=======
+  pickImage = async () => {     
+    const selectedImage = await ImagePicker.launchImageLibraryAsync({       
+    mediaTypes:    ImagePicker.MediaTypeOptions.All,       
+    allowsEditing: true,      
+    quality:       1,     
+  })     
+    if (!selectedImage.cancelled) {       
+      console.log(selectedImage.uri)       
+      this.handleCmePic(selectedImage.uri);  
+     }   
+>>>>>>> Stashed changes
   }
 };
+
+//start
+
+
+
+
+//end 
 
 const styles = StyleSheet.create({
   textField: {
@@ -283,4 +386,8 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     width: "80%",
   },
+<<<<<<< Updated upstream
 });
+=======
+})
+>>>>>>> Stashed changes
