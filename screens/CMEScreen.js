@@ -186,8 +186,9 @@ export default class CME extends Component {
     return new Promise((resolve, reject)=>{
   
       var storageRef = firebase.storage().ref();
+      let imageName = newCme.newCmeCert;
   
-      storageRef.child('uploads/uuui.jpg').put(blob, {
+      storageRef.child('uploads/' + imageName + '.jpg').put(blob, {
         contentType: 'image/jpeg'
       }).then((snapshot)=>{
   
