@@ -222,14 +222,14 @@ export default class CME extends Component {
         />
 
         <View style={{ flexDirection: 'row' }}>
-          <Text style={styles.header}>Add New Certification Here</Text>
+          <Text style={styles.header}>Add New Document Here</Text>
         </View>
 
         <View style={{ flexDirection: 'row' }}>
           <TextInput
             style={styles.textField}
             onChangeText={this.handleCmeCert}
-            placeholder={'Certification Name'}
+            placeholder={'Document Name'}
           />
         </View>
 
@@ -272,7 +272,7 @@ export default class CME extends Component {
             </TouchableOpacity>
           </View>
           <TouchableOpacity style={styles.addCmeButton} onPress={this.addCme}>
-            <Text style={styles.text}>Add CME</Text>
+            <Text style={styles.text}>Add Document</Text>
           </TouchableOpacity>
         </View>
       </View>
