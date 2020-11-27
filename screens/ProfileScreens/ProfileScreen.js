@@ -191,9 +191,24 @@ const ProfileScreen = (props) => {
                   <Entypo name="medal" size={20} color="black" />
                 </View>
                 <View style={styles.detailBox}>
+<<<<<<< Updated upstream
                   <Text style={styles.text}>Certifications:</Text>
                   <Text style={[styles.text, styles.subText]}
                     onPress={handleCerts}> Show All {'>'} </Text>
+=======
+                  <Text style={styles.text}>MyDocs</Text>
+                  <Text
+                    style={[styles.text, styles.subText]}
+                    onPress={handleCerts}
+                  >
+                    {' '}
+                    Show All
+                    {' '}
+                    {'>'}
+                    {' '}
+
+                  </Text>
+>>>>>>> Stashed changes
                 </View>
               </View>
               <View style={styles.buttonStyle}>
