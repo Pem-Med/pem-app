@@ -1,8 +1,8 @@
 class Category{
-    constructor(id, title, icon, tileColor){
+    constructor(id, title, catImage, tileColor){
         this.id = id;
         this.title = title;
-        this.icon = icon;
+        this.catImage = catImage;
         this.tileColor = tileColor;
     }
 }

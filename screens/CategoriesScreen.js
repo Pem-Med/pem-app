@@ -15,12 +15,11 @@ const CategoriesScreen = props => {
   const categories = useSelector(state => state.categories.categories);
 
   //method to handle what category is selected
-  const selectCategoryHandler = (id, title, icon) => {
-    props.navigation.navigate({ routeName: 'SubCategories', params: { categoryId: id, categoryTitle: title, categoryIcon: icon } });
+  const selectCategoryHandler = (id, title) => {
+    props.navigation.navigate({ routeName: 'SubCategories', params: { categoryId: id, categoryTitle: title } });
   };
 
   return (
-
     <FlatList
       data={categories}
       keyExtractor={item => item.id}
@@ -31,7 +30,7 @@ const CategoriesScreen = props => {
           icon={itemData.item.icon}
           color={itemData.item.color}
           //onSelect func name triggers on component
-          onSelect={() => { selectCategoryHandler(itemData.item.id,itemData.item.title, itemData.item.icon) }}
+          onSelect={() => { selectCategoryHandler(itemData.item.id, itemData.item.title) }}
         />
       }
     />
