@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, Component } from 'react';
 import { YellowBox } from 'react-native'
 import _ from 'lodash';
 import { Text, View } from 'react-native';
