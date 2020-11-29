@@ -76,12 +76,11 @@ const CategoryGridTile = props => {
                     {props.title}
                   </Text>
                 </View>
-                <Text style={styles.title}>{props.title}</Text>
               </View>
-            </View>
           </TouchableCmp>
         </View>
     </View>
+  </View>
   )
 }
 const styles = StyleSheet.create({

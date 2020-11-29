@@ -19,14 +19,6 @@ const [medicalIcon, surgicalIcon, traumaIcon, toxicologyIcon, foreignIngestionIc
   <Image source={require('../assets/icons/emergent-rashes-icon-64.png')} />,
 ]
 
-const [medicalIcon, surgicalIcon, traumaIcon, toxicologyIcon, foreignIngestionIcon, emergentRashesIcon] =[
-  <Image source={require('../assets/icons/medical-icon-80.png')}/>,
-  <Image source={require('../assets/icons/surgical-icon-80.png')}/>,
-  <Image source={require('../assets/icons/trauma-icon-80.png')}/>,
-  <Image source={require('../assets/icons/toxicology-icon-80.png')}/>,
-  <Image source={require('../assets/icons/foreign-ingestion-icon-80.png')}/>,
-  <Image source={require('../assets/icons/emergent-rashes-icon-64.png')}/>
-]
 
 export const CATEGORIES = [
   new Category("c1", "Medical", medicalIcon, Colors.white),
