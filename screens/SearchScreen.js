@@ -193,12 +193,7 @@ class Hits extends Component {
             highlightProperty="_highlightResult"
           /> 
         </Text>
-        <Button
-        style = {StyleSheet.button}
-        title="Details"
-        enable
-        onPress={() => { }}
-        />
+       
         <Text >Evaluation: <Highlight
             attribute="evaluation"
             hit={hit}
