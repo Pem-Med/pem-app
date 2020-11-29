@@ -4,7 +4,7 @@ import {InstantSearch,
   connectStats,
   connectSortBy,
   connectInfiniteHits
-    
+
 } from "react-instantsearch-dom";
 import algoliasearch from 'algoliasearch/lite';
 import Highlight from './Highlight';
@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: 'bold',
     paddingBottom: 5,
-  }, 
+  },
   button:{
     justifyContent:'flex-start',
     flexDirection:'column',
@@ -102,11 +102,11 @@ class SearchScreen extends Component {
   onSearchStateChange = nextState => {
     this.setState({ searchState: { ...this.state.searchState, ...nextState } });
   };
-  
+
   render() {
     return (
       <View style={styles.maincontainer}>
-          <InstantSearch searchClient={searchClient} 
+          <InstantSearch searchClient={searchClient}
             appId="WK4HK1IJPD"
             apiKey="3ce1d6fd9eb17d864916020e10616a2d"
             indexName="med_Categories">
@@ -127,7 +127,7 @@ SearchScreen.propTypes = {
 export default SearchScreen;
 
 class SearchBox extends Component {
- 
+
   render() {
     return (
       <View style={styles.searchBoxContainer} >
@@ -181,9 +181,9 @@ class Hits extends Component {
       ) : null;
     return hits;
   }
-  
+
   _renderRow = ({ item: hit }) => (
-    
+
     <View style={styles.item}>
       <View style={styles.itemContent}>
         <Text style={styles.itemName}>
@@ -191,9 +191,9 @@ class Hits extends Component {
             attribute="title"
             hit={hit}
             highlightProperty="_highlightResult"
-          /> 
+          />
         </Text>
-       
+
         <Text >Evaluation: <Highlight
             attribute="evaluation"
             hit={hit}
@@ -211,9 +211,9 @@ class Hits extends Component {
             attribute="signs"
             hit={hit}
             highlightProperty="_highlightResult"
-          /> 
+          />
         </Text>
-        <Text >Management: 
+        <Text >Management:
         <Highlight
             attribute="management"
             hit={hit}
@@ -227,10 +227,10 @@ class Hits extends Component {
             highlightProperty="_highlightResult"
           />
         </Text>
-        
+
       </View>
     </View>
-  );  
+  );
   _renderSeparator = (sectionID, rowID, adjacentRowHighlighted) => (
     <View
       key={`${sectionID}-${rowID}`}
@@ -264,66 +264,70 @@ const SearchScreen = props => {// to be call Search
 
   const searchInputHandler = (enteredText) => {
     setEnteredSearch(enteredText)
-  };
+  }
 
   const searchWord = () => {
     setResult(enteredSearch)
-  };
+  }
 
-  const selectedSubCategories = useSelector(state =>
-    state.categoriesContent.categoriesContent
-  ); 
-  const displaySub = selectedSubCategories.filter(cat => ((cat.title).toLowerCase().indexOf(result.toLowerCase()) >= 0) && cat.title != 'Chatroom' && cat.title != 'CME');
+  const selectedSubCategories = useSelector((state) => state.categoriesContent.categoriesContent,
+  )
+  const displaySub = selectedSubCategories.filter((cat) => ((cat.title).toLowerCase().indexOf(result.toLowerCase()) >= 0) && cat.title != 'Chatroom' && cat.title != 'CME')
 
-  const renederGridItem = (itemData) => {
-    return (
-      <SearchGridtile
-        title={itemData.item.title}
-        color={itemData.item.color}
-        onSelect={() => { //onSelect func name trigget on component
-          props.navigation.navigate({
-            routeName: 'CatContent',
-            params: {
-              subcategoryId: itemData.item.id
-            }
-          });
-        }}
-      />
-    );
-  };
-
+  const renederGridItem = (itemData) => (
+    <SearchGridtile
+      title={itemData.item.title}
+      color={itemData.item.color}
+      onSelect={() => { // onSelect func name trigget on component
+        props.navigation.navigate({
+          routeName: 'CatContent',
+          params:    {
+            subcategoryId: itemData.item.id,
+          },
+        })
+      }}
+    />
+  )
 
   return (
     <View style={styles.screen}>
       <View style={styles.inputContainer}>
-        <Ionicons name={Platform.OS === 'android' ? 'ios-search' : 'md-search'} size={20}></Ionicons>
-        <TextInput placeholder="Search "
-          style={styles.input} onChangeText={searchInputHandler} Value={enteredSearch} />
-        <Button title="Search" style={styles.searchButton} onPress={searchWord} />
+        <Ionicons name={Platform.OS === 'android' ? 'ios-search' : 'md-search'} size={20} />
+        <TextInput
+          placeholder={'Search '}
+          style={styles.input}
+          onChangeText={searchInputHandler}
+          Value={enteredSearch}
+        />
+        <Button title={'Search'} style={styles.searchButton} onPress={searchWord} />
       </View>
       <FlatList data={displaySub} renderItem={renederGridItem} numColumns={1} />
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
 
-  screen: { 
-    padding: 50 
+  screen: {
+    padding: 50,
   },
-  inputContainer: { 
-    flexDirection: 'row', 
-    justifyContent: 'space-between', 
-    alignItems: 'center' 
+  inputContainer: {
+    flexDirection:  'row',
+    justifyContent: 'space-between',
+    alignItems:     'center',
   },
-  input: { 
-    width: '80%', 
-    borderBottomColor: 'blue', 
-    borderBottomWidth: 1 
+  input: {
+    width:             '80%',
+    borderBottomColor: 'blue',
+    borderBottomWidth: 1,
   },
-  searchButton: { 
-    borderStyle: 'solid', 
-    borderColor: 'blue' 
+  searchButton: {
+    borderStyle: 'solid',
+    borderColor: 'blue',
+  },
+  searchButton: {
+    borderStyle: 'solid',
+    borderColor: 'blue'
   }
 
 });

@@ -7,12 +7,12 @@ class Firebase {
     this.observeAuth()
   }
   /**
-   * Initializes Firebase. 
+   * Initializes Firebase.
    * The if...else is used so the app won't crash
-   * with an error saying "Firebase has already 
+   * with an error saying "Firebase has already
    * been initialized." The initialization also runs
    * this.counter() and this.whosOnline() to set those
-   * up for when people log in. 
+   * up for when people log in.
    */
   init = () => {
     if (!firebase.apps.length) {
@@ -59,7 +59,7 @@ class Firebase {
     firebase.database().ref('onlineUsers').once('value').then(function (snapshot) {
       if (snapshot.val() == null) {
         firebase.database().ref('onlineUsers').set({
-          onlineUsers: 0 //This isn't supposed to be a number, but I can't set it to an 
+          onlineUsers: 0 //This isn't supposed to be a number, but I can't set it to an
           //empty array or empty object. So it'll be 0 until it gets set to
           //an object later
         })
@@ -80,10 +80,10 @@ class Firebase {
   }
 
   /**
-   * Sets the user count. It takes a parameter from screens where users can sign in 
-   * and sign out (I think LoginScreen, ChatroomScreen, and SubCategoriesScreen). If 
+   * Sets the user count. It takes a parameter from screens where users can sign in
+   * and sign out (I think LoginScreen, ChatroomScreen, and SubCategoriesScreen). If
    * the parameter is 1, that means the user is signing in and the count increments.
-   * Otherwise, the user is signing out and the count decrements. 
+   * Otherwise, the user is signing out and the count decrements.
    */
   set setUserCount(num) {
     firebase.database().ref('userCount').once('value').then(function (snapshot) {
@@ -94,7 +94,7 @@ class Firebase {
   }
 
   /**
-   * Gets the list of online users. 
+   * Gets the list of online users.
    */
   get getOnlineUsers() {
     let onlineUsers = [];
@@ -107,10 +107,10 @@ class Firebase {
   /**
    * Adds an online user to the onlineUsers list in Firebase. Since onlineUsers was
    * initialized originally with a value of 0, I have to check for that. If it's 0,
-   * set onlineUsers to an array with just the userEmail inside it. Otherwise, 
+   * set onlineUsers to an array with just the userEmail inside it. Otherwise,
    * take the current value of onlineUsers, push userEmail onto it, and set onlineUsers
-   * to that new array. 
-   * @param {string} userEmail 
+   * to that new array.
+   * @param {string} userEmail
    */
   addOnlineUser(userEmail) {
     let userArr;
@@ -132,13 +132,13 @@ class Firebase {
 
   /**
    * Removes a user from the onlineUsers list. Firebase can't store an empty list. If
-   * you try to store an empty list, it'll simply store nothing. So the length of 
+   * you try to store an empty list, it'll simply store nothing. So the length of
    * onlineUsers is checked before any removal. If the length is 1, it won't remove,
    * because that will just destroy the list entirely. Instead, it will set onlineUsers
-   * to 0. If the length of the list is 2 or more, it will take the array of onlineUsers 
+   * to 0. If the length of the list is 2 or more, it will take the array of onlineUsers
    * and use the filter method to yield the exact same array excluding the element that
-   * equals userEmail. That new array becomes the value of onlineUsers. 
-   * @param {string} userEmail 
+   * equals userEmail. That new array becomes the value of onlineUsers.
+   * @param {string} userEmail
    */
   removeOnlineUser(userEmail) {
     firebase.database().ref('onlineUsers').once('value').then(function (snapshot) {

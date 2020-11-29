@@ -7,7 +7,7 @@ import { testMatrix } from '../node_modules/firebase-functions/lib/providers/tes
 
 /*
 This is the component used to show an existing chat, it (ideally) takes the information from firebase as part of its props
-so that it can display information dynamically. Right now, it only takes information from the global chat, so the first thing 
+so that it can display information dynamically. Right now, it only takes information from the global chat, so the first thing
 to do would be to make it accept a prop that determines which chat to use.
 
 Here are some features that I thought would be nice to have, but that I have not been able to implement yet.
@@ -21,9 +21,9 @@ const Chat = props => {
     }
     let lastMessage = "default text"
     let lastUsername = "aaa@aaaa"
-    
+
     return (
-        <View> 
+        <View>
             <TouchableCmp onPress={ function () {
                 props.navigation.navigate('Chatroom', { name: firebase.auth().currentUser.email })
             }}>

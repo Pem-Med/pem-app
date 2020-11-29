@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import {
   TouchableOpacity,
   View,
@@ -60,7 +60,7 @@ const CategoryGridTile = props => {
   }
   //console.log("content in image: ", image)
   if (Platform.OS === 'android' && Platform.Version >= 21) {
-    TouchableCmp = TouchableNativeFeedback;
+    TouchableCmp = TouchableNativeFeedback
   }
   return (
       <View style={styles.gridItem}>
@@ -76,14 +76,14 @@ const CategoryGridTile = props => {
                     {props.title}
                   </Text>
                 </View>
+                <Text style={styles.title}>{props.title}</Text>
               </View>
-            </TouchableCmp>
-          </View>
+            </View>
+          </TouchableCmp>
         </View>
     </View>
-  );
-};
-
+  )
+}
 const styles = StyleSheet.create({
   gridItem:{
     flex: 1,
@@ -111,13 +111,13 @@ const styles = StyleSheet.create({
     // padding: 30
   },
   infoContainer: {
-    width: '100%',
-    height: '100%',
+    width:          '100%',
+    height:         '100%',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems:     'center',
   },
   touchable: {
-    overflow: 'hidden',
+    overflow:     'hidden',
     borderRadius: 10,
   },
   title: {

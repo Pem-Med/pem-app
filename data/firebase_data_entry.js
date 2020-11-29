@@ -1,8 +1,8 @@
 /*
 Always keep this file commented. This file has two snippets
-of code. One to add all the dummy data for all the categories, 
+of code. One to add all the dummy data for all the categories,
 another to add data to one specific category. The way these
-work is that you simply copy and paste them into any button's 
+work is that you simply copy and paste them into any button's
 onPress method (I personally prefer to use the login button's
 onPress) and then click the button. That way, the button will
 run the code and add whatever it is you like to Firestore.
@@ -49,7 +49,7 @@ SUBCATEGORIES.map(cat => {
         'HIGHER RISK PATIENTS (eg, pregnancy, chroninc alcoholism, prolonged fasting, chronic isoniazid use):' + '\n' +
         'Doses requiring intervention: More than 4 g or greater than 100 mg/kg in 24 hours, whichever is less.'+
         'Consult your regional Poison Control Center for guidance managing these patients.'+ '\n' +
-       
+
         '*THE QUANTITY OF DRUG INGESTED IN OVERDOSES IS OFTEN UNRELIABLE, AND THEREFORE' +
         'ACETAMINOPHEN LEVELS SHOULD BE CHECKED IN MOST CASES – SEE MANAGEMENT SECTION.',
         management: 'TIME SINCE INGESTION:'+ '\n' +
@@ -61,7 +61,7 @@ SUBCATEGORIES.map(cat => {
         '- If the 4-hour acetaminophen level is above the treatment line, send AST, ALT, INR, and' +
         'metabolic panel and begin N-acetylcysteine (NAC).'+
         '- NAC is most effective if started within 8 hours of ingestion. If for some reason your'+
-        'acetaminophen level will be delayed, be sure to initiate NAC within 8 hours of ingestion.' + '\n' + 
+        'acetaminophen level will be delayed, be sure to initiate NAC within 8 hours of ingestion.' + '\n' +
         '\n' +
         '4 – 8 hours:'+ '\n' +
         '- Obtain a serum acetaminophen level and plot on the Rumack-Matthew nomogram to'+
@@ -78,7 +78,7 @@ SUBCATEGORIES.map(cat => {
         'nomogram, the NAC can then be stopped.'+ '\n' +
         '\n' +
         '&gt; 24 hours:'+ '\n' +
-        '- Follow the RSTI management guidelines below and consult your regional Poison Control'+ 
+        '- Follow the RSTI management guidelines below and consult your regional Poison Control'+
         'Center.'+ '\n' +
         'Unknown:'+ '\n' +
         '- Follow the &gt;8 – 24 hours guideline above and consult your regional Poison Control Center.'+ '\n' +
@@ -104,8 +104,8 @@ SUBCATEGORIES.map(cat => {
         'Children:'+ '\n' +
         'Same dose as for adults, but the amount of diluent will vary depending on weight. See'+
         'package insert of Acetadote for diluent amounts.'+ '\n' + '\n' + '\n' +
-        
-        '* Both oral and IV forms of N-acetylcysteine are similarly effective. Choose one or the other'+ 
+
+        '* Both oral and IV forms of N-acetylcysteine are similarly effective. Choose one or the other'+
         'based on clinical judgement, e.g. intractable vomiting.'+ '\n' ,
         symptoms: 'Since ingestion:' + '\n' +
         '&lt; 24hrs – Asymptomatic or anorexia, nausea, vomiting, malaise, pallor, diaphoresis' + '\n' +
@@ -116,4 +116,4 @@ SUBCATEGORIES.map(cat => {
       })
     }
   }
-  */ 
+  */

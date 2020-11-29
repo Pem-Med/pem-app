@@ -33,12 +33,12 @@ class Chatroom extends Component {
   };
 
   /**
-   * Displays an alert box. If forUsers is set to true, then it will have a refresh button as well, 
+   * Displays an alert box. If forUsers is set to true, then it will have a refresh button as well,
    * to refresh the list of online users it will be displaying. Otherwise, it will be a plain alert
    * box.
-   * @param {string} title 
-   * @param {string} message 
-   * @param {boolean} forUsers 
+   * @param {string} title
+   * @param {string} message
+   * @param {boolean} forUsers
    */
   displayOKAlert(title, message, forUsers) {
     if (forUsers) {
@@ -165,13 +165,13 @@ class Chatroom extends Component {
   }
 
   userInfo = (user) => {
-    this.props.navigation.navigate({ 
-      routeName: 'UserProfile', params: { ID: user._id } 
+    this.props.navigation.navigate({
+      routeName: 'UserProfile', params: { ID: user._id }
     });
   }
 
   render() {
-      // For the actual chat, we are using a library called GiftedChat (https://www.npmjs.com/package/react-native-gifted-chat), 
+      // For the actual chat, we are using a library called GiftedChat (https://www.npmjs.com/package/react-native-gifted-chat),
       // which has a lot of features out of the box, such as support for image and video, user avatar images, quick replies and
       // a bunch more.
     return (
