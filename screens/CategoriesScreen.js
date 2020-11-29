@@ -23,10 +23,11 @@ const CategoriesScreen = props => {
     <FlatList
       data={categories}
       keyExtractor={item => item.id}
-      numColumns={1}
+      numColumns={2}
       renderItem={itemData =>
         <CategoryGridTile
           title={itemData.item.title}
+          icon={itemData.item.icon}
           color={itemData.item.color}
           //onSelect func name triggers on component
           onSelect={() => { selectCategoryHandler(itemData.item.id, itemData.item.title) }}
