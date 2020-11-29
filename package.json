@@ -19,6 +19,8 @@
     "@react-navigation/drawer": "^5.8.2",
     "algoliasearch": "^4.8.2",
     "base-64": "^0.1.0",
+    "dot-env": "0.0.1",
+    "dotenv": "^8.2.0",
     "expo": "~36.0.0",
     "expo-calendar": "~8.0.0",
     "expo-font": "^8.0.0",
