@@ -1,8 +1,10 @@
-import { Image } from 'react-native'
-import React from 'react'
-import Category from '../models/category'
-import CatContent from '../models/catContent'
-import Colors from '../constants/Colors'
+import Category from "../models/category";
+import CatContent from "../models/catContent";
+import Colors from "../constants/Colors";
+import {Image} from "react-native";
+import React from "react";
+
+//import SubCategory from '../models/catContent';
 
 // import SubCategory from '../models/catContent';
 
@@ -17,13 +19,14 @@ const [medicalIcon, surgicalIcon, traumaIcon, toxicologyIcon, foreignIngestionIc
   <Image source={require('../assets/icons/emergent-rashes-icon-64.png')} />,
 ]
 
+
 export const CATEGORIES = [
-  new Category('c1', 'Medical', medicalIcon, Colors.white),
-  new Category('c2', 'Surgical', surgicalIcon, Colors.surgical),
-  new Category('c3', 'Trauma', traumaIcon, Colors.trauma),
-  new Category('c4', 'Toxicology', toxicologyIcon, Colors.toxicology),
-  new Category('c5', 'Foreign Ingestion', foreignIngestionIcon, Colors.foreign),
-  new Category('c6', 'Emergent Rashes', emergentRashesIcon, Colors.emergent),
+  new Category("c1", "Medical", medicalIcon, Colors.white),
+  new Category("c2", "Surgical", surgicalIcon ,Colors.surgical),
+  new Category("c3", "Trauma", traumaIcon,Colors.trauma),
+  new Category("c4", "Toxicology", toxicologyIcon, Colors.toxicology),
+  new Category("c5", "Foreign Ingestion", foreignIngestionIcon, Colors.foreign),
+  //new Category("c6", "Emergent Rashes", emergentRashesIcon, Colors.emergent),
   // new Category("c7", "[Category 7]", Colors.cat7),
   // new Category("c8", "[Category 8]", Colors.cat8),
 ]
@@ -82,13 +85,14 @@ export const CATCONTENT = [
     'c1-5',
     'Pneumonia',
     Colors.medical,
-    'c1',
-    'evaluation',
-    'signs',
-    'management',
-    'medications',
-    'references',
-    'image',
+    "c1",
+    "evaluation",
+    "signs",
+    "management",
+    "medications",
+    "references",
+    "image",
+    "../assets/icons/pneumonia-icon-100.png",
   ),
   new CatContent(
     'c1-6',
