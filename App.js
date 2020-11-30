@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, Component } from 'react';
 import { YellowBox } from 'react-native'
 import _ from 'lodash';
 import { Text, View } from 'react-native';
@@ -17,6 +17,12 @@ import ReduxThunk from 'redux-thunk';
 import { Provider } from 'react-redux';
 import categoriesReducer from './store/reducers/categories';
 import catContentReducer from './store/reducers/catContent';
+
+import {decode, encode} from 'base-64'
+
+if (!global.btoa) {  global.btoa = encode }
+
+if (!global.atob) { global.atob = decode }
 
 
 /*

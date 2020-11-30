@@ -15,19 +15,19 @@ function backgroundTileColor(props){
   switch (props.title) {
     case "Medical":
       return Colors.medicalTile
-          break
+      break
     case "Surgical":
       return Colors.surgicalTile
-          break
+      break
     case "Trauma":
       return Colors.traumaTile
-          break
+      break
     case "Toxicology":
       return Colors.toxicologyTile
-          break
+      break
     case "Foreign Ingestion":
       return Colors.foreignTile
-          break
+      break
     default:
       return 'white'
   }
@@ -43,20 +43,20 @@ const CategoryGridTile = props => {
       image = require('../assets/icons/medical-icon-white-filled-96.png')
       break
     case "Surgical":
-        image = require('../assets/icons/surgical-icon-white-80.png')
-          break
+      image = require('../assets/icons/surgical-icon-white-80.png')
+      break
     case "Trauma":
-        image = require('../assets/icons/trauma-icon-white-80.png')
-          break
+      image = require('../assets/icons/trauma-icon-white-80.png')
+      break
     case "Toxicology":
-        image = require('../assets/icons/toxicology-icon-white-80.png')
-          break
+      image = require('../assets/icons/toxicology-icon-white-80.png')
+      break
     case "Foreign Ingestion":
-        image = require('../assets/icons/foreign-ingestion-icon-white-96.png')
-          break
+      image = require('../assets/icons/foreign-ingestion-icon-white-96.png')
+      break
     case "Emergent Rashes":
-        image = require('../assets/icons/emergent-rashes-icon-64.png')
-          break
+      image = require('../assets/icons/emergent-rashes-icon-64.png')
+      break
   }
   //console.log("content in image: ", image)
   if (Platform.OS === 'android' && Platform.Version >= 21) {
@@ -80,7 +80,7 @@ const CategoryGridTile = props => {
             </TouchableCmp>
           </View>
         </View>
-    </View>
+      </View>
   );
 };
 
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
   textContainer: {
     // width: '100%',
     // height: '60%',
-     alignItems: 'center',
+    alignItems: 'center',
     // padding: 30
   },
   infoContainer: {

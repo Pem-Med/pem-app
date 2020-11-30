@@ -8,64 +8,64 @@ import { useSelector, useDispatch } from "react-redux";
 import Colors from "../../constants/Colors";
 
 const AdminCategoriesScreen = (props) => {
-  //getting  data from categories in redux store
-  const categories = useSelector((state) => state.categories.categories);
+    //getting  data from categories in redux store
+    const categories = useSelector((state) => state.categories.categories);
 
-  //method to handle what category is selected
-  const selectCategoryHandler = (id, title) => {
-    props.navigation.navigate({
-      routeName: "AdminSubCategories",
-      params: { categoryId: id, categoryTitle: title },
-    });
-  };
-  // fix this
-  return (
-    <>
-      <Text style={styles.adminText}>Admin mode active</Text>
-      <FlatList
-        data={categories}
-        keyExtractor={(item) => item.id}
-        numColumns={1}
-        renderItem={(itemData) => (
-          <CategoryGridTile
-            title={itemData.item.title}
-            color={itemData.item.color}
-            //onSelect func name triggers on component
-            onSelect={() => {
-              selectCategoryHandler(itemData.item.id, itemData.item.title);
-            }}
-          />
-        )}
-      />
-    </>
-  );
+    //method to handle what category is selected
+    const selectCategoryHandler = (id, title) => {
+        props.navigation.navigate({
+            routeName: "AdminSubCategories",
+            params: { categoryId: id, categoryTitle: title },
+        });
+    };
+    // fix this
+    return (
+        <>
+            <Text style={styles.adminText}>Admin mode active</Text>
+            <FlatList
+                data={categories}
+                keyExtractor={(item) => item.id}
+                numColumns={2}
+                renderItem={(itemData) => (
+                    <CategoryGridTile
+                        title={itemData.item.title}
+                        color={itemData.item.color}
+                        //onSelect func name triggers on component
+                        onSelect={() => {
+                            selectCategoryHandler(itemData.item.id, itemData.item.title);
+                        }}
+                    />
+                )}
+            />
+        </>
+    );
 };
 AdminCategoriesScreen.navigationOptions = (navigationdata) => {
-  return {
-    headerTitle: "Admin Panel",
-    headerLeft: () => (
-      <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
-        <Item
-          title="Menu"
-          iconName={Platform.OS === "android" ? "md-menu" : "ios-menu"}
-          onPress={() => {
-            navigationdata.navigation.toggleDrawer();
-          }}
-        />
-      </HeaderButtons>
-    ),
-  };
+    return {
+        headerTitle: "Admin Panel",
+        headerLeft: () => (
+            <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
+                <Item
+                    title="Menu"
+                    iconName={Platform.OS === "android" ? "md-menu" : "ios-menu"}
+                    onPress={() => {
+                        navigationdata.navigation.toggleDrawer();
+                    }}
+                />
+            </HeaderButtons>
+        ),
+    };
 };
 
 const styles = {
-  adminText: {
-    color: "white",
-    backgroundColor: Colors.secondaryColor,
-    fontWeight: "bold",
-    textAlign: "center",
-    height: 20
+    adminText: {
+        color: "white",
+        backgroundColor: Colors.secondaryColor,
+        fontWeight: "bold",
+        textAlign: "center",
+        height: 20
 
-  },
+    },
 };
 
 export default AdminCategoriesScreen;

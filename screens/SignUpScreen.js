@@ -107,11 +107,11 @@ const CreateAccount = props => {
 
   /*
   export default class CreateAccount extends Component {
-  
+
     static navigationOptions = {
       title: 'Sign Up',
     };
-  
+
     constructor(props) {
       super(props)
       this.state = {
@@ -126,15 +126,15 @@ const CreateAccount = props => {
     handleFullName(text) {
       this.setState({ fullName: text })
     }
-  
+
     handleEmail(text) {
       this.setState({ username: text })
     }
-  
+
     handlePassword(text) {
       this.setState({ password: text })
     }
-  
+
     /**
      * Clears the text inputs. This is so that if there's an error,
      * the user doesn't have to backspace everything they put.
@@ -143,7 +143,7 @@ const CreateAccount = props => {
   clearTextInputs() {
     this.setState({ fullname: "", username: "", password: "" })
   }
-  
+
   /**
    * Creates an account with the specified username and password. If it works,
    * an alert box is displayed, the user is brought to the Login page, and the

@@ -1,19 +1,17 @@
-import React, { Component } from 'react';
-import { View, Button, Text, StyleSheet, Platform, FlatList, Image } from 'react-native';
+import React, { Component, useLayoutEffect } from 'react';
+import { View, Button, Alert, Text, StyleSheet, Platform, FlatList, Image } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import CustomHeaderButton from '../components/CustomHeaderButton';
 import Chat from '../components/Chat';
-import Chatroom from '../screens/ChatroomScreen';
-import * as firebase from 'firebase'
 import 'firebase/firestore';
-import Firebase from '../backend/firebase'
 import Colors from '../constants/Colors';
+import { IconButton } from 'react-native-paper';
 //import {HeaderButtons, Item } from 'react-navigation-header-buttons';
 //import CustomHeaderButton from '../components/CustomHeaderButton';
 
 /**
  * The ChatTabScreen component is the first thing in the hierarchy of the chat's functionality. It's the first thing 
- * a user sees when they click on the chat section, and is meant to display all the user's chats. 
+ * a user sees when they click on the chat section, and is meant to display all the chat rooms
  */
 class ChatTabScreen extends Component {
     constructor(props) {
@@ -64,7 +62,16 @@ ChatTabScreen.navigationOptions = navigationData => {
             </HeaderButtons>
         ),
 
+        headerRight: ()=>(
+            <IconButton
+                icon='message-plus'
+                size={28}
+                color={Colors.googleBlue}
+                onPress={() => navigationData.navigation.navigate('AddRoom')}
+                //onPress={() => props.navigation.navigate({ routeName: 'AddRoom' })}
+            />
+        )
     }
 };
 
-export default ChatTabScreen;
+export default ChatTabScreen; ChatTabScreen

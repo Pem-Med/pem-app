@@ -5,7 +5,8 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "eject": "expo eject"
+    "eject": "expo eject",
+    "lint": "eslint *.js **/*.js src/**/*.js"
   },
   "dependencies": {
     "@expo/vector-icons": "^10.2.0",
@@ -13,11 +14,17 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.30",
     "@fortawesome/free-solid-svg-icons": "^5.14.0",
     "@fortawesome/react-native-fontawesome": "^0.2.5",
-    "@react-native-community/datetimepicker": "2.1.0",
+    "@react-native-community/datetimepicker": "github:react-native-community/datetimepicker",
     "@react-native-community/masked-view": "^0.1.10",
     "@react-native-firebase/firestore": "^7.2.2",
+    "@react-navigation/core": "^5.14.4",
     "@react-navigation/drawer": "^5.8.2",
+    "@react-navigation/native": "^5.8.10",
+    "@react-navigation/stack": "^5.12.8",
+    "algoliasearch": "^4.8.2",
     "base-64": "^0.1.0",
+    "dot-env": "0.0.1",
+    "dotenv": "^8.2.0",
     "expo": "~36.0.0",
     "expo-calendar": "~8.0.0",
     "expo-font": "^8.0.0",
@@ -31,6 +38,8 @@
     "npm": "^6.14.8",
     "react": "~16.9.0",
     "react-dom": "~16.9.0",
+    "react-instantsearch-dom": "^6.8.2",
+    "react-instantsearch-native": "^6.8.2",
     "react-native": "https://github.com/expo/react-native/archive/sdk-36.0.0.tar.gz",
     "react-native-add-calendar-event": "^3.0.2",
     "react-native-atoz-list": "^1.0.5",
@@ -59,7 +68,8 @@
     "react-native-svg": "9.13.3",
     "react-native-vector-icons": "^6.7.0",
     "react-native-web": "~0.11.7",
-    "react-navigation": "^4.1.1",
+    "react-navigation": "^4.4.3",
+    "react-native-windows": "^0.63.11",
     "react-navigation-drawer": "^2.4.13",
     "react-navigation-header-buttons": "^4.0.2",
     "react-navigation-material-bottom-tabs": "^2.2.12",
@@ -75,7 +85,7 @@
     "stream-chat-expo": "^0.12.3"
   },
   "devDependencies": {
-    "@babel/core": "^7.0.0",
+    "@babel/core": "^7.12.9",
     "babel-preset-expo": "~8.0.0",
     "react-native-touchable-scale": "^2.1.1"
   },

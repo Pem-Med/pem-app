@@ -1,10 +1,12 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, TextInput, StyleSheet, ScrollView, Platform, Button, Image } from 'react-native';
-import { HeaderButtons, Item } from 'react-navigation-header-buttons';
-import CustomHeaderButton from '../../components/CustomHeaderButton';
-import { useSelector, useDispatch } from 'react-redux';
-import * as CatContentActions from '../../store/actions/catContent';
-import * as ImagePicker from 'expo-image-picker';
+import React, { useState, useEffect, useCallback } from 'react'
+import {
+  View, Text, TextInput, StyleSheet, ScrollView, Platform, Button, Image,
+} from 'react-native'
+import { HeaderButtons, Item } from 'react-navigation-header-buttons'
+import { useSelector, useDispatch } from 'react-redux'
+import * as ImagePicker from 'expo-image-picker'
+import CustomHeaderButton from '../../components/CustomHeaderButton'
+import * as CatContentActions from '../../store/actions/catContent'
 import Colors from '../../constants/Colors'
 
 const EditCatContentScreen = props => {
@@ -197,18 +199,20 @@ EditCatContentScreen.navigationOptions = navigationData => {
     return {
         headerTitle:
             navigationData.navigation.getParam('subCatId')
-                ? 'Edit Category'
-                : 'Add Category',
-        headerRight:
+              ? 'Edit Category'
+              : 'Add Category',
+    headerRight:
             () => (
-                <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
-                    <Item title='Save' iconName={Platform.OS === 'android' ? 'md-checkmark' : 'ios-checkmark'}
-                        onPress={submitChanges}
-                    />
-                </HeaderButtons>
+              <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
+                <Item
+                  title={'Save'}
+                  iconName={Platform.OS === 'android' ? 'md-checkmark' : 'ios-checkmark'}
+                  onPress={submitChanges}
+                />
+              </HeaderButtons>
             ),
-    };
-};
+  }
+}
 
 const styles = StyleSheet.create({
     form: {

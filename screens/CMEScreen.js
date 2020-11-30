@@ -1,7 +1,6 @@
-import React, { Component, useEffect } from "react";
-import DatePicker from "react-native-datepicker";
-import * as ImagePicker from 'expo-image-picker';
-import Colors from "../constants/Colors";
+import React, { Component, useEffect } from 'react'
+import DatePicker from 'react-native-datepicker'
+import * as ImagePicker from 'expo-image-picker'
 import {
   View,
   StyleSheet,
@@ -12,25 +11,26 @@ import {
   Button,
   TouchableOpacity,
   Alert,
-} from "react-native";
-import * as firebase from "firebase";
-import "firebase/firestore";
-import Firebase from "../backend/firebase";
+} from 'react-native'
+import * as firebase from 'firebase'
+import Colors from '../constants/Colors'
+import 'firebase/firestore'
+import Firebase from '../backend/firebase'
+import 'firebase/storage';
 
-//This will be the list of all CMEs the user has.
-let cmes = [];
+// This will be the list of all CMEs the user has.
+let cmes = []
 
-//This represents one CME the user would like to
-//add to the list of CMEs.
-let newCme = {
-  newCmeCert: "",
-  newCmeExp: "",
-  newCmePic: "",
-};
-
+// This represents one CME the user would like to
+// add to the list of CMEs.
+const newCme = {
+  newCmeCert: '',
+  newCmeExp:  '',
+  newCmePic:  '',
+}
 
 function displayOKAlert(title, message) {
-  Alert.alert(title, message);
+  Alert.alert(title, message)
 }
 
 export default class CME extends Component {
@@ -41,39 +41,40 @@ export default class CME extends Component {
   constructor(props) {
     firebase
       .database()
-      .ref("userCmes/userId:" + firebase.auth().currentUser.uid)
-      .once("value")
-      .then(function (snapshot) {
-        console.log("SNAPSHOT.VAL", snapshot.val());
-        cmes = snapshot.val() === null ? [] : snapshot.val().cmes;
+      .ref(`userCmes/userId:${firebase.auth().currentUser.uid}`)
+      .once('value')
+      .then((snapshot) => {
+        console.log('SNAPSHOT.VAL', snapshot.val())
+        cmes = snapshot.val() === null ? [] : snapshot.val().cmes
       })
-      .catch(function (err) {
-        console.log("ERROR GETTING CME DATA:", err);
-      });
-    super(props);
+      .catch((err) => {
+        console.log('ERROR GETTING CME DATA:', err)
+      })
+    super(props)
     this.state = {
-      cmes: cmes,
-    };
-    console.log("BEGINNING STATE IS", this.state.cmes);
-    this.handleCmeCert = this.handleCmeCert.bind(this);
-    this.handleCmeExp = this.handleCmeExp.bind(this);
-    this.handleCmePic = this.handleCmePic.bind(this);
-    this.addCme = this.addCme.bind(this);
+      cmes,
+    }
+    console.log('BEGINNING STATE IS', this.state.cmes)
+    this.handleCmeCert = this.handleCmeCert.bind(this)
+    this.handleCmeExp = this.handleCmeExp.bind(this)
+    this.handleCmePic = this.handleCmePic.bind(this)
+    this.addCme = this.addCme.bind(this)
   }
+
   static navigationOptions = {
-    title: "CME",
+    title: 'CME',
   };
 
   handleCmeCert(text) {
-    newCme.newCmeCert = text;
+    newCme.newCmeCert = text
   }
 
   handleCmeExp(date) {
-    newCme.newCmeExp = date;
+    newCme.newCmeExp = date
   }
 
   handleCmePic(text) {
-    newPic.newCmePic = text;
+    newCme.newCmePic = text
   }
 
   /**
@@ -83,25 +84,25 @@ export default class CME extends Component {
    * @param {string} userDate
    */
   isValidDate(userDate) {
-    console.log("USERDATE", userDate);
-    let expDateMillis = Date.parse(userDate);
-    console.log("EXPDM", expDateMillis);
-    console.log("EXPDMbool", expDateMillis === NaN);
-    console.log("EXPDMbool2", expDateMillis == NaN);
-    console.log("EXPDM2", expDateMillis);
-    console.log("EXPDMbool3", !expDateMillis);
+    console.log('USERDATE', userDate)
+    const expDateMillis = Date.parse(userDate)
+    console.log('EXPDM', expDateMillis)
+    console.log('EXPDMbool', expDateMillis === NaN)
+    console.log('EXPDMbool2', expDateMillis == NaN)
+    console.log('EXPDM2', expDateMillis)
+    console.log('EXPDMbool3', !expDateMillis)
     if (!expDateMillis) {
-      console.log("RETURNING FIRST FALSE");
+      console.log('RETURNING FIRST FALSE')
       displayOKAlert(
-        "Invalid date format",
-        "Please format your date as MM/DD/YYYY"
-      );
-      return false;
+        'Invalid date format',
+        'Please format your date as MM/DD/YYYY',
+      )
+      return false
     }
-    let today = new Date();
-    let todayMillis = Date.parse(
-      today.getMonth() + 1 + "/" + today.getDate() + "/" + today.getFullYear()
-    );
+    const today = new Date()
+    const todayMillis = Date.parse(
+      `${today.getMonth() + 1}/${today.getDate()}/${today.getFullYear()}`,
+    )
 
     if (todayMillis - expDateMillis >= 0) {
       /*
@@ -110,13 +111,13 @@ export default class CME extends Component {
       future.
       */
       displayOKAlert(
-        "Invalid date",
-        "Please make sure your date is later than today"
-      );
-      return false;
+        'Invalid date',
+        'Please make sure your date is later than today',
+      )
+      return false
     }
-    console.log("RETURNING TRUE");
-    return true;
+    console.log('RETURNING TRUE')
+    return true
   }
 
   /**
@@ -125,45 +126,94 @@ export default class CME extends Component {
    * newCme is added and this.state.cmes is set to the cmes list. It also
    * sets the userCmes in Firebase to the cmes list.
    */
-  addCme() {
-    console.log("NEWCME:", newCme);
-    if (newCme.newCmeCert != "" && this.isValidDate(newCme.newCmeExp)) {
+  addCme()  {
+    console.log('NEWCME:', newCme)
+    if (newCme.newCmeCert != '' && this.isValidDate(newCme.newCmeExp)) {
       cmes.push({
         cert: newCme.newCmeCert,
-        exp: newCme.newCmeExp,
-
-      });
+        exp:  newCme.newCmeExp,
+      })
 
       this.setState({
-        cmes: cmes,
-      });
-      console.log("STATE IS", this.state);
+        cmes,
+      })
+      console.log('STATE IS', this.state)
 
       firebase
         .database()
-        .ref("userCmes/userId:" + firebase.auth().currentUser.uid)
+        .ref(`userCmes/userId:${firebase.auth().currentUser.uid}`)
         .set({
-          cmes: cmes,
+          cmes,
         })
-        .catch(function (err) {
-          console.log("ERROR IN SETTING userCmes/userId:", err);
-        });
+        .catch((err) => {
+          console.log('ERROR IN SETTING userCmes/userId:', err)
+        })
+        this.uriToBlob(newCme.newCmePic).then((blob) => this.uploadToFirebase(blob));
     } else {
       console.log(
-        "One or both of the fields in newCme are empty. We can't have that."
-      );
+        "One or both of the fields in newCme are empty. We can't have that.",
+      )
     }
   }
+
+  uriToBlob = (uri) => {
+
+    return new Promise((resolve, reject) => {
+  
+      const xhr = new XMLHttpRequest();
+  
+      xhr.onload = function() {
+        // return the blob
+        resolve(xhr.response);
+      };
+      
+      xhr.onerror = function() {
+        // something went wrong
+        reject(new Error('uriToBlob failed'));
+      };
+  
+      // this helps us get a blob
+      xhr.responseType = 'blob';
+  
+      xhr.open('GET', uri, true);
+      xhr.send(null);
+  
+    });
+  }
+  
+  uploadToFirebase = (blob) => {
+  
+    return new Promise((resolve, reject)=>{
+  
+      var storageRef = firebase.storage().ref();
+      let imageName = newCme.newCmeCert;
+  
+      storageRef.child('uploads/' + imageName + '.jpg').put(blob, {
+        contentType: 'image/jpeg'
+      }).then((snapshot)=>{
+  
+        blob.close();
+  
+        resolve(snapshot);
+  
+      }).catch((error)=>{
+  
+        reject(error);
+  
+      });
+  
+    });
+  } 
 
   render() {
     return (
       <View>
         <FlatList
-          style={{ marginTop: "5%", flexGrow: 0, marginBottom: "2%" }}
+          style={{ marginTop: '5%', flexGrow: 0, marginBottom: '2%' }}
           data={this.state.cmes}
-          keyExtractor={item => item.id}
+          keyExtractor={(item) => item.id}
           renderItem={(itemData) => (
-            <View style={{ flexDirection: "row" }}>
+            <View style={{ flexDirection: 'row' }}>
               <Text style={styles.cmeItem}>{(itemData.item.id, itemData.item.cert)}</Text>
               <Text style={styles.cmeItem}>{(itemData.item.id + 1, itemData.item.exp)}</Text>
             </View>
@@ -171,40 +221,41 @@ export default class CME extends Component {
           numColumns={1}
         />
 
-        <View style={{ flexDirection: "row" }}>
-          <Text style={styles.header}>Add New Certification Here</Text>
+        <View style={{ flexDirection: 'row' }}>
+          <Text style={styles.header}>Add New Document Here</Text>
         </View>
 
-        <View style={{ flexDirection: "row" }}>
+        <View style={{ flexDirection: 'row' }}>
           <TextInput
             style={styles.textField}
             onChangeText={this.handleCmeCert}
-            placeholder="Certification Name"
+            placeholder={'Document Name'}
           />
         </View>
 
-        <View style={{ flexDirection: "column", justifyContent: "center" }}>
+        <View style={{ flexDirection: 'column', justifyContent: 'center' }}>
           <Text style={styles.header}>Renewal Date</Text>
           <DatePicker
             style={{
-              flex: 1,
-              alignSelf: "center",
-              width: "80%",
-              marginRight: "9%",
-              marginTop: "2%"
+              flex:        1,
+              alignSelf:   'center',
+              width:       '80%',
+              marginRight: '9%',
+              marginTop:   '2%',
+              color: 'black',
             }}
-            date={this.state.date} //initial date from state
-            mode="date"
-            placeholder="Select date"
-            format="MM/DD/YYYY"
-            confirmBtnText="Confirm"
-            cancelBtnText="Cancel"
-            onDateChange={(date) => { this.setState({ date: date }, this.handleCmeExp(date)) }}
+            date={this.state.date} // initial date from state
+            mode={'date'}
+            placeholder={'Select date'}
+            format={'MM/DD/YYYY'}
+            confirmBtnText={'Confirm'}
+            cancelBtnText={'Cancel'}
+            onDateChange={(date) => { this.setState({ date }, this.handleCmeExp(date)) }}
             customStyles={{
               dateIcon: {
-                position: "absolute",
-                left: 0,
-                top: 4,
+                position:   'absolute',
+                left:       0,
+                top:        4,
                 marginLeft: 0,
               },
               dateInput: {
@@ -214,73 +265,80 @@ export default class CME extends Component {
           />
         </View>
 
-        <View style={{ flexDirection: "column", marginTop: "15%" }}>
+        <View style={{ flexDirection: 'column', marginTop: '15%' }}>
           <View style={[styles.addCmeButton, { flexDirection: 'column', backgroundColor: Colors.primaryColor }]}>
-            <TouchableOpacity style={styles.buttonText} onPress={pickImage}>
+            <TouchableOpacity style={styles.buttonText} onPress={this.pickImage}>
               <Text style={styles.text}>Upload Image</Text>
             </TouchableOpacity>
           </View>
           <TouchableOpacity style={styles.addCmeButton} onPress={this.addCme}>
-            <Text style={styles.text}>Add CME</Text>
+            <Text style={styles.text}>Add Document</Text>
           </TouchableOpacity>
         </View>
       </View>
-    );
+    )
+  }
+
+  pickImage = async () => {     
+    const selectedImage = await ImagePicker.launchImageLibraryAsync({       
+    mediaTypes:    ImagePicker.MediaTypeOptions.All,       
+    allowsEditing: true,      
+    quality:       1,     
+  })     
+    if (!selectedImage.cancelled) {       
+      console.log(selectedImage.uri)       
+      this.handleCmePic(selectedImage.uri);  
+     }   
   }
 }
 
+//start
 
-const pickImage = async () => {
-  let selectedImage = await ImagePicker.launchImageLibraryAsync({
-    mediaTypes: ImagePicker.MediaTypeOptions.All,
-    allowsEditing: true,
-    quality: 1,
-  });
-  if (!selectedImage.cancelled) {
-    //setAvatar(selectedImage.uri);
-  }
-};
+
+
+
+//end 
 
 const styles = StyleSheet.create({
   textField: {
-    flex: 1,
-    fontFamily: "open-sans",
-    height: 60,
-    width: "80%",
-    textAlign: "center",
-    alignSelf: "center",
-    borderColor: "gray",
-    borderWidth: 2,
+    flex:         1,
+    fontFamily:   'open-sans',
+    height:       60,
+    width:        '80%',
+    textAlign:    'center',
+    alignSelf:    'center',
+    borderColor:  'gray',
+    borderWidth:  2,
     borderRadius: 30,
-    margin: 8,
+    margin:       8,
   },
   header: {
-    flex: 1,
-    fontSize: 20,
-    fontFamily: "open-sans",
-    textAlign: "center",
-    alignSelf: "center",
-    width: "80%",
+    flex:       1,
+    fontSize:   20,
+    fontFamily: 'open-sans',
+    textAlign:  'center',
+    alignSelf:  'center',
+    width:      '80%',
   },
   text: {
-    fontFamily: "open-sans",
-    textAlign: "center",
-    color: "white"
+    fontFamily: 'open-sans',
+    textAlign:  'center',
+    color:      'white',
   },
   addCmeButton: {
-    marginTop: 10,
-    alignSelf: "center",
-    padding: 10,
-    width: 250,
+    marginTop:       10,
+    alignSelf:       'center',
+    padding:         10,
+    width:           250,
     backgroundColor: Colors.primaryColor,
-    borderRadius: 30,
+    borderRadius:    30,
   },
   cmeItem: {
-    flex: 1,
-    fontSize: 14,
-    fontFamily: "open-sans",
-    textAlign: "center",
-    alignSelf: "center",
-    width: "80%",
+    flex:       1,
+    fontSize:   14,
+    fontFamily: 'open-sans',
+    textAlign:  'center',
+    alignSelf:  'center',
+    width:      '80%',
   },
-});
+})
