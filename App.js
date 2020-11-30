@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, Component } from 'react';
 import { YellowBox } from 'react-native'
 import _ from 'lodash';
 import { Text, View } from 'react-native';
@@ -18,21 +18,27 @@ import { Provider } from 'react-redux';
 import categoriesReducer from './store/reducers/categories';
 import catContentReducer from './store/reducers/catContent';
 
+import {decode, encode} from 'base-64'
+
+if (!global.btoa) {  global.btoa = encode }
+
+if (!global.atob) { global.atob = decode }
+
 
 /*
 I've been getting an error ever since I ran npm `install react-native-dialog-input`.
-First, it was saying it couldn't reslove firebase. Then it was saying it couldn't
+First, it was saying it couldn't reslove firebase. Then it was saying it couldn't 
 resolve react-native-gifted-chat. I fixed those two. Now, it's saying "ReferenceError:
-Can't find variable: crypto". I got the following solution
+Can't find variable: crypto". I got the following solution 
 from https://github.com/expo/expo/issues/7507.
 
-UPDATE ON 4/10/2020: The solution was downgrading Firebase to 7.9.0.
+UPDATE ON 4/10/2020: The solution was downgrading Firebase to 7.9.0. 
 */
 
 /*global.crypto = require("@firebase/firestore");
 global.crypto.getRandomValues = byteArray => {
   for (let i = 0; i < byteArray.length; i++) {
-    byteArray[i] = Math.floor(256 * Math.random());
+    byteArray[i] = Math.floor(256 * Math.random()); 
   }
 };
 

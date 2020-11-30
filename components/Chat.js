@@ -1,52 +1,79 @@
-import React from 'react';
-import { TouchableOpacity, View, Text, StyleSheet, Platform, TouchableNativeFeedback, Image} from 'react-native';
+import React, { useContext, useState, useEffect } from 'react';
+import { View, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { Title, List, Divider } from 'react-native-paper';
 import 'firebase/firestore';
-import * as firebase from 'firebase';
-import Firebase from '../backend/firebase';
-import { testMatrix } from '../node_modules/firebase-functions/lib/providers/testLab';
+import * as firebase from 'firebase'
+import FormButton from '../components/FormButton';
+import Loading from './Loading';
+export default function HomeScreen({ navigation }) {
 
-/*
-This is the component used to show an existing chat, it (ideally) takes the information from firebase as part of its props
-so that it can display information dynamically. Right now, it only takes information from the global chat, so the first thing
-to do would be to make it accept a prop that determines which chat to use.
+  const [threads, setThreads] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-Here are some features that I thought would be nice to have, but that I have not been able to implement yet.
-    - The ability to see the last message sent per chat
-    - Be able to start a new chat between two or more users.
-*/
-const Chat = props => {
-    let TouchableCmp = TouchableOpacity;
-    if (Platform.OS === 'android' && Platform.Version >= 21) {
-        TouchableCmp = TouchableNativeFeedback;
-    }
-    let lastMessage = "default text"
-    let lastUsername = "aaa@aaaa"
+  useEffect(() => {
+    const unsubscribe = firebase.firestore()
+      .collection('THREADS')
+      .onSnapshot((querySnapshot) => {
+        const threads = querySnapshot.docs.map((documentSnapshot) => {
+          return {
+            _id: documentSnapshot.id,
+            // give defaults
+            name: '',
+            ...documentSnapshot.data(),
+          };
+        });
 
-    return (
-        <View>
-            <TouchableCmp onPress={ function () {
-                props.navigation.navigate('Chatroom', { name: firebase.auth().currentUser.email })
-            }}>
-                <View>
-                    <View style={styles.chatTile}>
-                        <Text style={styles.textStyle}>Go to Global Chat</Text>
-                    </View>
-                </View>
-            </TouchableCmp>
-        </View>
-    );
+        setThreads(threads);
+
+        if (loading) {
+          setLoading(false);
+        }
+      });
+
+    /**
+     * unsubscribe listener
+     */
+    return () => unsubscribe();
+  }, []);
+
+  if (loading) {
+    return <Loading />;
+  }
+  
+  return (
+    <View style={styles.container}>
+  <FlatList
+    data={threads}
+    keyExtractor={(item) => item._id}
+    ItemSeparatorComponent={() => <Divider />}
+    renderItem={({ item }) => (
+      <TouchableOpacity
+            onPress={() => navigation.navigate('Room', { thread: 'General' })}
+          >
+            <List.Item
+              title={item.name}
+              description='Item description'
+              titleNumberOfLines={1}
+              titleStyle={styles.listTitle}
+              descriptionStyle={styles.listDescription}
+              descriptionNumberOfLines={1}
+            />
+          </TouchableOpacity>
+    )}
+  />
+</View>
+  );
 }
 
 const styles = StyleSheet.create({
-    logo: {
-        width: 50,
-        height: 50,
-    },
-    chatTile: {
-        flexDirection: "row",
-    },
-    textStyle: {
-        fontSize: 30,
-    }
-})
-export default Chat;
+  container: {
+    backgroundColor: '#f5f5f5',
+    flex: 1
+  },
+  listTitle: {
+    fontSize: 22
+  },
+  listDescription: {
+    fontSize: 16
+  }
+});
