@@ -17,6 +17,7 @@ const [medicalIcon, surgicalIcon, traumaIcon, toxicologyIcon, foreignIngestionIc
   <Image source={require('../assets/icons/emergent-rashes-icon-64.png')}/>
 ]
 
+
 export const CATEGORIES = [
   new Category("c1", "Medical", medicalIcon, Colors.white),
   new Category("c2", "Surgical", surgicalIcon ,Colors.surgical),
@@ -94,6 +95,7 @@ export const CATCONTENT = [
   new CatContent(
     "c1-6",
     "Pyelonephritis",
+
     Colors.medical,
     "c1",
     "evaluation",

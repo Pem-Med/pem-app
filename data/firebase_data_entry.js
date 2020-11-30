@@ -8,7 +8,7 @@ onPress) and then click the button. That way, the button will
 run the code and add whatever it is you like to Firestore.
 */
 
-/* SNIPPET 1
+/*SNIPPET 1
 
 SUBCATEGORIES.map(cat => firebase.firestore().collection('data').doc(cat.id).set({
   catId: cat.id,
@@ -28,7 +28,7 @@ use method on the login page on Onpress login button
 this is an example of how data was entered for the acetaminophen category
 */
 
-/* SNIPPET 2
+/*SNIPPET 2
 
 SUBCATEGORIES.map(cat => {
     if (cat.id === 'c4-1') {

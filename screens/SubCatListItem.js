@@ -14,15 +14,16 @@ import Colors from "../constants/Colors";
 import SubCategoriesScreen from "./SubCategoriesScreen";
 
 const SubCatListItem = (props) => {
-    //console.log(props)
+    //let title = props.navigation.getParam('categoryTitle') //get category title
+    //console.log("PROPS EN SUBCAT LIST ITEM: ", props )
     let formattedIconPath
     if(props.title === "Pneumonia") {
         formattedIconPath = ""+props.icon;
-        console.log(props)
+       // console.log(props)
     }
 
-    let icon = (props.icon === undefined) ? require("../assets/icons/image-placeholder-icon-64.png") : require("../assets/icons/image-placeholder-icon-64.png")
-    /*if (props.title == "Pneumonia"){
+    //let icon = (props.icon === undefined) ? require("../assets/icons/image-placeholder-icon-64.png") : require("../assets/icons/image-placeholder-icon-64.png")
+    if (props.title == "Pneumonia"){
         icon = require("../assets/icons/pneumonia-icon-100.png")
     }else
         if (props.title == "Appendicitis"){
@@ -42,7 +43,8 @@ const SubCatListItem = (props) => {
     }else
     if (props.icon === undefined){
         icon = require("../assets/icons/image-placeholder-icon-64.png")
-    }*/
+    }
+
 
 
     let TouchableCmp = TouchableOpacity;
@@ -99,7 +101,6 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 2 },
         shadowRadius: 8,
         elevation: 5,
-        borderRadius: 10,
         width: '80%',
         height: 60,
         marginLeft: '10%',
@@ -137,6 +138,5 @@ const styles = StyleSheet.create({
     }
 
 });
-
 
 export default SubCatListItem;
