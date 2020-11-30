@@ -1,37 +1,44 @@
-import React, { useState } from 'react'
-import { YellowBox, Text, View } from 'react-native'
-import _ from 'lodash'
+import React, { useState, Component } from 'react';
+import { YellowBox } from 'react-native'
+import _ from 'lodash';
+import { Text, View } from 'react-native';
+import * as Font from 'expo-font';
+import { AppLoading } from 'expo';
 
-import * as Font from 'expo-font'
-import { AppLoading } from 'expo'
+import { createStackNavigator } from 'react-navigation-stack';
 
-import { createStackNavigator } from 'react-navigation-stack'
-
-// import MealsNavigator from './navigation/MealsNavigation';
-import { enableScreens } from 'react-native-screens'
+//import MealsNavigator from './navigation/MealsNavigation';
+import PemNavigation from './navigation/PemNavigation';
+import { enableScreens } from 'react-native-screens';
 
 // react-redux
-import { createStore, combineReducers, applyMiddleware } from 'redux'
-import ReduxThunk from 'redux-thunk'
-import { Provider } from 'react-redux'
-import PemNavigation from './navigation/PemNavigation'
-import categoriesReducer from './store/reducers/categories'
-import catContentReducer from './store/reducers/catContent'
+import { createStore, combineReducers, applyMiddleware } from 'redux';
+import ReduxThunk from 'redux-thunk';
+import { Provider } from 'react-redux';
+import categoriesReducer from './store/reducers/categories';
+import catContentReducer from './store/reducers/catContent';
+
+import {decode, encode} from 'base-64'
+
+if (!global.btoa) {  global.btoa = encode }
+
+if (!global.atob) { global.atob = decode }
+
 
 /*
 I've been getting an error ever since I ran npm `install react-native-dialog-input`.
-First, it was saying it couldn't reslove firebase. Then it was saying it couldn't
+First, it was saying it couldn't reslove firebase. Then it was saying it couldn't 
 resolve react-native-gifted-chat. I fixed those two. Now, it's saying "ReferenceError:
-Can't find variable: crypto". I got the following solution
+Can't find variable: crypto". I got the following solution 
 from https://github.com/expo/expo/issues/7507.
 
-UPDATE ON 4/10/2020: The solution was downgrading Firebase to 7.9.0.
+UPDATE ON 4/10/2020: The solution was downgrading Firebase to 7.9.0. 
 */
 
-/* global.crypto = require("@firebase/firestore");
+/*global.crypto = require("@firebase/firestore");
 global.crypto.getRandomValues = byteArray => {
   for (let i = 0; i < byteArray.length; i++) {
-    byteArray[i] = Math.floor(256 * Math.random());
+    byteArray[i] = Math.floor(256 * Math.random()); 
   }
 };
 
@@ -85,7 +92,7 @@ if (Platform.OS === "android") {
     }
     _clearTimeout(id);
   };
-} */
+}*/
 
 /*
 There's this warning about "setting a timer" that shows up around every
@@ -95,33 +102,36 @@ to dig through all the warnings for my console.log statements that I use
 to debug. As you can imagine, this is annoying. The following few lines of
 code are what stop that warning from showing up, so I can debug more easily.
 */
-YellowBox.ignoreWarnings(['Setting a timer'])
+YellowBox.ignoreWarnings(['Setting a timer']);
 YellowBox.ignoreWarnings(['Setting a timer', 'Deprecation in'])
-const _console = _.clone(console)
-console.ignoredYellowBox = ['Setting a timer']
+const _console = _.clone(console);
+console.ignoredYellowBox = ['Setting a timer'];
 console.disableYellowBox = true
-console.warn = (message) => {
+console.warn = message => {
   if (message.indexOf('Setting a timer') <= -1) {
-    _console.warn(message)
+    _console.warn(message);
   }
-}
+};
 
-enableScreens()// not necesary for this app
-const fetchFonts = () => Font.loadAsync({
-  'open-sans':      require('./assets/fonts/OpenSans-Regular.ttf'),
-  'open-sans-bold': require('./assets/fonts/OpenSans-Bold.ttf'),
-})
+enableScreens();//not necesary for this app
+const fetchFonts = () => {
+  return Font.loadAsync({
+    'open-sans': require('./assets/fonts/OpenSans-Regular.ttf'),
+    'open-sans-bold': require('./assets/fonts/OpenSans-Bold.ttf'),
+    'helvetica': require('./assets/fonts/Helvetica.ttf')
+  });
+};
 
 const rootReducer = combineReducers({
-  categories:        categoriesReducer,
+  categories: categoriesReducer,
   categoriesContent: catContentReducer,
-  // userContent: userContent,
-})
+  //userContent: userContent,
+});
 
-const store = createStore(rootReducer, applyMiddleware(ReduxThunk))
+const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
 
 export default function App() {
-  const [fontLoaded, setFontLoaded] = useState(false)
+  const [fontLoaded, setFontLoaded] = useState(false);
 
   if (!fontLoaded) {
     return (
@@ -129,12 +139,12 @@ export default function App() {
         startAsync={fetchFonts}
         onFinish={() => setFontLoaded(true)}
       />
-    )
+    );
   }
 
   return (
     <Provider store={store}>
       <PemNavigation />
     </Provider>
-  )
-}
+  );
+};
