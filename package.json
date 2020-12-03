@@ -85,7 +85,7 @@
     "stream-chat-expo": "^0.12.3"
   },
   "devDependencies": {
-    "@babel/core": "^7.0.0",
+    "@babel/core": "^7.12.9",
     "babel-preset-expo": "~8.0.0",
     "react-native-touchable-scale": "^2.1.1"
   },
