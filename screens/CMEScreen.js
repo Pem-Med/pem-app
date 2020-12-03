@@ -16,6 +16,7 @@ import * as firebase from 'firebase'
 import Colors from '../constants/Colors'
 import 'firebase/firestore'
 import Firebase from '../backend/firebase'
+import 'firebase/storage';
 
 // This will be the list of all CMEs the user has.
 let cmes = []
@@ -73,7 +74,7 @@ export default class CME extends Component {
   }
 
   handleCmePic(text) {
-    newPic.newCmePic = text
+    newCme.newCmePic = text
   }
 
   /**
@@ -125,13 +126,12 @@ export default class CME extends Component {
    * newCme is added and this.state.cmes is set to the cmes list. It also
    * sets the userCmes in Firebase to the cmes list.
    */
-  addCme() {
+  addCme()  {
     console.log('NEWCME:', newCme)
     if (newCme.newCmeCert != '' && this.isValidDate(newCme.newCmeExp)) {
       cmes.push({
         cert: newCme.newCmeCert,
         exp:  newCme.newCmeExp,
-
       })
 
       this.setState({
@@ -148,12 +148,62 @@ export default class CME extends Component {
         .catch((err) => {
           console.log('ERROR IN SETTING userCmes/userId:', err)
         })
+        this.uriToBlob(newCme.newCmePic).then((blob) => this.uploadToFirebase(blob));
     } else {
       console.log(
         "One or both of the fields in newCme are empty. We can't have that.",
       )
     }
   }
+
+  uriToBlob = (uri) => {
+
+    return new Promise((resolve, reject) => {
+  
+      const xhr = new XMLHttpRequest();
+  
+      xhr.onload = function() {
+        // return the blob
+        resolve(xhr.response);
+      };
+      
+      xhr.onerror = function() {
+        // something went wrong
+        reject(new Error('uriToBlob failed'));
+      };
+  
+      // this helps us get a blob
+      xhr.responseType = 'blob';
+  
+      xhr.open('GET', uri, true);
+      xhr.send(null);
+  
+    });
+  }
+  
+  uploadToFirebase = (blob) => {
+  
+    return new Promise((resolve, reject)=>{
+  
+      var storageRef = firebase.storage().ref();
+      let imageName = newCme.newCmeCert;
+  
+      storageRef.child('uploads/' + imageName + '.jpg').put(blob, {
+        contentType: 'image/jpeg'
+      }).then((snapshot)=>{
+  
+        blob.close();
+  
+        resolve(snapshot);
+  
+      }).catch((error)=>{
+  
+        reject(error);
+  
+      });
+  
+    });
+  } 
 
   render() {
     return (
@@ -172,14 +222,14 @@ export default class CME extends Component {
         />
 
         <View style={{ flexDirection: 'row' }}>
-          <Text style={styles.header}>Add New Certification Here</Text>
+          <Text style={styles.header}>Add New Document Here</Text>
         </View>
 
         <View style={{ flexDirection: 'row' }}>
           <TextInput
             style={styles.textField}
             onChangeText={this.handleCmeCert}
-            placeholder={'Certification Name'}
+            placeholder={'Document Name'}
           />
         </View>
 
@@ -192,6 +242,7 @@ export default class CME extends Component {
               width:       '80%',
               marginRight: '9%',
               marginTop:   '2%',
+              color: 'black',
             }}
             date={this.state.date} // initial date from state
             mode={'date'}
@@ -216,29 +267,37 @@ export default class CME extends Component {
 
         <View style={{ flexDirection: 'column', marginTop: '15%' }}>
           <View style={[styles.addCmeButton, { flexDirection: 'column', backgroundColor: Colors.primaryColor }]}>
-            <TouchableOpacity style={styles.buttonText} onPress={pickImage}>
+            <TouchableOpacity style={styles.buttonText} onPress={this.pickImage}>
               <Text style={styles.text}>Upload Image</Text>
             </TouchableOpacity>
           </View>
           <TouchableOpacity style={styles.addCmeButton} onPress={this.addCme}>
-            <Text style={styles.text}>Add CME</Text>
+            <Text style={styles.text}>Add Document</Text>
           </TouchableOpacity>
         </View>
       </View>
     )
   }
-}
 
-const pickImage = async () => {
-  const selectedImage = await ImagePicker.launchImageLibraryAsync({
-    mediaTypes:    ImagePicker.MediaTypeOptions.All,
-    allowsEditing: true,
-    quality:       1,
-  })
-  if (!selectedImage.cancelled) {
-    // setAvatar(selectedImage.uri);
+  pickImage = async () => {     
+    const selectedImage = await ImagePicker.launchImageLibraryAsync({       
+    mediaTypes:    ImagePicker.MediaTypeOptions.All,       
+    allowsEditing: true,      
+    quality:       1,     
+  })     
+    if (!selectedImage.cancelled) {       
+      console.log(selectedImage.uri)       
+      this.handleCmePic(selectedImage.uri);  
+     }   
   }
 }
+
+//start
+
+
+
+
+//end 
 
 const styles = StyleSheet.create({
   textField: {

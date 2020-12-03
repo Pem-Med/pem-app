@@ -205,7 +205,7 @@ const ProfileScreen = (props) => {
                   <Entypo name={'medal'} size={20} color={'black'} />
                 </View>
                 <View style={styles.detailBox}>
-                  <Text style={styles.text}>Certifications:</Text>
+                  <Text style={styles.text}>MyDocs:</Text>
                   <Text
                     style={[styles.text, styles.subText]}
                     onPress={handleCerts}

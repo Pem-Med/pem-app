@@ -17,8 +17,8 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Colors from '../constants/Colors';
 import SignOut from '../screens/SignOut';
 import * as firebase from 'firebase';
-import { color } from "react-native-reanimated";
-import { backgroundColor } from "react-native-calendars/src/style";
+import {color} from "react-native-reanimated";
+import {backgroundColor} from "react-native-calendars/src/style";
 
 const DrawerComponent = (props) => {
   const user = firebase.auth().currentUser
@@ -51,25 +51,25 @@ const DrawerComponent = (props) => {
 
   const TouchableCmp = TouchableOpacity
 
-  const image = !avatar ? require('./img/default-profile-pic.jpg') : { uri: avatar };
-  // backgroundColor: Colors.primaryColor
-  return (
-    <View style={styles.container} >
-      <SafeAreaView style={styles.padd}>
-        <ScrollView>
-          <View style={{ height: "46%", backgroundColor: Colors.primaryColor }}>
-            {/* <ImageBackground source={require('../components/img/colors0.jpeg')}
-                            style={{ width: '100%', height: '100%' }}> */}
-            <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: "5%" }}>
-              <Image source={image} style={styles.profileImage} />
-              <TouchableCmp>
-                <View style={styles.active} backgroundColor={buttonColor}></View>
-              </TouchableCmp>
-              <Text style={[styles.signText, { marginTop: "2%" }]}>{name}</Text>
-              <Text style={{ color: 'white', fontFamily: 'open-sans', fontWeight: '200', fontSize: 14 }}>{user.email}</Text>
-            </View>
-            {/* </ImageBackground> */}
-          </View>
+    var image = !avatar ? require('../components/img/default-profile-pic.jpg') : { uri: avatar };
+    //backgroundColor: Colors.primaryColor
+    return (
+        <View style={styles.container} >
+            <SafeAreaView style ={styles.padd}>
+                <ScrollView>
+                    <View style={{ height: "46%", backgroundColor: Colors.primaryColor}}>
+                        {/*<ImageBackground source={require('../components/img/colors0.jpeg')}
+                            style={{ width: '100%', height: '100%' }}>*/}
+                            <View style={{ justifyContent: 'center', alignItems: 'center', marginTop: "5%" }}>
+                                <Image source={image} style={styles.profileImage} />
+                                <TouchableCmp>
+                                    <View style={styles.active} backgroundColor={buttonColor}></View>
+                                </TouchableCmp>
+                                <Text style={[styles.signText, { marginTop: "2%" }]}>{name}</Text>
+                                <Text style={{ color: 'white', fontFamily: 'open-sans', fontWeight: '200', fontSize: 14 }}>{user.email}</Text>
+                            </View>
+                       {/* </ImageBackground>*/}
+                    </View>
 
           <View style={{ marginTop: '2%' }}>
             <DrawerItems {...props} />

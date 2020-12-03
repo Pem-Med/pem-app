@@ -6,7 +6,6 @@ class Firebase {
     this.init()
     this.observeAuth()
   }
-
   /**
    * Initializes Firebase.
    * The if...else is used so the app won't crash
@@ -17,10 +16,10 @@ class Firebase {
    */
   init = () => {
     if (!firebase.apps.length) {
-      firebase.initializeApp(config)
+      firebase.initializeApp(config);
       /*
       firestore = firebase.firestore();
-      firestore.settings({ timestampsInSnapshots: true}) */
+      firestore.settings({ timestampsInSnapshots: true})*/
       this.counter()
       this.whosOnline()
     } else {
@@ -29,14 +28,14 @@ class Firebase {
   }
 
   observeAuth = () => {
-    firebase.auth().onAuthStateChanged(this.onAuthStateChanged)
+    firebase.auth().onAuthStateChanged(this.onAuthStateChanged);
   }
 
-  onAuthStateChanged = (user) => {
+  onAuthStateChanged = user => {
     if (user) {
-      // console.log('-----USER:', user.email, '-----')
+      //console.log('-----USER:', user.email, '-----')
     } else {
-      // console.log('-----NO USER-----')
+      //console.log('-----NO USER-----')
     }
   }
 
@@ -44,10 +43,10 @@ class Firebase {
    * Initializes the user counter. This is so we know how many people are online.
    */
   counter = () => {
-    firebase.database().ref('userCount').once('value').then((snapshot) => {
+    firebase.database().ref('userCount').once('value').then(function (snapshot) {
       if (snapshot.val() == null) {
         firebase.database().ref('userCount').set({
-          count: 0,
+          count: 0
         })
       }
     })
@@ -57,12 +56,12 @@ class Firebase {
    * Initializes onlineUsers, which will be storing a list of the users that are online.
    */
   whosOnline = () => {
-    firebase.database().ref('onlineUsers').once('value').then((snapshot) => {
+    firebase.database().ref('onlineUsers').once('value').then(function (snapshot) {
       if (snapshot.val() == null) {
         firebase.database().ref('onlineUsers').set({
-          onlineUsers: 0, // This isn't supposed to be a number, but I can't set it to an
-          // empty array or empty object. So it'll be 0 until it gets set to
-          // an object later
+          onlineUsers: 0 //This isn't supposed to be a number, but I can't set it to an
+          //empty array or empty object. So it'll be 0 until it gets set to
+          //an object later
         })
       }
     })
@@ -73,11 +72,11 @@ class Firebase {
    * getting the count.
    */
   get getUserCount() {
-    let count = -9999 // Using this large number to detect if it never changes
-    firebase.database().ref('userCount').on('value', (snapshot) => {
-      count = snapshot.val().count
+    let count = -9999; // Using this large number to detect if it never changes
+    firebase.database().ref('userCount').on('value', function (snapshot) {
+      count = snapshot.val().count;
     })
-    return count
+    return count;
   }
 
   /**
@@ -87,9 +86,9 @@ class Firebase {
    * Otherwise, the user is signing out and the count decrements.
    */
   set setUserCount(num) {
-    firebase.database().ref('userCount').once('value').then((snapshot) => {
+    firebase.database().ref('userCount').once('value').then(function (snapshot) {
       firebase.database().ref('userCount').set({
-        count: num == 1 ? snapshot.val().count + 1 : snapshot.val().count - 1,
+        count: num == 1 ? snapshot.val().count + 1 : snapshot.val().count - 1
       })
     })
   }
@@ -98,11 +97,11 @@ class Firebase {
    * Gets the list of online users.
    */
   get getOnlineUsers() {
-    let onlineUsers = []
-    firebase.database().ref('onlineUsers').on('value', (snapshot) => {
-      onlineUsers = snapshot.val().onlineUsers
+    let onlineUsers = [];
+    firebase.database().ref('onlineUsers').on('value', function (snapshot) {
+      onlineUsers = snapshot.val().onlineUsers;
     })
-    return onlineUsers
+    return onlineUsers;
   }
 
   /**
@@ -114,18 +113,18 @@ class Firebase {
    * @param {string} userEmail
    */
   addOnlineUser(userEmail) {
-    let userArr
-    firebase.database().ref('onlineUsers').once('value').then((snapshot) => {
+    let userArr;
+    firebase.database().ref('onlineUsers').once('value').then(function (snapshot) {
       userArr = snapshot.val().onlineUsers
       if (userArr === 0) {
         firebase.database().ref('onlineUsers').set({
-          onlineUsers: [userEmail],
+          onlineUsers: [userEmail]
         })
       } else {
         userArr = snapshot.val().onlineUsers
         userArr.push(userEmail)
         firebase.database().ref('onlineUsers').set({
-          onlineUsers: userArr,
+          onlineUsers: userArr
         })
       }
     })
@@ -142,16 +141,16 @@ class Firebase {
    * @param {string} userEmail
    */
   removeOnlineUser(userEmail) {
-    firebase.database().ref('onlineUsers').once('value').then((snapshot) => {
+    firebase.database().ref('onlineUsers').once('value').then(function (snapshot) {
       if ((snapshot.val().onlineUsers).length === 1) {
         firebase.database().ref('onlineUsers').set({
-          onlineUsers: 0,
+          onlineUsers: 0
         })
       } else {
         let userArr = snapshot.val().onlineUsers
-        userArr = userArr.filter((email) => email != userEmail)
+        userArr = userArr.filter(email => email != userEmail)
         firebase.database().ref('onlineUsers').set({
-          onlineUsers: userArr,
+          onlineUsers: userArr
         })
       }
     })
@@ -161,59 +160,60 @@ class Firebase {
     return firebase.database().ref('messages')
   }
 
-  on = (callback) => this.ref
-    .limitToLast(50000) // I don't want a limit for messages, so I just
-  // use a really high number, like 50000.
-    .on('child_added', (snapshot) => callback(this.parse(snapshot)));
+  on = callback =>
+    this.ref
+      .limitToLast(50000) //I don't want a limit for messages, so I just
+      //use a really high number, like 50000.
+      .on('child_added', snapshot => callback(this.parse(snapshot)));
 
-  parse = (snapshot) => {
-    const { timestamp: numberStamp, text, user } = snapshot.val()
-    const { key: _id } = snapshot
-    const timestamp = new Date(numberStamp)
+  parse = snapshot => {
+    const { timestamp: numberStamp, text, user } = snapshot.val();
+    const { key: _id } = snapshot;
+    const timestamp = new Date(numberStamp);
 
     const message = {
       _id,
       timestamp,
       text,
       user,
-    }
+    };
 
-    return message
+    return message;
   }
 
   off() {
-    this.ref.off()
+    this.ref.off();
   }
 
   get uid() {
-    return (firebase.auth().currentUser || {}).uid
+    return (firebase.auth().currentUser || {}).uid;
   }
 
   /**
    * Gets the email of the current user.
    */
   get userEmail() {
-    return (firebase.auth().currentUser || {}).email
+    return (firebase.auth().currentUser || {}).email;
   }
 
   get timestamp() {
-    return firebase.database.ServerValue.TIMESTAMP
+    return firebase.database.ServerValue.TIMESTAMP;
   }
 
-  send = (messages) => {
+  send = messages => {
     for (let i = 0; i < messages.length; i++) {
-      const { text, user } = messages[i]
+      const { text, user } = messages[i];
 
       const message = {
         text,
         user,
         timestamp: this.timestamp,
-      }
-      this.append(message)
+      };
+      this.append(message);
     }
   };
 
-  append = (message) => this.ref.push(message);
+  append = message => this.ref.push(message);
 }
 
 Firebase.shared = new Firebase()
