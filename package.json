@@ -82,7 +82,8 @@
     "redux-firestore": "^0.13.0",
     "redux-thunk": "^2.3.0",
     "stream-chat": "^1.11.4",
-    "stream-chat-expo": "^0.12.3"
+    "stream-chat-expo": "^0.12.3",
+    "expo-facebook": "~8.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
