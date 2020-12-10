@@ -16,6 +16,8 @@ import Firebase from "../backend/firebase";
 import * as Google from "expo-google-app-auth";
 import Colors from "../constants/Colors";
 import _ from "lodash";
+import * as Facebook from 'expo-facebook';
+
 
 function displayOKAlert(title, message) {
   Alert.alert(title, message);
@@ -41,8 +43,11 @@ const Login = (props) => {
   useEffect(() => {
     if (showLoginScreen)
       setDisabledLoginButton(!userInfo.password || !userInfo.username);
-    console.log("userInfo", userInfo);
   }, [userInfo]);
+
+  useEffect(() => {
+    Facebook.initializeAsync('3384537118298352', 'med-app')
+  }, []);
 
   function logUserIn(email, password) {
     firebase
@@ -117,6 +122,102 @@ const Login = (props) => {
       console.log("err:", err);
     }
   };
+  // const loginWithFacebook= async () => {
+  //   try {
+  //     const {
+  //       type,
+  //       token,
+  //       expires,
+  //       permissions,
+  //       declinedPermissions,
+  //     } = await Facebook.logInWithReadPermissionsAsync('3384537118298352', {
+  //       permissions: ['public_profile'],
+  //     });
+  //     if (type === 'success') {
+  //       // Get the user's name using Facebook's Graph API
+  //       fetch(`https://graph.facebook.com/me?access_token=${token}&fields=id,name,email,picture.height(500)`)
+  //         .then(response => response.json())
+  //         .then(data => {
+  //           console.log(data)
+  //           setLoggedinStatus(true);
+  //           setUserInfo({
+  //             username: data.email,
+  //             password: "",
+  //           });
+  //         })
+  //         .catch(e => console.log(e))
+  //     } else {
+  //       // type === 'cancel'
+  //     }
+  //   } catch ({ message }) {
+  //     alert(`Facebook Login Error: ${message}`);
+  //   }
+  // }
+
+  // logout = () => {
+  //   setLoggedinStatus(false);
+  //   setUserData(null);
+  //   setImageLoadStatus(false);
+  // }
+  // export async function loginWithFacebook() 
+  
+  const loginWithFacebook = async() => {
+    const appId = "3384537118298352";
+    const permissions = ['public_profile', 'email'];  // Permissions required, consult Facebook docs
+    
+    const {
+      type,
+      token,
+    } = await Facebook.logInWithReadPermissionsAsync(
+      appId,
+      {permissions}
+    );
+  
+    switch (type) {
+      case 'success': {
+        await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);  // Set persistent auth state
+        const credential = firebase.auth.FacebookAuthProvider.credential(token);
+        const userInfo = await firebase.auth().signInWithCredential(credential);  // Sign in with Facebook credential
+        console.log('userInfo',userInfo);
+        console.log('userInfo.user',userInfo.user); 
+        firebase
+        .database()
+        .ref(`/users/${userInfo.user.uid}`)
+        .equalTo(userInfo.user.email)
+        .once("value")
+        .then((snapshot) => {
+          if (!snapshot.val()) {
+            const userRef = firebase
+              .database()
+              .ref(`/users/${userInfo.user.uid}`);
+            userRef.update({
+              profile: {
+                name: userInfo.user.displayName,
+                email: userInfo.user.email,
+                number: "(###) ###-####",
+                avatar: "",
+                title: "Job Title",
+                status: "Active",
+                certs: "",
+                isVisible: false,
+              },
+            });
+            console.log("Profile has been created");
+          }
+        });
+      alert(`Welcome ${userInfo.user.displayName}`);
+      props.navigation.navigate({ routeName: "Categories" });
+    
+        // Do something with Facebook profile data
+        // OR you have subscribed to auth state change, authStateChange handler will process the profile data
+        
+        return Promise.resolve({type: 'success'});
+      }
+      case 'cancel': {
+        return Promise.reject({type: 'cancel'});
+      }
+    }
+  }
 
   const loginScreenHandler = () => {
     if (showLoginScreen) logUserIn(userInfo.username, userInfo.password);
@@ -126,12 +227,6 @@ const Login = (props) => {
     }
   };
 
-  // console.log(
-  //   userInfo.password > 0 && userInfo.username.length > 0
-  // );
-  console.log("password", userInfo.password);
-  console.log("username", userInfo.username);
-
   return (
     <KeyboardAvoidingView
       /* styles={styles.container} contentContainerStyle={styles.container} */ behavior="position"
@@ -139,7 +234,7 @@ const Login = (props) => {
       keyboardVerticalOffset="100"
     >
       <View>
-        <Image style={styles.logo} source={require("../data/logo.png")} />
+        <Image style={styles.logo} source={require("../assets/logo.png")} />
       </View>
       <View styles={styles.view}>
         {showLoginScreen && (
@@ -148,16 +243,10 @@ const Login = (props) => {
               style={[styles.textField, styles.email]}
               placeholder="Enter your email"
               onChangeText={(text) => {
-                // if (userInfo.password && userInfo.username)
-                //   setDisabledLoginButton(false);
+                if (userInfo.password && userInfo.username)
+                  setDisabledLoginButton(false);
                 setUserInfo({ ...userInfo, username: text });
-                // if (userInfo.password === "" || text === "")
-                //   setDisabledLoginButton(true);
-                console.log(userInfo.password);
-                console.log(userInfo.username);
-                console.log("text", userInfo.username);
-                console.log("psize", _.size(userInfo.password));
-                console.log("usize", _.size(userInfo.username));
+                
               }}
               autoCapitalize="none"
             />
@@ -166,15 +255,7 @@ const Login = (props) => {
               style={styles.textField}
               placeholder="Enter your password"
               onChangeText={(text) => {
-                // if (userInfo.password && userInfo.username)
-                //   setDisabledLoginButton(false);
                 setUserInfo({ ...userInfo, password: text });
-                // if (text === "" || userInfo.username === "")
-                //   setDisabledLoginButton(true);
-                console.log(userInfo.password);
-                console.log(userInfo.username);
-                console.log("psize", _.size(userInfo.password));
-                console.log("usize", _.size(userInfo.username));
               }}
             />
           </>
@@ -196,6 +277,14 @@ const Login = (props) => {
             onPress={() => loginWithGoogle()}
           >
             <Text style={styles.loginText}>Sign in with Google</Text>
+          </TouchableOpacity>
+        )}
+        {showLoginScreen && (
+          <TouchableOpacity
+            style={styles.facebookButton}
+            onPress={() => loginWithFacebook()}
+          >
+            <Text style={styles.loginText}>Log in with Facebook</Text>
           </TouchableOpacity>
         )}
         {!showLoginScreen && (
@@ -246,7 +335,7 @@ const styles = StyleSheet.create({
     // borderRadius: 25,
   },
   email: {
-    marginBottom: 30,
+    marginBottom: 5,
     marginTop: screenHeight * 0.1,
   },
   loginButton: {
@@ -271,6 +360,15 @@ const styles = StyleSheet.create({
     padding: 10,
     // width: '50%',
     backgroundColor: Colors.googleBlue,
+    borderRadius: 25,
+    width: 250,
+  },
+  facebookButton: {
+    marginTop: 20,
+    alignSelf: "center",
+    padding: 10,
+    // width: '50%',
+    backgroundColor: Colors.facebookBlue,
     borderRadius: 25,
     width: 250,
   },
@@ -301,11 +399,9 @@ const styles = StyleSheet.create({
   },
   logo: {
     width: 250,
-    height: 150,
-    resizeMode: "stretch",
+    height: 250,
     alignSelf: "center",
-    marginTop: 40,
-    marginLeft: 30,
+    marginTop: 20,
   },
 });
 

@@ -54,7 +54,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#162331',
     flexDirection: 'row',
     alignItems: 'center',
-    top: 20
+    marginTop: 40,
+
   },
   searchBox: {
     backgroundColor: 'white',
@@ -102,6 +103,8 @@ class SearchScreen extends Component {
   onSearchStateChange = nextState => {
     this.setState({ searchState: { ...this.state.searchState, ...nextState } });
   };
+  
+  
 
   render() {
     return (
