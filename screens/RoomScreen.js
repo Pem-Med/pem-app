@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { GiftedChat, Bubble, Send } from 'react-native-gifted-chat';
+import { GiftedChat, Bubble, Send, SystemMessage } from 'react-native-gifted-chat';
 import { ActivityIndicator, View, StyleSheet } from 'react-native';
 import { IconButton } from 'react-native-paper';
 
@@ -16,20 +16,20 @@ export default function RoomScreen() {
     // example of system message
     {
       _id: 0,
-      text: 'New room created.',
-      createdAt: new Date().getTime(),
+      text:'Reminder: Please follow HIPAA regulations.',
+      //createdAt: new Date(2021, 0 , 18),
       system: true
     },
     // example of chat message
-    {
-      _id: 1,
-      text: 'Hello!',
-      createdAt: new Date().getTime(),
-      user: {
-        _id: 2,
-        name: 'BRAYAN ALFONSO'
-      }
-    }
+    // {
+    //   _id: 2,
+    //   text: 'Hello!',
+    //   createdAt: new Date(2021, 0 , 19),
+    //   user: {
+    //     _id: 2,
+    //     name: 'BRAYAN ALFONSO'
+    //   }
+    // },
   ]);
 
   // helper method that is sends a message
@@ -83,6 +83,28 @@ export default function RoomScreen() {
     );
   }
 
+  function renderSystemMessage (props){
+    return (
+      <View style={{flex:1, alignItems:'center'}}>
+        <SystemMessage
+        {...props}
+        containerStyle={{
+          marginBottom: 15,
+          backgroundColor: '#fafae3',
+          width:'50%',
+          padding: 10,
+          borderRadius: 5
+        }}
+        textStyle={{
+          fontSize: 14,
+          textAlign:'center',
+          color:'black'
+        }}
+      />
+      </View>
+    )
+  }
+
   return (
     <GiftedChat
       messages={messages}
@@ -96,6 +118,7 @@ export default function RoomScreen() {
       scrollToBottom
       scrollToBottomComponent={scrollToBottomComponent}
       renderLoading={renderLoading}
+      renderSystemMessage={renderSystemMessage}
     />
   );
 }
