@@ -10,26 +10,13 @@ import { IconButton } from 'react-native-paper';
 
 export default function RoomScreen() {
   const [messages, setMessages] = useState([
-    /**
-     * Mock message data
-     */
-    // example of system message
+    // system message
     {
       _id: 0,
       text:'Reminder: Please follow HIPAA regulations.',
       //createdAt: new Date(2021, 0 , 18),
       system: true
-    },
-    // example of chat message
-    // {
-    //   _id: 2,
-    //   text: 'Hello!',
-    //   createdAt: new Date(2021, 0 , 19),
-    //   user: {
-    //     _id: 2,
-    //     name: 'BRAYAN ALFONSO'
-    //   }
-    // },
+    }
   ]);
 
   // helper method that is sends a message
@@ -90,7 +77,7 @@ export default function RoomScreen() {
         {...props}
         containerStyle={{
           marginBottom: 15,
-          backgroundColor: '#fafae3',
+          backgroundColor: '#f2ed88',
           width:'50%',
           padding: 10,
           borderRadius: 5
