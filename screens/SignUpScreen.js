@@ -87,7 +87,6 @@ const CreateAccount = props => {
             .signOut()
             .then(
               function () {
-                console.log('User has been signed out')
               }).catch(function (err) {
                 console.log('An error has occured in createUserAccount signOut: ',
                   err,

@@ -73,7 +73,6 @@ const Login = (props) => {
           "692901117220-9chumnlmcfdbtuu7j94sfk61c5mnliom.apps.googleusercontent.com",
         scopes: ["profile", "email"],
       });
-      console.log(result);
       if (result.type === "success") {
         const { idToken, accessToken } = result;
         const credential = firebase.auth.GoogleAuthProvider.credential(
@@ -106,7 +105,6 @@ const Login = (props) => {
                       isVisible: false,
                     },
                   });
-                  console.log("Profile has been created");
                 }
               });
             alert(`Welcome ${userInfo.user.displayName}`);
@@ -178,8 +176,6 @@ const Login = (props) => {
         await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);  // Set persistent auth state
         const credential = firebase.auth.FacebookAuthProvider.credential(token);
         const userInfo = await firebase.auth().signInWithCredential(credential);  // Sign in with Facebook credential
-        console.log('userInfo',userInfo);
-        console.log('userInfo.user',userInfo.user); 
         firebase
         .database()
         .ref(`/users/${userInfo.user.uid}`)
@@ -202,7 +198,6 @@ const Login = (props) => {
                 isVisible: false,
               },
             });
-            console.log("Profile has been created");
           }
         });
       alert(`Welcome ${userInfo.user.displayName}`);
