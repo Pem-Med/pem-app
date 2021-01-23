@@ -39,6 +39,7 @@ export const deleteCatContent = (catContentId) => async (dispatch) => {
 
 export const createCatContent = (title, color, subId, evaluation, signs, management, medications, references, image) => async (dispatch) => {
   // you can access here any async code!
+  console.log(color);
   const response = await fetch('https://med-app-519aa.firebaseio.com/categories.json', {
     method:  'POST',
     headers: {
