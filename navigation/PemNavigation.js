@@ -14,6 +14,7 @@ import ProfileScreen from '../screens/ProfileScreens/ProfileScreen';
 import CalendarScreen from '../screens/ProfileScreens/CalendarScreen';
 import LoginScreen from '../screens/LoginScreen';
 import SignUpScreen from '../screens/SignUpScreen';
+import ResetPasswordScreen from '../screens/ResetPasswordScreen';
 import FavoritesScreen from '../screens/FavoritesScreen';
 import UserProfileScreen from '../screens/ProfileScreens/UserProfileScreen';
 import CMEScreen from '../screens/CMEScreen';
@@ -47,6 +48,9 @@ const LoginNavigator = createStackNavigator(
     SignUp: {
       screen: SignUpScreen,
     },
+      ResetPassword: {
+          screen: ResetPasswordScreen,
+      },
   },
   {
     initialRouteName: "Login",
