@@ -68,7 +68,6 @@ const CalendarScreen = () => {
       ownerAccount: 'personal',
       accessLevel:  Calendar.CalendarAccessLevel.OWNER,
     })
-    console.log(`Your new calendar ID is: ${newCalendarID}`)
   }
 
   async function createEventInCalendar() {

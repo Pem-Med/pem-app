@@ -72,7 +72,6 @@ const Login = (props) => {
           "692901117220-9chumnlmcfdbtuu7j94sfk61c5mnliom.apps.googleusercontent.com",
         scopes: ["profile", "email"],
       });
-      console.log(result);
       if (result.type === "success") {
         const { idToken, accessToken } = result;
         const credential = firebase.auth.GoogleAuthProvider.credential(
@@ -105,7 +104,6 @@ const Login = (props) => {
                       isVisible: false,
                     },
                   });
-                  console.log("Profile has been created");
                 }
               });
             alert(`Welcome ${userInfo.user.displayName}`);
@@ -175,37 +173,34 @@ const Login = (props) => {
           .auth()
           .setPersistence(firebase.auth.Auth.Persistence.LOCAL); // Set persistent auth state
         const credential = firebase.auth.FacebookAuthProvider.credential(token);
-        const userInfo = await firebase.auth().signInWithCredential(credential); // Sign in with Facebook credential
-        console.log("userInfo", userInfo);
-        console.log("userInfo.user", userInfo.user);
+        const userInfo = await firebase.auth().signInWithCredential(credential);  // Sign in with Facebook credential
         firebase
-          .database()
-          .ref(`/users/${userInfo.user.uid}`)
-          .equalTo(userInfo.user.email)
-          .once("value")
-          .then((snapshot) => {
-            if (!snapshot.val()) {
-              const userRef = firebase
-                .database()
-                .ref(`/users/${userInfo.user.uid}`);
-              userRef.update({
-                profile: {
-                  name: userInfo.user.displayName,
-                  email: userInfo.user.email,
-                  number: "(###) ###-####",
-                  avatar: "",
-                  title: "Job Title",
-                  status: "Active",
-                  certs: "",
-                  isVisible: false,
-                },
-              });
-              console.log("Profile has been created");
-            }
-          });
-        alert(`Welcome ${userInfo.user.displayName}`);
-        props.navigation.navigate({ routeName: "Categories" });
-
+        .database()
+        .ref(`/users/${userInfo.user.uid}`)
+        .equalTo(userInfo.user.email)
+        .once("value")
+        .then((snapshot) => {
+          if (!snapshot.val()) {
+            const userRef = firebase
+              .database()
+              .ref(`/users/${userInfo.user.uid}`);
+            userRef.update({
+              profile: {
+                name: userInfo.user.displayName,
+                email: userInfo.user.email,
+                number: "(###) ###-####",
+                avatar: "",
+                title: "Job Title",
+                status: "Active",
+                certs: "",
+                isVisible: false,
+              },
+            });
+          }
+        });
+      alert(`Welcome ${userInfo.user.displayName}`);
+      props.navigation.navigate({ routeName: "Categories" });
+    
         // Do something with Facebook profile data
         // OR you have subscribed to auth state change, authStateChange handler will process the profile data
 

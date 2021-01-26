@@ -3,7 +3,7 @@
     "name": "PemMedExpo",
     "slug": "pem-med-expo",
     "privacy": "public",
-    "sdkVersion": "36.0.0",
+    "sdkVersion": "37.0.0",
     "platforms": [
       "ios",
       "android",
@@ -25,7 +25,7 @@
     ],
     "facebookScheme": "fb3384537118298352",
     "facebookAppId": "3384537118298352",
-    "facebookDisplayName": "med-app",    
+    "facebookDisplayName": "med-app",
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.fiu.pemmed",

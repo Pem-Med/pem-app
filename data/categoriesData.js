@@ -19,7 +19,7 @@ const [medicalIcon, surgicalIcon, traumaIcon, toxicologyIcon, foreignIngestionIc
 
 
 export const CATEGORIES = [
-  new Category("c1", "Medical", medicalIcon, Colors.white),
+  new Category("c1", "Medical", medicalIcon, Colors.medical),
   new Category("c2", "Surgical", surgicalIcon ,Colors.surgical),
   new Category("c3", "Trauma", traumaIcon,Colors.trauma),
   new Category("c4", "Toxicology", toxicologyIcon, Colors.toxicology),
