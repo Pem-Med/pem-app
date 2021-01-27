@@ -14,7 +14,6 @@ export default function ChatRoomScreen() {
     {
       _id: 0,
       text:'Reminder: Please follow HIPAA regulations.',
-      //createdAt: new Date(2021, 0 , 18),
       system: true
     }
   ]);
@@ -108,6 +107,13 @@ export default function ChatRoomScreen() {
       renderSystemMessage={renderSystemMessage}
     />
   );
+}
+
+ChatRoomScreen.navigationOptions = (navigationData) => {
+  const thread = navigationData.navigation.getParam('thread');
+  return {
+    title: thread.name
+  }
 }
 
 const styles = StyleSheet.create({

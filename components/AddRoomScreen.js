@@ -7,21 +7,18 @@ import 'firebase/firestore';
 import * as firebase from 'firebase'
 
 export default function AddRoomScreen({ navigation }) {
+  const db = firebase.database();
+  const threadsRef = db.ref('/threads');
   const [roomName, setRoomName] = useState('');
   
-  // ... Firestore query will come here later
-
   function handleButtonPress() {
-    if (roomName.length > 0) {
-      firebase.firestore()
-        .collection('THREADS')
-        .add({
-          name: roomName         
-        })
-        .then(() => {
-          navigation.navigate('Chat');
-        });
-    }
+    threadsRef.push({
+      name: roomName,
+      // description: description
+    })
+    .then(() => {
+      navigation.navigate('Chat');
+    });
   }
 
   return (
