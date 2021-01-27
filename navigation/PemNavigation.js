@@ -9,7 +9,6 @@ import CategoriesScreen from '../screens/CategoriesScreen';
 import ChatTabScreen from '../screens/ChatTabScreen';
 import SubCategoriesScreen from '../screens/SubCategoriesScreen';
 import CatContentScreen from '../screens/CatContentScreen';
-import ChatroomScreen from '../screens/ChatroomScreen';
 import ProfileScreen from '../screens/ProfileScreens/ProfileScreen';
 import CalendarScreen from '../screens/ProfileScreens/CalendarScreen';
 import LoginScreen from '../screens/LoginScreen';
@@ -29,7 +28,7 @@ import EditProfileScreen from '../screens/ProfileScreens/EditProfileScreen';
 import DrawerComponent from "../components/DrawerComponent";
 //import AppContainer from '../screens/ChatTabScreen'
 //import SignOut from '../screens/SignOut'
-import RoomScreen from '../screens/RoomScreen';
+import ChatRoomScreen from '../screens/RoomScreen';
 import AddRoomScreen from '../components/AddRoomScreen';
 
 
@@ -85,11 +84,8 @@ const ChatNavigator = createStackNavigator(
     AddRoom: {
       screen: AddRoomScreen,
     },
-    Chatroom: {
-      screen: ChatroomScreen,
-    },
     Room: {
-      screen: RoomScreen,
+      screen: ChatRoomScreen,
     },
     UserProfile: {
       screen: UserProfileScreen

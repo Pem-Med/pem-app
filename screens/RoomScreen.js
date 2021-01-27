@@ -8,7 +8,7 @@ import { IconButton } from 'react-native-paper';
 // Part 1 to 4 are done... missing part 5 which is the db connection to store mesages in the db. 
 // The firebase db has already the THREADS collection and it is aready saving information about new rooms in there. 
 
-export default function RoomScreen() {
+export default function ChatRoomScreen() {
   const [messages, setMessages] = useState([
     // system message
     {

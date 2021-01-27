@@ -5,7 +5,8 @@ import 'firebase/firestore';
 import * as firebase from 'firebase'
 import FormButton from '../components/FormButton';
 import Loading from './Loading';
-export default function HomeScreen({ navigation }) {
+
+export default function ChatList({ navigation }) {
 
   const [threads, setThreads] = useState([]);
   const [loading, setLoading] = useState(true);

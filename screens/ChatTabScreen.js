@@ -2,7 +2,7 @@ import React, { Component, useLayoutEffect } from 'react';
 import { View, Button, Alert, Text, StyleSheet, Platform, FlatList, Image } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import CustomHeaderButton from '../components/CustomHeaderButton';
-import Chat from '../components/Chat';
+import ChatList from '../components/Chat';
 import 'firebase/firestore';
 import Colors from '../constants/Colors';
 import { IconButton } from 'react-native-paper';
@@ -22,7 +22,7 @@ class ChatTabScreen extends Component {
         
         return (
             <View style={styles.screen}>
-                <Chat navigation={this.props.navigation} ></Chat>
+                <ChatList navigation={this.props.navigation} ></ChatList>
             </View>
         );
     }
