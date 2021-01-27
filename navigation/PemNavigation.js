@@ -47,9 +47,9 @@ const LoginNavigator = createStackNavigator(
     SignUp: {
       screen: SignUpScreen,
     },
-      ResetPassword: {
-          screen: ResetPasswordScreen,
-      },
+    ResetPassword: {
+      screen: ResetPasswordScreen,
+    },
   },
   {
     initialRouteName: "Login",
@@ -92,30 +92,11 @@ const ChatNavigator = createStackNavigator(
     },
   },
   {
-    navigationOptions: ({ navigation }) => {
-      let tabBarVisible;
-
-      if (navigation.state.routes.length > 1) {
-        navigation.state.routes.map(route => {
-          if (route.routeName === "Chatroom") {
-            tabBarVisible = false;
-          } else {
-            tabBarVisible = true;
-          }
-        });
-      }
-
-      return {
-        tabBarVisible
-      }
-    }
-
+    defaultNavigationOptions: defaultStackNavOptions,
   },
   {
     initialRouteName: 'Chat',
   },
-  {
-  }
 );
 
 const FavNavigator = createStackNavigator(

@@ -35,14 +35,6 @@ const styles = StyleSheet.create({
         paddingVertical: 5,
         backgroundColor: Colors.androidCustomWhite
     },
-    buttons: {
-        flex: 1,
-        height: 2000
-    },
-    sep: {
-        borderBottomColor: Colors.androidCustomWhite,
-        borderBottomWidth: 15
-    }
 });
 
 
@@ -66,9 +58,8 @@ ChatTabScreen.navigationOptions = navigationData => {
             <IconButton
                 icon='message-plus'
                 size={28}
-                color={Colors.googleBlue}
+                color={Platform.OS === 'android' ? Colors.white : Colors.primaryColor}
                 onPress={() => navigationData.navigation.navigate('AddRoom')}
-                //onPress={() => props.navigation.navigate({ routeName: 'AddRoom' })}
             />
         )
     }
