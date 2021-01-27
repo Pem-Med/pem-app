@@ -4,7 +4,6 @@ import * as firebase from 'firebase'
 import CategoryGridTile from '../components/CategoryGridTile';
 import CustomHeaderButton from '../components/CustomHeaderButton';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
-import Search from '../screens/SearchScreen';
 import Colors from "../constants/Colors";
 
 // using react redux to access data

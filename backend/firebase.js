@@ -17,13 +17,10 @@ class Firebase {
   init = () => {
     if (!firebase.apps.length) {
       firebase.initializeApp(config);
-      /*
-      firestore = firebase.firestore();
-      firestore.settings({ timestampsInSnapshots: true})*/
       this.counter()
       this.whosOnline()
     } else {
-      console.error('Firebase app was already initialized!')
+      console.log('Firebase app was already initialized!')
     }
   }
 
