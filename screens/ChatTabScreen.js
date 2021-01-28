@@ -34,6 +34,13 @@ const ChatTabScreen = (props) => {
         props.navigation.setParams({ create: createHandler })
     }, [createHandler]);
 
+    const navigateToCreate = () => {
+        if(chatType == 0){
+            setModalVisible(false);
+            props.navigation.navigate('AddRoom');
+        }
+    };
+
     return (
         <View style={styles.screen}>
             <ChatList navigation={props.navigation} ></ChatList>
@@ -91,9 +98,7 @@ const ChatTabScreen = (props) => {
                                 </View>
                             </TouchableCmp>
                             <TouchableCmp
-                                onPress={() => {
-                                    //setModalVisible(!modalVisible);
-                                }}
+                                onPress={navigateToCreate}
                             >
                                 <View style={styles.modalButton}>
                                     <Text style={styles.buttonText}>OK</Text>
@@ -187,7 +192,6 @@ ChatTabScreen.navigationOptions = navigationData => {
                 icon='message-plus'
                 size={28}
                 color={Platform.OS === 'android' ? Colors.white : Colors.primaryColor}
-                //onPress={() => navigationData.navigation.navigate('AddRoom')}
                 onPress={navigationData.navigation.getParam('create')}
             />
         )
