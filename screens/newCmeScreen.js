@@ -11,7 +11,7 @@ import Cmes from '../models/cmes';
 
 const fb = Firebase.shared;
 
-const numColumns = 3;
+let cmes = [];
 
 const newCmeScreen = props => {
     const [isVisibleForm, setIsVisibleForm] = useState(false);
@@ -35,21 +35,23 @@ const newCmeScreen = props => {
     
 
     useEffect(() => {
-        const list = [];
-        fb.GetCmesRef(cmes)
+        const onValueChange =  fb.GetCmesRef(cmes);
+        onValueChange.orderByChild('cmes')
         .once('value', snap => {
             snap.forEach(function(result) {
               firebase
                 .database()
                 .ref('cmes')
                 .child(result.key)
-                .once('value', snap => {
-                  if (snap.val()) list.push(snap.val());
+                .on('value', snap => {
+                  if (snap.val()) cmes.push(snap.val());
                 });
+
+                console.log(result.key)
             });
           })
           .then(function() {
-            setCmes(list);
+            setCmes(cmes);
         });
     }, [isVisibleForm]);
 
