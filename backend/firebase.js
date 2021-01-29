@@ -220,50 +220,20 @@ class Firebase {
    */
 
   AddCme = async (cmes) => {
-    const { cert, exp, image } = cmes;
-    if (image) {
+        const { cert, exp, image } = cmes;
         const remoteUri = await this.getImageRemoteUri(image);
-        return new Promise((res, rej) => {
-            firebase.database().ref(`userCmes/userId:${firebase.auth().currentUser.uid}`)
-            .set({
-              cmes,
-            })
-            .catch((err) => {
-              console.log('ERROR IN SETTING userCmes/userId:', err)
-            })
+            firebase.database().ref(`userCmes/userId: ${firebase.auth().currentUser.uid}`)
             .push({
-                  cert: cert,
-                  exp: exp,
-                  image: remoteUri
-
-                },
-                (error) => {
-                    if (error) {
-                        console.log(error);
-                        rej(error);
-                    }
-                    res();
-                }
-            );
-        })
-    } else {
-        firebase.database().ref('cmes').push(
-            {
-              cert: cert,
-              exp: exp,
-              image: remoteUri
-            },
-            (error) => {
-                if (error) {
-                    console.log(error);
-                } else {
-                  console.log(
-                  "One or both of the fields in newCme are empty. We can't have that.",
-                  )
-                }
-            }
-        );
-    }
+                cert: cert,
+                exp: exp,
+                image: remoteUri
+              })
+            .then((data) =>{
+              console.log('data', data)
+            })
+            .catch((error) =>{
+              console.log('error', error)
+            })
 }
 
 getImageRemoteUri = (image) => {

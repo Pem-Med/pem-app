@@ -2,16 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Text, Button, Alert, ScrollView, SafeAreaView, Card } from 'react-native';
 
 import AddCmeScreen from '../components/addCmeScreen';
-import * as firebase from 'firebase'
+import Cmes from '../models/cmes';
+
 import 'firebase/firestore'
 import Firebase from '../backend/firebase'
 import 'firebase/storage';
-import Cmes from '../models/cmes';
 
 
 const fb = Firebase.shared;
 
-let cmes = [];
 
 const newCmeScreen = props => {
     const [isVisibleForm, setIsVisibleForm] = useState(false);
@@ -32,28 +31,6 @@ const newCmeScreen = props => {
         setIsVisibleForm(false);
     }
 
-    
-
-    useEffect(() => {
-        const onValueChange =  fb.GetCmesRef(cmes);
-        onValueChange.orderByChild('cmes')
-        .once('value', snap => {
-            snap.forEach(function(result) {
-              firebase
-                .database()
-                .ref('cmes')
-                .child(result.key)
-                .on('value', snap => {
-                  if (snap.val()) cmes.push(snap.val());
-                });
-
-                console.log(result.key)
-            });
-          })
-          .then(function() {
-            setCmes(cmes);
-        });
-    }, [isVisibleForm]);
 
     return (
         <View style={styles.container}>
