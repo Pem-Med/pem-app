@@ -200,10 +200,12 @@ const ProfileScreen = (props) => {
                   <Text style={[styles.text, styles.subText]}>{number}</Text>
                 </View>
               </View>
+              
               <View style={[styles.detailContainer]}>
                 <View style={styles.iconBox}>
                   <Entypo name={'medal'} size={20} color={'black'} />
                 </View>
+
                 <View style={styles.detailBox}>
                   <Text style={styles.text}>MyDocs:</Text>
                   <Text
@@ -218,6 +220,7 @@ const ProfileScreen = (props) => {
 
                   </Text>
                 </View>
+
               </View>
               <View style={styles.buttonStyle}>
                 <TouchableOpacity onPress={handleSignOut}>

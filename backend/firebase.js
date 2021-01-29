@@ -214,6 +214,87 @@ class Firebase {
   };
 
   append = message => this.ref.push(message);
+
+    /**
+   * Adds the CME info to the list.
+   */
+
+  AddCme = async (cmes) => {
+    const { cert, exp, image } = cmes;
+    if (image) {
+        const remoteUri = await this.getImageRemoteUri(image);
+        return new Promise((res, rej) => {
+            firebase.database().ref(`userCmes/userId:${firebase.auth().currentUser.uid}`)
+            .set({
+              cmes,
+            })
+            .catch((err) => {
+              console.log('ERROR IN SETTING userCmes/userId:', err)
+            })
+            .push({
+                  cert: cert,
+                  exp: exp,
+                  image: remoteUri
+
+                },
+                (error) => {
+                    if (error) {
+                        console.log(error);
+                        rej(error);
+                    }
+                    res();
+                }
+            );
+        })
+    } else {
+        firebase.database().ref('cmes').push(
+            {
+              cert: cert,
+              exp: exp,
+              image: remoteUri
+            },
+            (error) => {
+                if (error) {
+                    console.log(error);
+                } else {
+                  console.log(
+                  "One or both of the fields in newCme are empty. We can't have that.",
+                  )
+                }
+            }
+        );
+    }
+}
+
+getImageRemoteUri = (image) => {
+  const photoPath = `uploads/${Date.now()}.jpg`;
+  return new Promise(async (res, rej) => {
+      const response = await fetch(image);
+      const file = await response.blob();
+      var storageRef = firebase.storage().ref();
+      let upload = storageRef.child(photoPath).put(file);
+      upload.on('state_changed', snapshot => {
+
+      }, err => {
+          rej(err);
+
+      }, async () => {
+          const url = await upload.snapshot.ref.getDownloadURL();
+          res(url);
+      }
+      )
+  })
+}
+
+GetCmesRef = (cmes) => {
+  //if list is empty
+    if (!cmes) {
+        return null;
+    }
+  return firebase.database().ref('cmes');
+
+  }
+
 }
 
 Firebase.shared = new Firebase()

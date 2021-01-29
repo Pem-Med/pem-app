@@ -1,10 +1,11 @@
-import React, { Component, useEffect } from 'react'
+import React, { Component } from 'react'
 import DatePicker from 'react-native-datepicker'
 import * as ImagePicker from 'expo-image-picker'
 import {
   View,
   StyleSheet,
   Text,
+  Image,
   TextInput,
   SafeAreaView,
   FlatList,
@@ -28,6 +29,8 @@ const newCme = {
   newCmeExp:  '',
   newCmePic:  '',
 }
+
+
 
 function displayOKAlert(title, message) {
   Alert.alert(title, message)
@@ -73,8 +76,8 @@ export default class CME extends Component {
     newCme.newCmeExp = date
   }
 
-  handleCmePic(text) {
-    newCme.newCmePic = text
+  handleCmePic(pic) {
+    newCme.newCmePic = pic
   }
 
   /**
@@ -132,6 +135,7 @@ export default class CME extends Component {
       cmes.push({
         cert: newCme.newCmeCert,
         exp:  newCme.newCmeExp,
+        pic:  newCme.newCmePic,
       })
 
       this.setState({
@@ -205,22 +209,13 @@ export default class CME extends Component {
     });
   } 
 
+  componentWillMount(){
+    this.setState({ cmes: cmes });
+  }
+
   render() {
     return (
       <View>
-        <FlatList
-          style={{ marginTop: '5%', flexGrow: 0, marginBottom: '2%' }}
-          data={this.state.cmes}
-          keyExtractor={(item) => item.id}
-          renderItem={(itemData) => (
-            <View style={{ flexDirection: 'row' }}>
-              <Text style={styles.cmeItem}>{(itemData.item.id, itemData.item.cert)}</Text>
-              <Text style={styles.cmeItem}>{(itemData.item.id + 1, itemData.item.exp)}</Text>
-            </View>
-          )}
-          numColumns={1}
-        />
-
         <View style={{ flexDirection: 'row' }}>
           <Text style={styles.header}>Add New Document Here</Text>
         </View>
@@ -275,6 +270,21 @@ export default class CME extends Component {
             <Text style={styles.text}>Add Document</Text>
           </TouchableOpacity>
         </View>
+
+        <FlatList
+          style={{ marginTop: '5%', flexGrow: 0, marginBottom: '2%' }}
+          data={this.state.cmes}
+          keyExtractor={(item) => item.id}
+          renderItem={({item}) => (
+            <View style={{ flexDirection: 'row' }}>
+              <Text style={styles.cmeItem}>{(item.id, item.cert)}</Text>
+              <Text style={styles.cmeItem}>{(item.id + 1, item.exp)}</Text>
+              <Image style={{flex: 2, height:150}} source={{ uri: item.pic}}/>
+            </View>
+          )}
+          //numColumns={1}
+        />
+
       </View>
     )
   }
@@ -339,6 +349,6 @@ const styles = StyleSheet.create({
     fontFamily: 'open-sans',
     textAlign:  'center',
     alignSelf:  'center',
-    width:      '80%',
+    width:      '50%',
   },
 })

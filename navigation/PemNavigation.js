@@ -17,6 +17,7 @@ import SignUpScreen from '../screens/SignUpScreen';
 import FavoritesScreen from '../screens/FavoritesScreen';
 import UserProfileScreen from '../screens/ProfileScreens/UserProfileScreen';
 import CMEScreen from '../screens/CMEScreen';
+import NewCmeScreen from '../screens/newCmeScreen'
 import SearchScreen from '../screens/SearchScreen';
 import AdminCategoriesScreen from '../screens/AdminScreens/AdminCategoriesScreen';
 import EditCatContentScreen from '../screens/AdminScreens/EditCatContentScreen';
@@ -139,7 +140,7 @@ const ProfileNavigator = createStackNavigator(
   {
     Profile: ProfileScreen,
     Edit: EditProfileScreen,
-    CME: CMEScreen,
+    CME: NewCmeScreen,
     Calendar: CalendarScreen,
   },
 
