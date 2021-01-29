@@ -1,9 +1,9 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { View, Modal, TouchableOpacity, Text, StyleSheet, Platform, TouchableNativeFeedback } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
-import CustomHeaderButton from '../components/CustomHeaderButton';
-import ChatList from '../components/Chat';
-import Colors from '../constants/Colors';
+import CustomHeaderButton from '../../components/CustomHeaderButton';
+import ChatList from '../../components/ChatList';
+import Colors from '../../constants/Colors';
 import { IconButton } from 'react-native-paper';
 import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel } from 'react-native-simple-radio-button';
 

@@ -3,9 +3,9 @@ import { View, StyleSheet, Text, Alert } from 'react-native';
 import 'firebase/firestore';
 import * as firebase from 'firebase';
 
-import FormInput from './FormInput';
-import FormButton from './FormButton';
-import Loading from './Loading';
+import FormInput from '../../components/FormInput';
+import FormButton from '../../components/FormButton';
+import Loading from '../../components/Loading';
 
 
 export default function AddRoomScreen({ navigation }) {

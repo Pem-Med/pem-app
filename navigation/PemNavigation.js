@@ -6,7 +6,7 @@ import { createDrawerNavigator } from 'react-navigation-drawer';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import CategoriesScreen from '../screens/CategoriesScreen';
-import ChatTabScreen from '../screens/ChatTabScreen';
+import ChatTabScreen from '../screens/ChatScreens/ChatTabScreen';
 import SubCategoriesScreen from '../screens/SubCategoriesScreen';
 import CatContentScreen from '../screens/CatContentScreen';
 import ProfileScreen from '../screens/ProfileScreens/ProfileScreen';
@@ -28,8 +28,8 @@ import EditProfileScreen from '../screens/ProfileScreens/EditProfileScreen';
 import DrawerComponent from "../components/DrawerComponent";
 //import AppContainer from '../screens/ChatTabScreen'
 //import SignOut from '../screens/SignOut'
-import ChatRoomScreen from '../screens/RoomScreen';
-import AddRoomScreen from '../components/AddRoomScreen';
+import ChatRoomScreen from '../screens/ChatScreens/RoomScreen';
+import AddRoomScreen from '../screens/ChatScreens/AddRoomScreen';
 
 
 const defaultStackNavOptions = {
