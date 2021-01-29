@@ -35,9 +35,11 @@ const ChatTabScreen = (props) => {
     }, [createHandler]);
 
     const navigateToCreate = () => {
-        if(chatType == 0){
-            setModalVisible(false);
+        setModalVisible(false);
+        if (chatType == 0) {
             props.navigation.navigate('AddRoom');
+        } else {
+            props.navigation.navigate('AddPrivateChat');
         }
     };
 
@@ -72,7 +74,7 @@ const ChatTabScreen = (props) => {
                                                 obj={obj}
                                                 index={i}
                                                 isSelected={chatType === i}
-                                                onPress={setChatType}
+                                                onPress={(value) => setChatType(value)}
                                                 buttonInnerColor={Colors.primaryColor}
                                                 buttonOuterColor={Colors.primaryColor}
                                                 buttonSize={15}
@@ -81,7 +83,7 @@ const ChatTabScreen = (props) => {
                                                 obj={obj}
                                                 index={i}
                                                 labelHorizontal={true}
-                                                onPress={setChatType}
+                                                onPress={(value) => setChatType(value)}
                                                 labelStyle={styles.radioLabel}
                                             />
                                         </RadioButton>

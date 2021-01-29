@@ -30,6 +30,7 @@ import DrawerComponent from "../components/DrawerComponent";
 //import SignOut from '../screens/SignOut'
 import ChatRoomScreen from '../screens/ChatScreens/RoomScreen';
 import AddRoomScreen from '../screens/ChatScreens/AddRoomScreen';
+import AddPrivateChatScreen from '../screens/ChatScreens/AddPrivateChatScreen';
 
 
 const defaultStackNavOptions = {
@@ -210,10 +211,11 @@ const HomeNavigator = createStackNavigator(
     Home: {
      screen: MenuTabNavigator,
      navigationOptions:{
-       header: null
+       headerShown: false
      }
     },
     AddRoom: AddRoomScreen,
+    AddPrivateChat: AddPrivateChatScreen
   },
   {
     mode: 'modal',
