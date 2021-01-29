@@ -81,9 +81,6 @@ const ChatNavigator = createStackNavigator(
 
   {
     Chat: ChatTabScreen,
-    AddRoom: {
-      screen: AddRoomScreen,
-    },
     Room: {
       screen: ChatRoomScreen,
     },
@@ -185,6 +182,8 @@ const tabScreenConfig = {
   },
 };
 
+
+
 const MenuTabNavigator =
   Platform.OS === "android"
     ? createMaterialBottomTabNavigator(tabScreenConfig, {
@@ -206,10 +205,26 @@ const MenuTabNavigator =
       }
     );
 
+const HomeNavigator = createStackNavigator(
+  {    
+    Home: {
+     screen: MenuTabNavigator,
+     navigationOptions:{
+       header: null
+     }
+    },
+    AddRoom: AddRoomScreen,
+  },
+  {
+    mode: 'modal',
+    defaultNavigationOptions: defaultStackNavOptions
+  }
+);
+
 const PemNavigator = createDrawerNavigator(
   {
     Categories: {
-      screen: MenuTabNavigator,
+      screen: HomeNavigator,
       navigationOptions: {
         drawerIcon: (drawerConfig) => (
           <Ionicons
@@ -241,7 +256,8 @@ const SwitchNavigator = createSwitchNavigator(
   {
     Login: LoginNavigator,
     Main: PemNavigator,
-    TabMain: MenuTabNavigator,
+    //TabMain: MenuTabNavigator,
+
   },
   {
     initialRouteName: "Login",

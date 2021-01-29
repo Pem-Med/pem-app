@@ -1,7 +1,8 @@
-import React, { useContext, useState, useEffect } from 'react';
-import { View, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
-import { Title, List, Divider } from 'react-native-paper';
+import React, { useState, useEffect } from 'react';
+import { View, StyleSheet, FlatList, TouchableOpacity, Text, Alert } from 'react-native';
+import { List, Divider } from 'react-native-paper';
 import * as firebase from 'firebase';
+
 import Loading from './Loading';
 
 export default function ChatList({ navigation }) {
@@ -16,11 +17,11 @@ export default function ChatList({ navigation }) {
     const onValueChange = threadsRef.on("value", function (snapshot) {
       const data = snapshot.val();
       const loadedThreads = [];
-      for(const key in data){
+      for (const key in data) {
         const newItem = {
           _id: key,
           name: data[key].name,
-          // description: data[key].description
+          description: data[key].description
         }
         loadedThreads.push(newItem);
       }
@@ -28,11 +29,13 @@ export default function ChatList({ navigation }) {
       setLoading(false);
     }, function (errorObject) {
       console.log("The read failed: " + errorObject.code);
+      Alert.alert('Error', 'There was a problem loading the chats');
+      setLoading(false);
     });
 
     //clean up listener
-    return ()=>  threadsRef.off('value', onValueChange);
-  }, [setLoading,setThreads]);
+    return () => threadsRef.off('value', onValueChange);
+  }, [setLoading, setThreads]);
 
   if (loading) {
     return <Loading />;
@@ -40,25 +43,31 @@ export default function ChatList({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={threads}
-        keyExtractor={(item) => item._id}
-        ItemSeparatorComponent={() => <Divider />}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            onPress={() => navigation.navigate('Room', { thread: item })}
-          >
-            <List.Item
-              title={item.name}
-              description='Item description'
-              titleNumberOfLines={1}
-              titleStyle={styles.listTitle}
-              descriptionStyle={styles.listDescription}
-              descriptionNumberOfLines={1}
-            />
-          </TouchableOpacity>
-        )}
-      />
+      {!threads || threads.length === 0 ?
+        <View style={styles.textContainer}>
+          <Text style={styles.text}>No Chats available</Text>
+        </View>
+        :
+        <FlatList
+          data={threads}
+          keyExtractor={(item) => item._id}
+          ItemSeparatorComponent={() => <Divider />}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+              onPress={() => navigation.navigate('Room', { thread: item })}
+            >
+              <List.Item
+                title={item.name}
+                description={item.description || 'Chat Room'}
+                titleNumberOfLines={1}
+                titleStyle={styles.listTitle}
+                descriptionStyle={styles.listDescription}
+                descriptionNumberOfLines={1}
+              />
+            </TouchableOpacity>
+          )}
+        />
+      }
     </View>
   );
 }
@@ -67,6 +76,14 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: '#f5f5f5',
     flex: 1
+  },
+  textContainer:{
+    height:'100%',
+    justifyContent:'center',
+    alignItems:'center'
+  },
+  text:{
+    fontSize:22
   },
   listTitle: {
     fontSize: 22
