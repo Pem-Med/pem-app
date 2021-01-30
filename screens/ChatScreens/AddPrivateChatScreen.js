@@ -1,5 +1,5 @@
-import React,{useEffect, useState} from 'react';
-import { View, StyleSheet, Text, FlatList,TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, StyleSheet, Text, FlatList, TouchableOpacity } from 'react-native';
 import * as firebase from 'firebase';
 import { List, Divider } from 'react-native-paper';
 
@@ -28,26 +28,27 @@ export default AddPrivateChatScreen = props => {
                 }
                 loadedUsers.push(user);
             }
-            
+
             //sort
             loadedUsers.sort(function (a, b) {
                 let itemA = a.name.toUpperCase();
                 let itemB = b.name.toUpperCase();
-              return (itemA < itemB) ? -1 : (itemA > itemB) ? 1 : 0
+                return (itemA < itemB) ? -1 : (itemA > itemB) ? 1 : 0
             });
-            
+
             //set the list
             setUsersList(loadedUsers);
             setLoading(false);
         }, function (errorObject) {
             console.log("The read failed: " + errorObject.code);
             Alert.alert('Error', 'There was a problem loading the users');
+            props.navigation.goBack();
             setLoading(false);
         });
     }, [setLoading, setUsersList]);
 
-    if(loading){
-        return <Loading/>
+    if (loading) {
+        return <Loading />
     }
 
     return (
@@ -58,15 +59,15 @@ export default AddPrivateChatScreen = props => {
                 ItemSeparatorComponent={() => <Divider />}
                 renderItem={({ item }) => (
                     <TouchableOpacity
-                        onPress={() => {}}
+                        onPress={() => { }}
                     >
                         <List.Item
                             title={item.name}
                             // description={item.description || 'Chat Room'}
                             titleNumberOfLines={1}
-                            // titleStyle={styles.listTitle}
-                            // descriptionStyle={styles.listDescription}
-                            // descriptionNumberOfLines={1}
+                        // titleStyle={styles.listTitle}
+                        // descriptionStyle={styles.listDescription}
+                        // descriptionNumberOfLines={1}
                         />
                     </TouchableOpacity>
                 )}

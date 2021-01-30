@@ -45,7 +45,7 @@ export default function ChatList({ navigation }) {
     <View style={styles.container}>
       {!threads || threads.length === 0 ?
         <View style={styles.textContainer}>
-          <Text style={styles.text}>No Chats available</Text>
+          <Text style={styles.text}>No Chats Available</Text>
         </View>
         :
         <FlatList
