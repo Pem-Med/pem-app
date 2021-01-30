@@ -7,6 +7,7 @@ import Cmes from '../models/cmes';
 import 'firebase/firestore'
 import Firebase from '../backend/firebase'
 import 'firebase/storage';
+import { FlatList } from 'react-native-gesture-handler';
 
 
 const fb = Firebase.shared;
@@ -31,35 +32,40 @@ const newCmeScreen = props => {
         setIsVisibleForm(false);
     }
 
+    const onDismiss = () => {
+            Alert.alert('Oops', 'You sure you want to cancel?',
+                [
+                    { text: "Yes, cancel", onPress: () => setIsVisibleForm(false) }
+                ],
+                { cancelable: false });
+
+    }
+
 
     return (
         <View style={styles.container}>
-            <View style={styles.btn}>
+            <View>
                 <AddCmeScreen visible={isVisibleForm}
                     header='Add Document'
                     onSubmit={onSubmit}
                     onClose={onClose}
+                    onDismiss={onDismiss}
                 />
                 <View style={styles.btn}>
-                    <Button title='ADD' onPress={() => setIsVisibleForm(true)} />
+                    <Button title='Add Document' onPress={() => setIsVisibleForm(true)} />
                 </View>
             </View>
             <SafeAreaView >
             <ScrollView>
-            <Text style={styles.card} >
+            <FlatList >
             {cmes.map((item) => {
                 return (
                     <View>
-                     <Card.Title>{item.cert}</Card.Title>
-                     <Card.Divider/>
-                     <Card.Image source={{ uri: item.image }} />
-                     <Text>
-                         {item.exp}
-                     </Text>
+                     <Text>{item.cert}</Text>
                     </View>
                 );
             })}
-            </Text>
+            </FlatList>
             </ScrollView>
             </SafeAreaView >
 
@@ -73,17 +79,13 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 0,
     },
-    card: {
-        backgroundColor: '#2089dc',
-        margin: 20,
-        width: '100%', 
-        height: 100,
-        justifyContent: 'center',
-    },
     btn: {
-        width: '95%',
+        width: '100%',
         marginBottom: 15,
-        marginTop: 10
+        marginTop: 10,
+        justifyContent: 'center',
+        backgroundColor: 'black'
+
     }
 });
 

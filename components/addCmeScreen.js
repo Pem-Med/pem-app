@@ -39,6 +39,10 @@ const AddCmeScreen = props => {
             console.log(image);
     };
 
+    const onDismiss = () => {
+        props.onDismiss();
+    }
+
     return (
         <SafeAreaView >
         <ScrollView>
@@ -93,6 +97,11 @@ const AddCmeScreen = props => {
                 <View style={styles.submit}>
                     <Button title='submit' onPress={onSubmit} />
                 </View>
+
+                <View style={styles.submit}>
+                    <Button title='cancel' onPress={onDismiss} />
+                </View>
+
                 {/* End */}
 
             </View>
