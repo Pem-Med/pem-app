@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Text, Button, Alert, ScrollView, SafeAreaView, Card } from 'react-native';
+import { View, StyleSheet, Text, Button, Alert, FlatList, Image } from 'react-native';
 
 import AddCmeScreen from '../components/addCmeScreen';
 import Cmes from '../models/cmes';
@@ -7,15 +7,14 @@ import Cmes from '../models/cmes';
 import 'firebase/firestore'
 import Firebase from '../backend/firebase'
 import 'firebase/storage';
-import { FlatList } from 'react-native-gesture-handler';
+import * as firebase from 'firebase'
 
 
 const fb = Firebase.shared;
 
-
-const newCmeScreen = props => {
+const newCmeScreen = (props) => {
     const [isVisibleForm, setIsVisibleForm] = useState(false);
-    const [cmes, setCmes] = useState([]);
+    const [list, setList] = useState([])
 
     const onSubmit = (cert, exp, image) => {
         const cmes = new Cmes(cert, exp, image);
@@ -41,6 +40,39 @@ const newCmeScreen = props => {
 
     }
 
+    useEffect(() => {
+        const cmeRef = firebase.database().ref(`userCmes/userId: ${firebase.auth().currentUser.uid}/cmes`)
+        const list = [];
+        cmeRef.on('value', (snapshot) => {
+            snapshot.forEach((childSnapshot) => {
+                    list.push({
+                        cert: childSnapshot.val().cert,
+                        exp: childSnapshot.val().exp,
+                        image: childSnapshot.val().image,
+                    })
+                
+            });
+            
+        })
+        setList(list);
+        console.log(list)
+        
+      },[]);
+
+    // useEffect(() => {
+    //     setList(list)
+    // })
+
+     const renderItem = ({item, index}) => {
+
+        return (
+                <View style ={{flexDirection: 'row'}}>
+                    <Text style={styles.cmeItem}>Cert: {item.cert}</Text>
+                    <Text style={styles.cmeItem} >Exp: {item.exp}</Text>
+                    <Image style={{flex: 2, height:150}} source={{uri: item.image}} />
+                </View>
+            
+    )}
 
     return (
         <View style={styles.container}>
@@ -55,19 +87,24 @@ const newCmeScreen = props => {
                     <Button title='Add Document' onPress={() => setIsVisibleForm(true)} />
                 </View>
             </View>
-            <SafeAreaView >
-            <ScrollView>
-            <FlatList >
-            {cmes.map((item) => {
-                return (
-                    <View>
-                     <Text>{item.cert}</Text>
-                    </View>
-                );
-            })}
-            </FlatList>
-            </ScrollView>
-            </SafeAreaView >
+
+            <View >
+            <View>
+                <Text>tOP OF FLAT LIST</Text>
+            </View>
+
+            <FlatList  
+                style={{ marginTop: '5%', flexGrow: 0, marginBottom: '2%' }}
+                data={list}
+                keyExtractor = { item => item.id}
+                renderItem={renderItem}
+            />
+
+                <View >
+                <Text>Below flatlist</Text>
+                </View>
+                
+            </View>
 
         </View>
         
@@ -76,8 +113,7 @@ const newCmeScreen = props => {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        padding: 0,
+        flexDirection: 'column',
     },
     btn: {
         width: '100%',
@@ -86,7 +122,15 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         backgroundColor: 'black'
 
-    }
+    },
+    cmeItem: {
+        flex:       1,
+        fontSize:   14,
+        fontFamily: 'open-sans',
+        textAlign:  'center',
+        alignSelf:  'center',
+        width:      '50%',
+      }
 });
 
 export default newCmeScreen;

@@ -222,12 +222,13 @@ class Firebase {
   AddCme = async (cmes) => {
         const { cert, exp, image } = cmes;
         const remoteUri = await this.getImageRemoteUri(image);
-            firebase.database().ref(`userCmes/userId: ${firebase.auth().currentUser.uid}`)
+            firebase.database().ref(`userCmes/userId: ${firebase.auth().currentUser.uid}/cmes`)
             .push({
                 cert: cert,
                 exp: exp,
                 image: remoteUri
               })
+              
             .then((data) =>{
               console.log('data', data)
             })
