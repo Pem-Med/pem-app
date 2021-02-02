@@ -9,26 +9,28 @@ import Loading from '../../components/Loading';
 
 
 export default function AddRoomScreen({ navigation }) {
-  const db = firebase.database();
-  const threadsRef = db.ref('/threads');
   const [roomName, setRoomName] = useState('');
   const [description, setDescription] = useState('');
   const [loading, setLoading] = useState(false);
 
   function handleButtonPress() {
     setLoading(true);
-    threadsRef.push({
-      name: roomName,
-      description: description
-    })
-      .then(() => {
-        setLoading(false);
-        navigation.navigate('Chat');
-      })
-      .catch((err) => {
-        Alert.alert("Error","There was an error creating the chat room. Please try again later.");
-        setLoading(false);
-      })
+    if (roomName.length > 0) {
+      firebase.firestore()
+        .collection('THREADS')
+        .add({
+          name: roomName ,
+          description: description        
+        })
+        .then(() => {
+          setLoading(false);
+          navigation.navigate('Chat');
+        })
+        .catch((err) => {
+          Alert.alert("Error","There was an error creating the chat room. Please try again later.");
+          setLoading(false);
+        });
+    }
   }
 
   if (loading) {
@@ -47,7 +49,7 @@ export default function AddRoomScreen({ navigation }) {
           style={styles.inputs}
         />
         <FormInput
-          labelName='Descritption'
+          labelName='Description'
           value={description}
           onChangeText={(text) => setDescription(text)}
           clearButtonMode='while-editing'

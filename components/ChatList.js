@@ -6,35 +6,33 @@ import * as firebase from 'firebase';
 import Loading from './Loading';
 
 export default function ChatList({ navigation }) {
-  const db = firebase.database()
-  const threadsRef = db.ref('/threads');
 
   const [threads, setThreads] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     //add a listener to the threads
-    const onValueChange = threadsRef.on("value", function (snapshot) {
-      const data = snapshot.val();
-      const loadedThreads = [];
-      for (const key in data) {
-        const newItem = {
-          _id: key,
-          name: data[key].name,
-          description: data[key].description
-        }
-        loadedThreads.push(newItem);
-      }
-      setThreads(loadedThreads);
-      setLoading(false);
-    }, function (errorObject) {
-      console.log("The read failed: " + errorObject.code);
-      Alert.alert('Error', 'There was a problem loading the chats');
-      setLoading(false);
-    });
+    const unsubscribe = firebase.firestore()
+      .collection('THREADS')
+      .onSnapshot((querySnapshot) => {
+        const loadedThreads = querySnapshot.docs.map((documentSnapshot) => {
+          return {
+            _id: documentSnapshot.id,
+            ...documentSnapshot.data(),
+          };
+        });
+
+        setThreads(loadedThreads);
+        setLoading(false);
+      }, function (errorObject) {
+        console.log("The read failed: " + errorObject.code);
+        Alert.alert('Error', 'There was a problem loading the chats');
+        setLoading(false);
+      });
+
 
     //clean up listener
-    return () => threadsRef.off('value', onValueChange);
+    return () => unsubscribe();
   }, [setLoading, setThreads]);
 
   if (loading) {
@@ -77,13 +75,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
     flex: 1
   },
-  textContainer:{
-    height:'100%',
-    justifyContent:'center',
-    alignItems:'center'
+  textContainer: {
+    height: '100%',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
-  text:{
-    fontSize:22
+  text: {
+    fontSize: 22
   },
   listTitle: {
     fontSize: 22
