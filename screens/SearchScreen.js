@@ -186,6 +186,7 @@ class Hits extends Component {
     return hits;
   }
 
+  /* Get the color based on the category */
   _getBgColor = (cat) => {
     switch(cat) {
       case "c1": return Colors.medical;
@@ -198,6 +199,8 @@ class Hits extends Component {
   }
 
   _renderRow = ({ item: hit }) => (
+    //Create card with padding 10 all arround and elevation of 20
+    //bg color is extracted from hit response
     <View padding={10,10,10,10}>
     <Card elevation={20} onPress={() => {}}>
       <Card.Content backgroundColor={this._getBgColor(hit.subId)}>
@@ -244,53 +247,6 @@ class Hits extends Component {
       </Card.Content>
     </Card>
     </View>
-    // <View style={styles.item}>
-    //   <View style={styles.itemContent}>
-    //   <Button title={hit.title} onPress={SearchBox.routeToCat}>
-    //     <Text style={styles.itemName}>
-    //       <Highlight
-    //         attribute="title"
-    //         hit={hit}
-    //         highlightProperty="_highlightResult"
-    //       />
-    //     </Text>
-
-    //     <Text >Evaluation: <Highlight
-    //         attribute="evaluation"
-    //         hit={hit}
-    //         highlightProperty="_highlightResult"
-    //       />
-    //     </Text>
-    //     <Text >Medications: <Highlight
-    //         attribute="medications"
-    //         hit={hit}
-    //         highlightProperty="_highlightResult"
-    //       />
-    //     </Text>
-    //     <Text >Signs:
-    //     <Highlight
-    //         attribute="signs"
-    //         hit={hit}
-    //         highlightProperty="_highlightResult"
-    //       />
-    //     </Text>
-    //     <Text >Management:
-    //     <Highlight
-    //         attribute="management"
-    //         hit={hit}
-    //         highlightProperty="_highlightResult"
-    //       />
-    //     </Text>
-    //     <Text >Refereneces:
-    //       <Highlight
-    //         attribute="references"
-    //         hit={hit}
-    //         highlightProperty="_highlightResult"
-    //       />
-    //     </Text>
-    //     </Button>
-    //   </View>
-    // </View>
   );
   _renderSeparator = (sectionID, rowID, adjacentRowHighlighted) => (
     <View
@@ -313,83 +269,3 @@ const ConnectedStats = connectStats(({ nbHits }) => (
   <Text style={{ paddingLeft: 8 }}>{nbHits} products found</Text>
 ));
 
-
-/*
-
-const SearchScreen = props => {// to be call Search
-
-  let changingText = '';
-  const [enteredSearch, setEnteredSearch] = useState('');
-  const [search, setSearch] = useState([]);
-  const [result, setResult] = useState('null');//use null value because if it's empty, filter will display all
-
-  const searchInputHandler = (enteredText) => {
-    setEnteredSearch(enteredText)
-  }
-
-  const searchWord = () => {
-    setResult(enteredSearch)
-  }
-
-  const selectedSubCategories = useSelector((state) => state.categoriesContent.categoriesContent,
-  )
-  const displaySub = selectedSubCategories.filter((cat) => ((cat.title).toLowerCase().indexOf(result.toLowerCase()) >= 0) && cat.title != 'Chatroom' && cat.title != 'CME')
-
-  const renederGridItem = (itemData) => (
-    <SearchGridtile
-      title={itemData.item.title}
-      color={itemData.item.color}
-      onSelect={() => { // onSelect func name trigget on component
-        props.navigation.navigate({
-          routeName: 'CatContent',
-          params:    {
-            subcategoryId: itemData.item.id,
-          },
-        })
-      }}
-    />
-  )
-
-  return (
-    <View style={styles.screen}>
-      <View style={styles.inputContainer}>
-        <Ionicons name={Platform.OS === 'android' ? 'ios-search' : 'md-search'} size={20} />
-        <TextInput
-          placeholder={'Search '}
-          style={styles.input}
-          onChangeText={searchInputHandler}
-          Value={enteredSearch}
-        />
-        <Button title={'Search'} style={styles.searchButton} onPress={searchWord} />
-      </View>
-      <FlatList data={displaySub} renderItem={renederGridItem} numColumns={1} />
-    </View>
-  )
-}
-
-const styles = StyleSheet.create({
-
-  screen: {
-    padding: 50,
-  },
-  inputContainer: {
-    flexDirection:  'row',
-    justifyContent: 'space-between',
-    alignItems:     'center',
-  },
-  input: {
-    width:             '80%',
-    borderBottomColor: 'blue',
-    borderBottomWidth: 1,
-  },
-  searchButton: {
-    borderStyle: 'solid',
-    borderColor: 'blue',
-  },
-  searchButton: {
-    borderStyle: 'solid',
-    borderColor: 'blue'
-  }
-
-});
-*/
