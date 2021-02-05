@@ -2,7 +2,6 @@ import React, { useState, Component } from 'react';
 import {InstantSearch,
   connectSearchBox,
   connectStats,
-  connectSortBy,
   connectInfiniteHits
 
 } from "react-instantsearch-dom";
@@ -10,19 +9,15 @@ import algoliasearch from 'algoliasearch/lite';
 import Highlight from './Highlight';
 import PropTypes from 'prop-types';
 import { StyleSheet, Dimensions, Text, View, TextInput, Button, FlatList } from 'react-native';
+import {Card} from 'react-native-paper';
+import Colors from '../constants/Colors'
 
-import { NavigationContainer } from '@react-navigation/native';
-
-import { CONTENT, SUBCATEGORIES } from '../data/categoriesData';
-import SearchGridtile from '../components/SearchGridTile';
-import { useSelector} from 'react-redux';
-import { Ionicons } from '@expo/vector-icons';
-
-import CatContent from '../models/catContent';
-import CategoriesScreen from './CategoriesScreen';
-import Category from '../models/category';
 
 const  {height}  = Dimensions.get('window');
+//Algolia Search, App ID and API Key (Search Only)
+//All in one place, so no need to search for every place its used
+const appID =  "WK4HK1IJPD";
+const apiKey = "3ce1d6fd9eb17d864916020e10616a2d";
 
 const styles = StyleSheet.create({
   maincontainer: {
@@ -88,12 +83,18 @@ const styles = StyleSheet.create({
   },
 });
 const searchClient = algoliasearch(
-  'WK4HK1IJPD',
-  '3ce1d6fd9eb17d864916020e10616a2d'
+  appID,
+  apiKey
 );
 
 
+
+
 class SearchScreen extends Component {
+ appID = appID;
+ apiKey = apiKey;
+ indexName = "med_Categories";
+
   constructor(props) {
     super(props);
     this.state = {
@@ -110,9 +111,9 @@ class SearchScreen extends Component {
     return (
       <View style={styles.maincontainer}>
           <InstantSearch searchClient={searchClient}
-            appId="WK4HK1IJPD"
-            apiKey="3ce1d6fd9eb17d864916020e10616a2d"
-            indexName="med_Categories">
+            appId={appID}
+            apiKey={apiKey}
+            indexName={this.indexName}>
             <ConnectedSearchBox />
             <View style={styles.options}>
             <ConnectedStats />
@@ -185,11 +186,22 @@ class Hits extends Component {
     return hits;
   }
 
-  _renderRow = ({ item: hit }) => (
+  _getBgColor = (cat) => {
+    switch(cat) {
+      case "c1": return Colors.medical;
+      case "c2": return Colors.surgical;
+      case "c3": return Colors.trauma;
+      case "c4": return Colors.toxicology;
+      case "c5": return Colors.foreign;
+      default: return Colors.primaryColor;
+    }
+  }
 
-    <View style={styles.item}>
-      <View style={styles.itemContent}>
-        <Text style={styles.itemName}>
+  _renderRow = ({ item: hit }) => (
+    <View padding={10,10,10,10}>
+    <Card elevation={20} onPress={() => {}}>
+      <Card.Content backgroundColor={this._getBgColor(hit.subId)}>
+      <Text style={styles.itemName}>
           <Highlight
             attribute="title"
             hit={hit}
@@ -197,7 +209,7 @@ class Hits extends Component {
           />
         </Text>
 
-        <Text >Evaluation: <Highlight
+      <Text >Evaluation: <Highlight
             attribute="evaluation"
             hit={hit}
             highlightProperty="_highlightResult"
@@ -209,8 +221,7 @@ class Hits extends Component {
             highlightProperty="_highlightResult"
           />
         </Text>
-        <Text >Signs:
-        <Highlight
+        <Text >Signs: <Highlight
             attribute="signs"
             hit={hit}
             highlightProperty="_highlightResult"
@@ -230,9 +241,56 @@ class Hits extends Component {
             highlightProperty="_highlightResult"
           />
         </Text>
-
-      </View>
+      </Card.Content>
+    </Card>
     </View>
+    // <View style={styles.item}>
+    //   <View style={styles.itemContent}>
+    //   <Button title={hit.title} onPress={SearchBox.routeToCat}>
+    //     <Text style={styles.itemName}>
+    //       <Highlight
+    //         attribute="title"
+    //         hit={hit}
+    //         highlightProperty="_highlightResult"
+    //       />
+    //     </Text>
+
+    //     <Text >Evaluation: <Highlight
+    //         attribute="evaluation"
+    //         hit={hit}
+    //         highlightProperty="_highlightResult"
+    //       />
+    //     </Text>
+    //     <Text >Medications: <Highlight
+    //         attribute="medications"
+    //         hit={hit}
+    //         highlightProperty="_highlightResult"
+    //       />
+    //     </Text>
+    //     <Text >Signs:
+    //     <Highlight
+    //         attribute="signs"
+    //         hit={hit}
+    //         highlightProperty="_highlightResult"
+    //       />
+    //     </Text>
+    //     <Text >Management:
+    //     <Highlight
+    //         attribute="management"
+    //         hit={hit}
+    //         highlightProperty="_highlightResult"
+    //       />
+    //     </Text>
+    //     <Text >Refereneces:
+    //       <Highlight
+    //         attribute="references"
+    //         hit={hit}
+    //         highlightProperty="_highlightResult"
+    //       />
+    //     </Text>
+    //     </Button>
+    //   </View>
+    // </View>
   );
   _renderSeparator = (sectionID, rowID, adjacentRowHighlighted) => (
     <View
