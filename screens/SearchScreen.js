@@ -11,9 +11,11 @@ import PropTypes from 'prop-types';
 import { StyleSheet, Dimensions, Text, View, TextInput, Button, FlatList } from 'react-native';
 import {Card} from 'react-native-paper';
 import Colors from '../constants/Colors'
+import { stubFalse } from 'lodash';
 
 
 const  {height}  = Dimensions.get('window');
+//TODO: Add 'Search results Provided by Algolia' as per Algolia free account requirements.
 //Algolia Search, App ID and API Key (Search Only)
 //All in one place, so no need to search for every place its used
 const appID =  "WK4HK1IJPD";
@@ -22,13 +24,14 @@ const apiKey = "3ce1d6fd9eb17d864916020e10616a2d";
 const styles = StyleSheet.create({
   maincontainer: {
     flex: 1,
+    backgroundColor: Colors.white,
   },
   items: {
     ...Platform.select({
       ios: {
-        height: height - 170,
+        height: height - 100,
       },
-      android: { height: height - 165 },
+      android: { height: height - 100},
     }),
   },
   item: {
@@ -42,14 +45,15 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     backgroundColor: 'white',
     padding: 5,
-    borderBottomColor: 'gray',
+    borderBottomColor: 'white',
     borderBottomWidth: 1,
   },
   searchBoxContainer: {
-    backgroundColor: '#162331',
+    alignContent: 'flex-end',
+    backgroundColor: Colors.primaryColor,
     flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 40,
+    alignItems: 'flex-end',
+    height: 100,
 
   },
   searchBox: {
@@ -61,9 +65,11 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     ...Platform.select({
       ios: {
-        borderRadius: 5,
+        borderRadius: 10,
       },
-      android: {},
+      android: {
+        borderRadius: 10,
+      },
     }),
   },
   itemContent: {
@@ -75,6 +81,12 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: 'bold',
     paddingBottom: 5,
+    textTransform: 'capitalize',
+  },
+  innerItem: {
+    fontSize: 15,
+    paddingBottom: 5,
+    textTransform: 'capitalize',
   },
   button:{
     justifyContent:'flex-start',
@@ -179,65 +191,64 @@ class Hits extends Component {
   render() {
     const hits =
       this.props.hits.length > 0 ? (
-        <View style = {styles.items}>
-          <FlatList data={this.props.hits} renderItem={this._renderRow} />
+        <View style={styles.items}>
+          <FlatList keyExtractor={(hit) => hit.objectID} data={this.props.hits} renderItem={this._renderRow} />
         </View>
       ) : null;
     return hits;
   }
 
-  /* Get the color based on the category */
-  _getBgColor = (cat) => {
+  /* Get the category based on the category id*/
+  _getSubTitle = (cat) => {
     switch(cat) {
-      case "c1": return Colors.medical;
-      case "c2": return Colors.surgical;
-      case "c3": return Colors.trauma;
-      case "c4": return Colors.toxicology;
-      case "c5": return Colors.foreign;
-      default: return Colors.primaryColor;
-    }
+      case "c1": return "Medical";
+      case "c2": return "Surgical";
+      case "c3": return "Trauma";
+      case "c4": return "Toxicology";
+      case "c5": return "Foreign Ingestion";
+  }
   }
 
   _renderRow = ({ item: hit }) => (
     //Create card with padding 10 all arround and elevation of 20
-    //bg color is extracted from hit response
+    //bg color is extracted from hit
     <View padding={10,10,10,10}>
-    <Card elevation={20} onPress={() => {}}>
-      <Card.Content backgroundColor={this._getBgColor(hit.subId)}>
-      <Text style={styles.itemName}>
+    <Card elevation={20} onPress={() => {console.log("Card Presed, moving to category: " + hit.title)}}>
+      <Card.Title subtitle={this._getSubTitle(hit.subId)} title={(<Text style={styles.itemName}>
           <Highlight
             attribute="title"
             hit={hit}
             highlightProperty="_highlightResult"
           />
-        </Text>
-
-      <Text >Evaluation: <Highlight
+        </Text>)} backgroundColor={hit.color}>      
+      </Card.Title>
+      <Card.Content backgroundColor={hit.color}>
+      <Text style={styles.innerItem}>Evaluation: <Highlight
             attribute="evaluation"
             hit={hit}
             highlightProperty="_highlightResult"
           />
         </Text>
-        <Text >Medications: <Highlight
+        <Text style={styles.innerItem}>Medications: <Highlight
             attribute="medications"
             hit={hit}
             highlightProperty="_highlightResult"
           />
         </Text>
-        <Text >Signs: <Highlight
+        <Text style={styles.innerItem}>Signs: <Highlight
             attribute="signs"
             hit={hit}
             highlightProperty="_highlightResult"
           />
         </Text>
-        <Text >Management:
+        <Text style={styles.innerItem}>Management:
         <Highlight
             attribute="management"
             hit={hit}
             highlightProperty="_highlightResult"
           />
         </Text>
-        <Text >Refereneces:
+        <Text style={styles.innerItem}>Refereneces:
           <Highlight
             attribute="references"
             hit={hit}
