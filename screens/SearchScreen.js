@@ -9,9 +9,10 @@ import algoliasearch from 'algoliasearch/lite';
 import Highlight from './Highlight';
 import PropTypes from 'prop-types';
 import { StyleSheet, Dimensions, Text, View, TextInput, Button, FlatList } from 'react-native';
-import {Card} from 'react-native-paper';
+import {Avatar, Card} from 'react-native-paper';
 import Colors from '../constants/Colors'
-import { stubFalse } from 'lodash';
+import { ThemeConsumer } from 'react-native-elements';
+import { Icon } from 'react-native-paper/lib/typescript/src/components/Avatar/Avatar';
 
 
 const  {height}  = Dimensions.get('window');
@@ -20,6 +21,7 @@ const  {height}  = Dimensions.get('window');
 //All in one place, so no need to search for every place its used
 const appID =  "WK4HK1IJPD";
 const apiKey = "3ce1d6fd9eb17d864916020e10616a2d";
+
 
 const styles = StyleSheet.create({
   maincontainer: {
@@ -99,9 +101,6 @@ const searchClient = algoliasearch(
   apiKey
 );
 
-
-
-
 class SearchScreen extends Component {
  appID = appID;
  apiKey = apiKey;
@@ -116,6 +115,13 @@ class SearchScreen extends Component {
   onSearchStateChange = nextState => {
     this.setState({ searchState: { ...this.state.searchState, ...nextState } });
   };
+
+  navigateTo(subCatID) {
+    this.props.navigate( {routeName: "CatContent",
+    params: {
+      subcategoryId: subCatID
+    }});
+  }
   
   
 
@@ -170,18 +176,20 @@ SearchBox.propTypes = {
 
 const ConnectedSearchBox = connectSearchBox(SearchBox);
 
-function routeToCat({navigation}) {
-  navigation.navigate({
-    routeName: 'CatContent',
+
+const routeToCat = ({subCatID}) => {
+  var test = SearchScreen();
+  console.log(test);
+  navigator.navigate({
+    routeName: "CatContent",
     params: {
-      subcategoryId: x
+      subcategoryId: subCatID
     }
-  });
-};
-
-
+  })
+} 
 
 class Hits extends Component {
+
   onEndReached = () => {
     if (this.props.hasMore) {
       this.props.refine();
@@ -213,7 +221,7 @@ class Hits extends Component {
     //Create card with padding 10 all arround and elevation of 20
     //bg color is extracted from hit
     <View padding={10,10,10,10}>
-    <Card elevation={20} onPress={() => {console.log("Card Presed, moving to category: " + hit.title)}}>
+    <Card elevation={20} onPress={() => {this.navigateTo(hit.subCatID)}}>
       <Card.Title subtitle={this._getSubTitle(hit.subId)} title={(<Text style={styles.itemName}>
           <Highlight
             attribute="title"
@@ -270,6 +278,7 @@ class Hits extends Component {
   );
 }
 
+
 Hits.propTypes = {
   hits: PropTypes.array.isRequired,
   refine: PropTypes.func.isRequired,
@@ -277,6 +286,6 @@ Hits.propTypes = {
 };
 const ConnectedHits = connectInfiniteHits(Hits);
 const ConnectedStats = connectStats(({ nbHits }) => (
-  <Text style={{ paddingLeft: 8 }}>{nbHits} products found</Text>
+  <Text style={{ paddingLeft: 8 }}>{nbHits} results</Text>
 ));
 
