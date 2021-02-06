@@ -58,10 +58,17 @@ const Login = (props) => {
         props.navigation.navigate({ routeName: "Categories" });
       })
       .catch(function (err) {
-        if (email.length === 0 || password.length === 0)
+        console.log(err.code);
+        if(err.code == "auth/invalid-email") {
+          displayOKAlert("Please enter a valid email", "Example: example@example.com")
+        } else if (email.length === 0 || password.length === 0)
           displayOKAlert("You have to fill both fields 🧐");
-        else displayOKAlert("Wrong credentials", "Try again 🧐");
-        console.log(err);
+        else if (err.code == "auth/wrong-password") {
+          displayOKAlert("Wrong credentials", "Try again 🧐")
+        }
+        else if (err.code == "auth/unknown") {
+          displayOKAlert("Netowrk Error", "Please verify you have an active network connection!");
+        }
       });
   }
 
