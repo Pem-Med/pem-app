@@ -8,11 +8,9 @@ import {InstantSearch,
 import algoliasearch from 'algoliasearch/lite';
 import Highlight from './Highlight';
 import PropTypes from 'prop-types';
-import { StyleSheet, Dimensions, Text, View, TextInput, Button, FlatList } from 'react-native';
-import {Avatar, Card} from 'react-native-paper';
+import { StyleSheet, Dimensions, Text, View, TextInput, Button, FlatList, Alert } from 'react-native';
+import {Card} from 'react-native-paper';
 import Colors from '../constants/Colors'
-import { ThemeConsumer } from 'react-native-elements';
-import { Icon } from 'react-native-paper/lib/typescript/src/components/Avatar/Avatar';
 
 
 const  {height}  = Dimensions.get('window');
@@ -221,7 +219,7 @@ class Hits extends Component {
     //Create card with padding 10 all arround and elevation of 20
     //bg color is extracted from hit
     <View padding={10,10,10,10}>
-    <Card elevation={20} onPress={() => {this.navigateTo(hit.subCatID)}}>
+    <Card elevation={20} onPress={() => { Alert.alert("Not implemented", "Move to expanded view is not yet implemented!")}}>
       <Card.Title subtitle={this._getSubTitle(hit.subId)} title={(<Text style={styles.itemName}>
           <Highlight
             attribute="title"
