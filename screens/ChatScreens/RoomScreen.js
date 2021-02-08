@@ -85,6 +85,9 @@ export default function ChatRoomScreen(props) {
         text,
         createdAt: new Date().getTime(),
         user: user
+      })
+      .catch(err =>{
+        Alert.alert('Error', 'There was an error sending the message, try again later.');
       });
   }
 
