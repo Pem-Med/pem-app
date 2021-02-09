@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Text, Button, Alert, FlatList, Image } from 'react-native';
+import Swipeout from 'react-native-swipeout';
 
 import AddCmeScreen from '../components/addCmeScreen';
 import Cmes from '../models/cmes';
@@ -40,6 +41,14 @@ const newCmeScreen = (props) => {
 
     }
 
+    var swipeoutBtns = [
+        {
+          text: 'Delete',
+            backgroundColor: 'red',
+            underlayColor: 'rgba(0, 0, 0, 1, 0.6)',
+        }
+      ]
+
     useEffect(() => {
         const cmeRef = firebase.database().ref(`userCmes/userId: ${firebase.auth().currentUser.uid}/cmes`)
         const list = [];
@@ -66,13 +75,15 @@ const newCmeScreen = (props) => {
      const renderItem = ({item, index}) => {
 
         return (
-                <View style ={{flexDirection: 'row'}}>
+            <Swipeout  right={swipeoutBtns} > 
+                <View style ={{flexDirection: 'row', marginVertical: '5%'}}>
                     <Text style={styles.cmeItem}>Cert: {item.cert}</Text>
                     <Text style={styles.cmeItem} >Exp: {item.exp}</Text>
                     <Image style={{flex: 2, height:150}} source={{uri: item.image}} />
                 </View>
-            
-    )}
+            </Swipeout>
+    )};
+
 
     return (
         <View style={styles.container}>
@@ -89,21 +100,12 @@ const newCmeScreen = (props) => {
             </View>
 
             <View >
-            <View>
-                <Text>tOP OF FLAT LIST</Text>
-            </View>
-
-            <FlatList  
-                style={{ marginTop: '5%', flexGrow: 0, marginBottom: '2%' }}
-                data={list}
-                keyExtractor = { item => item.id}
-                renderItem={renderItem}
-            />
-
-                <View >
-                <Text>Below flatlist</Text>
-                </View>
-                
+                <FlatList  
+                    style={{ marginTop: '5%', flexGrow: 0, marginBottom: '10%' }}
+                    data={list}
+                    keyExtractor = { item => item.id}
+                    renderItem={renderItem}
+                />                
             </View>
 
         </View>
@@ -122,6 +124,13 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         backgroundColor: 'black'
 
+    },
+    detailBox: {
+        flex:            1,
+        alignItems:      'center',
+        borderColor:     'silver',
+        borderLeftWidth: 1,
+        marginLeft:      40,
     },
     cmeItem: {
         flex:       1,

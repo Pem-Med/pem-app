@@ -271,22 +271,22 @@ const Login = (props) => {
         >
           <Text style={styles.loginText}>Log in</Text>
         </TouchableOpacity>
-        {showLoginScreen && (
+        {/* {showLoginScreen && (
           <TouchableOpacity
             style={styles.googleButton}
             onPress={() => loginWithGoogle()}
           >
             <Text style={styles.loginText}>Sign in with Google</Text>
           </TouchableOpacity>
-        )}
-        {showLoginScreen && (
+        )} */}
+        {/* {showLoginScreen && (
           <TouchableOpacity
             style={styles.facebookButton}
             onPress={() => loginWithFacebook()}
           >
             <Text style={styles.loginText}>Log in with Facebook</Text>
           </TouchableOpacity>
-        )}
+        )} */}
         {!showLoginScreen && (
           <TouchableOpacity
             style={styles.signUpButton}
