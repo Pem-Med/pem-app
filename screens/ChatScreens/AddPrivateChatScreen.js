@@ -6,6 +6,7 @@ import { List, Divider } from 'react-native-paper';
 import Loading from '../../components/Loading';
 
 export default AddPrivateChatScreen = props => {
+    const uid = firebase.auth().currentUser.uid;
     const db = firebase.database()
     const usersRef = db.ref('/users');
 
@@ -19,6 +20,10 @@ export default AddPrivateChatScreen = props => {
             const loadedUsers = [];
             //transform the objects into array
             for (const key in data) {
+                if(uid === key){
+                    //exclude current user from the list
+                    continue;
+                }
                 const profile = data[key].profile;
                 const user = {
                     _id: key,

@@ -7,8 +7,7 @@ import Loading from '../../components/Loading';
 
 
 // this code wis based on a tutorial found at https://heartbeat.fritz.ai/chat-app-with-react-native-part-1-build-reusable-ui-form-elements-using-react-native-paper-75d82e2ca94f
-// Part 1 to 4 are done... missing part 5 which is the db connection to store mesages in the db. 
-// The firebase db has already the THREADS collection and it is aready saving information about new rooms in there. 
+
 
 export default function ChatRoomScreen(props) {
   //firebase 
