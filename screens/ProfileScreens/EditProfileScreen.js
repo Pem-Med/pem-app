@@ -13,15 +13,13 @@ import {
   TouchableOpacity,
   Switch,
   ImageBackground,
-} from 'react-native'
-import { HelperText, HeaderButtons, Item } from 'react-navigation-header-buttons'
+} from 'react-native';
 import * as firebase from 'firebase'
 import * as ImagePicker from 'expo-image-picker'
 import { Ionicons, MaterialIcons } from '@expo/vector-icons'
-import Icon from 'react-native-vector-icons/FontAwesome'
-import UserPermission from '../../utilities/UserPermission'
-import Colors from '../../constants/Colors'
-import CustomHeaderButton from '../../components/CustomHeaderButton'
+import Icon from 'react-native-vector-icons/FontAwesome';
+import Colors from '../../constants/Colors';
+import Loading from '../../components/Loading';
 // import PhoneInput from "react-native-phone-input";
 
 const EditProfileScreen = (props) => {
@@ -44,19 +42,119 @@ const EditProfileScreen = (props) => {
 
   const [avatar, setAvatar] = useState(avatarImage)
   const [isVisible, setIsVisible] = useState(false)
+  const [loading, setLoading] = useState(false);
+
+  function uriToBlob(uri) {
+
+    return new Promise((resolve, reject) => {
+
+      const xhr = new XMLHttpRequest();
+
+      xhr.onload = function () {
+        // return the blob
+        resolve(xhr.response);
+      };
+
+      xhr.onerror = function () {
+        // something went wrong
+        reject(new Error('uriToBlob failed'));
+      };
+
+      // this helps us get a blob
+      xhr.responseType = 'blob';
+
+      xhr.open('GET', uri, true);
+      xhr.send(null);
+
+    });
+  }
+
+  //upload image to firebase
+  function uploadToFirebase(blob) {
+
+    return new Promise((resolve, reject) => {
+
+      const storageRef = firebase.storage().ref();
+      const imageName = `${uid}_profile`;
+
+      storageRef.child('avatars/' + imageName + '.jpg').put(blob, {
+        contentType: 'image/jpeg'
+      }).then((snapshot) => {
+
+        blob.close();
+
+        resolve(snapshot.ref.getDownloadURL());
+
+      }).catch((error) => {
+
+        reject(error);
+
+      });
+
+    });
+  }
 
   function addInfo() {
     if (errorName || errorTitle || errorNumber) {
       alert('Invalid input')
     } else {
-      const postData = {
-        name:   displayName,
-        title:  jobTitle,
-        number: numberType,
-        avatar,
+      setLoading(true);
+      let postData = {
+        name: displayName,
+        title: jobTitle,
+        number: numberType
+      };
+
+      //Case 1: add info and delete image
+      if (avatarImage && !avatar) {
+        //remove image from firebase
+        firebase.storage().ref(`avatars/${uid}_profile.jpg`)
+          .delete()
+          .then(() => {
+            //update user info in firebase
+            postData.avatar = '';
+            userRef.update(postData);
+          })
+          .then(() => {
+            setLoading(false);
+            props.navigation.goBack();
+          })
+          .catch(err => {
+            setLoading(false);
+            Alert.alert('Error', 'There was an error in updating the info.');
+          });
+
+      } else if (avatarImage === avatar) {
+        //Case 2: Add info only
+        userRef.update(postData)
+          .then(() => {
+            setLoading(false);
+            props.navigation.goBack();
+          })
+          .catch((err) => {
+            setLoading(false);
+            Alert.alert('Error', 'There was an error in updating the info');
+          });
+      } else {
+        //Case 3: Add info and image
+        //first upload image
+        uriToBlob(avatar)
+          .then((blob) => uploadToFirebase(blob))
+          .then((url) => {
+            //then update user info in firebase
+            postData.avatar = url;
+            userRef.update(postData);
+          })
+          .then(() => {
+            setLoading(false);
+            props.navigation.goBack();
+          })
+          .catch((err) => {
+            setLoading(false);
+            Alert.alert('Error', 'There was an error in updating the info');
+          });
       }
-      userRef.update(postData)
-      props.navigation.goBack()
+
     }
   }
 
@@ -113,9 +211,9 @@ const EditProfileScreen = (props) => {
 
   const pickImage = async () => {
     const selectedImage = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes:    ImagePicker.MediaTypeOptions.All,
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
-      quality:       1,
+      quality: 1,
     })
     if (!selectedImage.cancelled) {
       setAvatar(selectedImage.uri)
@@ -126,7 +224,11 @@ const EditProfileScreen = (props) => {
     setAvatar('')
   }
 
-  const image = !avatar ? require('../../components/img/default-profile-pic.jpg') : { uri: avatar }
+  const image = !avatar ? require('../../components/img/default-profile-pic.jpg') : { uri: avatar };
+
+  if (loading) {
+    return <Loading />
+  }
 
   return (
     <View style={styles.constainer}>
@@ -228,94 +330,94 @@ const screenWidth = Math.round(Dimensions.get('window').width)
 
 const styles = StyleSheet.create({
   constainer: {
-    flex:   1,
+    flex: 1,
     height: screenHeight,
-    width:  screenWidth,
+    width: screenWidth,
   },
   form: {
-    margin:    32,
+    margin: 32,
     marginTop: '1%',
   },
   formControl: {
     marginBottom: '3%',
   },
   profileImage: {
-    width:        screenWidth * 0.36,
+    width: screenWidth * 0.36,
     borderRadius: 100,
-    overflow:     'hidden',
-    marginTop:    '4%',
-    aspectRatio:  1,
-    left:         '5%',
-    borderColor:  'white',
-    borderWidth:  2,
+    overflow: 'hidden',
+    marginTop: '4%',
+    aspectRatio: 1,
+    left: '5%',
+    borderColor: 'white',
+    borderWidth: 2,
   },
   avatar: {
-    flex:       1,
-    width:      null,
-    height:     null,
+    flex: 1,
+    width: null,
+    height: null,
     resizeMode: 'contain',
   },
   label: {
-    fontFamily:     'open-sans-bold',
+    fontFamily: 'open-sans-bold',
     marginVertical: '4%',
-    fontSize:       0.040 * screenWidth,
+    fontSize: 0.040 * screenWidth,
   },
   input: {
     paddingHorizontal: 2,
     borderBottomColor: Colors.androidCustomWhite,
     borderBottomWidth: 1,
-    fontSize:          0.040 * screenWidth,
-    flex:              1,
+    fontSize: 0.040 * screenWidth,
+    flex: 1,
   },
   switchStyle: {
-    flex:      1,
+    flex: 1,
     marginTop: '3%',
   },
   buttonImage: {
-    borderColor:     '#8e44ad',
+    borderColor: '#8e44ad',
     backgroundColor: 'white',
-    borderRadius:    0,
-    borderWidth:     3,
+    borderRadius: 0,
+    borderWidth: 3,
   },
   buttonStyle: {
-    marginTop:    screenHeight * 0.035,
+    marginTop: screenHeight * 0.035,
     alignContent: 'center',
-    alignSelf:    'center',
-    left:         '10%',
+    alignSelf: 'center',
+    left: '10%',
   },
   buttonStyle2: {
-    marginTop:    screenHeight * 0.025,
+    marginTop: screenHeight * 0.025,
     alignContent: 'center',
-    alignSelf:    'center',
+    alignSelf: 'center',
   },
   button: {
     backgroundColor: Colors.primaryColor,
-    borderColor:     'white',
-    borderRadius:    20,
-    color:           'white',
-    fontSize:        0.045 * screenWidth,
-    fontWeight:      'bold',
-    overflow:        'hidden',
-    padding:         13,
-    textAlign:       'center',
+    borderColor: 'white',
+    borderRadius: 20,
+    color: 'white',
+    fontSize: 0.045 * screenWidth,
+    fontWeight: 'bold',
+    overflow: 'hidden',
+    padding: 13,
+    textAlign: 'center',
   },
   switchStyle: {
     flex: 1,
   },
   buttonText: {
-    alignItems:      'center',
+    alignItems: 'center',
     backgroundColor: Colors.androidCustomWhite,
-    padding:         '6%',
-    width:           '100%',
-    marginTop:       '6%',
-    right:           '5%',
+    padding: '6%',
+    width: '100%',
+    marginTop: '6%',
+    right: '5%',
     backgroundColor: Colors.primaryColor,
-    borderRadius:    10,
+    borderRadius: 10,
   },
   text: {
-    fontSize:   0.043 * screenWidth,
+    fontSize: 0.043 * screenWidth,
     fontWeight: 'bold',
-    color:      'white',
+    color: 'white',
   },
 
 })
