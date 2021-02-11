@@ -51,21 +51,21 @@ const newCmeScreen = (props) => {
 
     useEffect(() => {
         const cmeRef = firebase.database().ref(`userCmes/userId: ${firebase.auth().currentUser.uid}/cmes`)
-        const list = [];
-        cmeRef.on('value', (snapshot) => {
+        const onValuechange = cmeRef.on('value', (snapshot) => {
+            const newList = [];
             snapshot.forEach((childSnapshot) => {
-                    list.push({
+                newList.push({
                         cert: childSnapshot.val().cert,
                         exp: childSnapshot.val().exp,
                         image: childSnapshot.val().image,
                     })
                 
             });
-            
-        })
-        setList(list);
+            setList(newList);
         console.log(list)
+        })
         
+        return () => cmeRef.off('value', onValuechange)
       },[]);
 
     // useEffect(() => {
