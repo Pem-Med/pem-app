@@ -68,7 +68,7 @@ const Login = (props) => {
         }
         else if (err.code == "auth/unknown") {
           displayOKAlert("Netowrk Error", "Please verify you have an active network connection!");
-        }
+        } else {displayOKAlert("Unkwon Error", "An Unkown error has occurred please try again at another time. ")}
       });
   }
 
