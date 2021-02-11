@@ -41,7 +41,7 @@ const EditCatContentScreen = props => {
         }
         else {
 
-            dispatch(CatContentActions.createCatContent(title, selectedCategory.color, selectedCategory.id, evaluation, signs, management, medications, references, image));
+            dispatch(CatContentActions.createCatContent(title, selectedCategory.tileColor, selectedCategory.id, evaluation, signs, management, medications, references, image));
         }
         props.navigation.goBack();
     }, [dispatch, subCategoryId, selectedCategory.color, selectedCategory.id, title, evaluation, signs, management, medications, references, editedSelectedSubCategories, image]);

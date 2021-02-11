@@ -11,7 +11,6 @@ import {
 import {List, ListItem} from 'react-native-elements'
 //import styles from "react-native-phone-input/lib/styles";
 import Colors from "../constants/Colors";
-import SubCategoriesScreen from "./SubCategoriesScreen";
 
 const SubCatListItem = (props) => {
     //let title = props.navigation.getParam('categoryTitle') //get category title

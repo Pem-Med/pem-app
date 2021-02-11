@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Dimensions } from 'react-native';
 import { Button } from 'react-native-paper';
+import Colors from '../constants/Colors';
 
 const { width, height } = Dimensions.get('screen');
 
@@ -8,9 +9,10 @@ export default function FormButton({ title, modeValue, ...rest }) {
   return (
     <Button
       mode={modeValue}
-      {...rest}
       style={styles.button}
       contentStyle={styles.buttonContainer}
+      color={Colors.primaryColor}
+      {...rest}
     >
       {title}
     </Button>

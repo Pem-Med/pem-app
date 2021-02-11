@@ -16,8 +16,7 @@ import Firebase from "../backend/firebase";
 import * as Google from "expo-google-app-auth";
 import Colors from "../constants/Colors";
 import _ from "lodash";
-import * as Facebook from 'expo-facebook';
-
+import * as Facebook from "expo-facebook";
 
 function displayOKAlert(title, message) {
   Alert.alert(title, message);
@@ -46,7 +45,7 @@ const Login = (props) => {
   }, [userInfo]);
 
   useEffect(() => {
-    Facebook.initializeAsync('3384537118298352', 'med-app')
+    Facebook.initializeAsync("3384537118298352", "med-app");
   }, []);
 
   function logUserIn(email, password) {
@@ -59,10 +58,17 @@ const Login = (props) => {
         props.navigation.navigate({ routeName: "Categories" });
       })
       .catch(function (err) {
-        if (email.length === 0 || password.length === 0)
+        console.log(err.code);
+        if(err.code == "auth/invalid-email") {
+          displayOKAlert("Please enter a valid email", "Example: example@example.com")
+        } else if (email.length === 0 || password.length === 0)
           displayOKAlert("You have to fill both fields 🧐");
-        else displayOKAlert("Wrong credentials", "Try again 🧐");
-        console.log(err);
+        else if (err.code == "auth/wrong-password") {
+          displayOKAlert("Wrong credentials", "Try again 🧐")
+        }
+        else if (err.code == "auth/unknown") {
+          displayOKAlert("Netowrk Error", "Please verify you have an active network connection!");
+        } else {displayOKAlert("Unkwon Error", "An Unkown error has occurred please try again at another time. ")}
       });
   }
 
@@ -73,7 +79,6 @@ const Login = (props) => {
           "692901117220-9chumnlmcfdbtuu7j94sfk61c5mnliom.apps.googleusercontent.com",
         scopes: ["profile", "email"],
       });
-      console.log(result);
       if (result.type === "success") {
         const { idToken, accessToken } = result;
         const credential = firebase.auth.GoogleAuthProvider.credential(
@@ -106,7 +111,6 @@ const Login = (props) => {
                       isVisible: false,
                     },
                   });
-                  console.log("Profile has been created");
                 }
               });
             alert(`Welcome ${userInfo.user.displayName}`);
@@ -159,27 +163,24 @@ const Login = (props) => {
   //   setUserData(null);
   //   setImageLoadStatus(false);
   // }
-  // export async function loginWithFacebook() 
-  
-  const loginWithFacebook = async() => {
+  // export async function loginWithFacebook()
+
+  const loginWithFacebook = async () => {
     const appId = "3384537118298352";
-    const permissions = ['public_profile', 'email'];  // Permissions required, consult Facebook docs
-    
-    const {
-      type,
-      token,
-    } = await Facebook.logInWithReadPermissionsAsync(
+    const permissions = ["public_profile", "email"]; // Permissions required, consult Facebook docs
+
+    const { type, token } = await Facebook.logInWithReadPermissionsAsync(
       appId,
-      {permissions}
+      { permissions }
     );
-  
+
     switch (type) {
-      case 'success': {
-        await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);  // Set persistent auth state
+      case "success": {
+        await firebase
+          .auth()
+          .setPersistence(firebase.auth.Auth.Persistence.LOCAL); // Set persistent auth state
         const credential = firebase.auth.FacebookAuthProvider.credential(token);
         const userInfo = await firebase.auth().signInWithCredential(credential);  // Sign in with Facebook credential
-        console.log('userInfo',userInfo);
-        console.log('userInfo.user',userInfo.user); 
         firebase
         .database()
         .ref(`/users/${userInfo.user.uid}`)
@@ -202,7 +203,6 @@ const Login = (props) => {
                 isVisible: false,
               },
             });
-            console.log("Profile has been created");
           }
         });
       alert(`Welcome ${userInfo.user.displayName}`);
@@ -210,14 +210,14 @@ const Login = (props) => {
     
         // Do something with Facebook profile data
         // OR you have subscribed to auth state change, authStateChange handler will process the profile data
-        
-        return Promise.resolve({type: 'success'});
+
+        return Promise.resolve({ type: "success" });
       }
-      case 'cancel': {
-        return Promise.reject({type: 'cancel'});
+      case "cancel": {
+        return Promise.reject({ type: "cancel" });
       }
     }
-  }
+  };
 
   const loginScreenHandler = () => {
     if (showLoginScreen) logUserIn(userInfo.username, userInfo.password);
@@ -246,7 +246,6 @@ const Login = (props) => {
                 if (userInfo.password && userInfo.username)
                   setDisabledLoginButton(false);
                 setUserInfo({ ...userInfo, username: text });
-                
               }}
               autoCapitalize="none"
             />
@@ -271,6 +270,19 @@ const Login = (props) => {
         >
           <Text style={styles.loginText}>Log in</Text>
         </TouchableOpacity>
+
+        {/*TODO:***************Forgot Password******************/}
+        {showLoginScreen && (
+          <TouchableOpacity
+            style={styles.forgotPassword}
+            onPress={() => {
+              props.navigation.navigate("ResetPassword");
+            }}
+          >
+            <Text style={styles.loginText}>Forgot Password</Text>
+          </TouchableOpacity>
+        )}
+        {/*TODO:*************** END Forgot Password******************/}
         {/* {showLoginScreen && (
           <TouchableOpacity
             style={styles.googleButton}
@@ -346,12 +358,21 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primaryColor,
     borderRadius: 25,
   },
+
   disabledLoginButton: {
     marginTop: 20,
     alignSelf: "center",
     padding: 10,
     width: 250,
     backgroundColor: Colors.grayedOut,
+    borderRadius: 25,
+  },
+  forgotPassword: {
+    marginTop: 20,
+    alignSelf: "center",
+    padding: 10,
+    width: 250,
+    backgroundColor: Colors.secondaryColor,
     borderRadius: 25,
   },
   googleButton: {

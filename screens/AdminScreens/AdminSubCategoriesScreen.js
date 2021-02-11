@@ -83,7 +83,6 @@ const AdminSubCategoriesScreen = (props) => {
 AdminSubCategoriesScreen.navigationOptions = (navigationdata) => {
   const createCat = navigationdata.navigation.getParam('create')
   const catTitle = navigationdata.navigation.getParam('categoryTitle')
-  console.log(catTitle)
   return {
     headerTitle: catTitle,
     headerRight:

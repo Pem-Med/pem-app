@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
   "expo": {
     "name": "PemMedExpo",
@@ -36,3 +37,44 @@
     }
   }
 }
+=======
+{
+  "expo": {
+    "name": "PemMedExpo",
+    "slug": "pem-med-expo",
+    "privacy": "public",
+    "sdkVersion": "37.0.0",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#ffffff"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "facebookScheme": "fb3384537118298352",
+    "facebookAppId": "3384537118298352",
+    "facebookDisplayName": "med-app",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.fiu.pemmed",
+      "config": {
+        "googleSignIn": {
+          "reservedClientId": ""
+        }
+      }
+    }
+  }
+}
+>>>>>>> master

@@ -101,7 +101,6 @@ const SubCategoriesScreen = props => {
 
 SubCategoriesScreen.navigationOptions = navigationdata => {
   const catTitle = navigationdata.navigation.getParam('categoryTitle');
-  console.log(catTitle)
   return {
     headerTitle: catTitle,
     headerStyle: {

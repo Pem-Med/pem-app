@@ -6,14 +6,14 @@ import { createDrawerNavigator } from 'react-navigation-drawer';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import CategoriesScreen from '../screens/CategoriesScreen';
-import ChatTabScreen from '../screens/ChatTabScreen';
+import ChatTabScreen from '../screens/ChatScreens/ChatTabScreen';
 import SubCategoriesScreen from '../screens/SubCategoriesScreen';
 import CatContentScreen from '../screens/CatContentScreen';
-import ChatroomScreen from '../screens/ChatroomScreen';
 import ProfileScreen from '../screens/ProfileScreens/ProfileScreen';
 import CalendarScreen from '../screens/ProfileScreens/CalendarScreen';
 import LoginScreen from '../screens/LoginScreen';
 import SignUpScreen from '../screens/SignUpScreen';
+import ResetPasswordScreen from '../screens/ResetPasswordScreen';
 import FavoritesScreen from '../screens/FavoritesScreen';
 import UserProfileScreen from '../screens/ProfileScreens/UserProfileScreen';
 import CMEScreen from '../screens/CMEScreen';
@@ -29,8 +29,9 @@ import EditProfileScreen from '../screens/ProfileScreens/EditProfileScreen';
 import DrawerComponent from "../components/DrawerComponent";
 //import AppContainer from '../screens/ChatTabScreen'
 //import SignOut from '../screens/SignOut'
-import RoomScreen from '../screens/RoomScreen';
-import AddRoomScreen from '../components/AddRoomScreen';
+import ChatRoomScreen from '../screens/ChatScreens/RoomScreen';
+import AddRoomScreen from '../screens/ChatScreens/AddRoomScreen';
+import AddPrivateChatScreen from '../screens/ChatScreens/AddPrivateChatScreen';
 
 
 const defaultStackNavOptions = {
@@ -47,6 +48,9 @@ const LoginNavigator = createStackNavigator(
     },
     SignUp: {
       screen: SignUpScreen,
+    },
+    ResetPassword: {
+      screen: ResetPasswordScreen,
     },
   },
   {
@@ -79,44 +83,19 @@ const ChatNavigator = createStackNavigator(
 
   {
     Chat: ChatTabScreen,
-    AddRoom: {
-      screen: AddRoomScreen,
-    },
-    Chatroom: {
-      screen: ChatroomScreen,
-    },
     Room: {
-      screen: RoomScreen,
+      screen: ChatRoomScreen,
     },
     UserProfile: {
       screen: UserProfileScreen
     },
   },
   {
-    navigationOptions: ({ navigation }) => {
-      let tabBarVisible;
-
-      if (navigation.state.routes.length > 1) {
-        navigation.state.routes.map(route => {
-          if (route.routeName === "Chatroom") {
-            tabBarVisible = false;
-          } else {
-            tabBarVisible = true;
-          }
-        });
-      }
-
-      return {
-        tabBarVisible
-      }
-    }
-
+    defaultNavigationOptions: defaultStackNavOptions,
   },
   {
     initialRouteName: 'Chat',
   },
-  {
-  }
 );
 
 const FavNavigator = createStackNavigator(
@@ -205,6 +184,8 @@ const tabScreenConfig = {
   },
 };
 
+
+
 const MenuTabNavigator =
   Platform.OS === "android"
     ? createMaterialBottomTabNavigator(tabScreenConfig, {
@@ -226,10 +207,27 @@ const MenuTabNavigator =
       }
     );
 
+const HomeNavigator = createStackNavigator(
+  {    
+    Home: {
+     screen: MenuTabNavigator,
+     navigationOptions:{
+       headerShown: false
+     }
+    },
+    AddRoom: AddRoomScreen,
+    AddPrivateChat: AddPrivateChatScreen
+  },
+  {
+    mode: 'modal',
+    defaultNavigationOptions: defaultStackNavOptions
+  }
+);
+
 const PemNavigator = createDrawerNavigator(
   {
     Categories: {
-      screen: MenuTabNavigator,
+      screen: HomeNavigator,
       navigationOptions: {
         drawerIcon: (drawerConfig) => (
           <Ionicons
@@ -261,7 +259,8 @@ const SwitchNavigator = createSwitchNavigator(
   {
     Login: LoginNavigator,
     Main: PemNavigator,
-    TabMain: MenuTabNavigator,
+    //TabMain: MenuTabNavigator,
+
   },
   {
     initialRouteName: "Login",

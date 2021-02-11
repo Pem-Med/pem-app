@@ -47,7 +47,6 @@ export default class CME extends Component {
       .ref(`userCmes/userId:${firebase.auth().currentUser.uid}`)
       .once('value')
       .then((snapshot) => {
-        console.log('SNAPSHOT.VAL', snapshot.val())
         cmes = snapshot.val() === null ? [] : snapshot.val().cmes
       })
       .catch((err) => {
@@ -57,7 +56,6 @@ export default class CME extends Component {
     this.state = {
       cmes,
     }
-    console.log('BEGINNING STATE IS', this.state.cmes)
     this.handleCmeCert = this.handleCmeCert.bind(this)
     this.handleCmeExp = this.handleCmeExp.bind(this)
     this.handleCmePic = this.handleCmePic.bind(this)
@@ -87,15 +85,8 @@ export default class CME extends Component {
    * @param {string} userDate
    */
   isValidDate(userDate) {
-    console.log('USERDATE', userDate)
     const expDateMillis = Date.parse(userDate)
-    console.log('EXPDM', expDateMillis)
-    console.log('EXPDMbool', expDateMillis === NaN)
-    console.log('EXPDMbool2', expDateMillis == NaN)
-    console.log('EXPDM2', expDateMillis)
-    console.log('EXPDMbool3', !expDateMillis)
     if (!expDateMillis) {
-      console.log('RETURNING FIRST FALSE')
       displayOKAlert(
         'Invalid date format',
         'Please format your date as MM/DD/YYYY',
@@ -119,7 +110,6 @@ export default class CME extends Component {
       )
       return false
     }
-    console.log('RETURNING TRUE')
     return true
   }
 
@@ -130,7 +120,6 @@ export default class CME extends Component {
    * sets the userCmes in Firebase to the cmes list.
    */
   addCme()  {
-    console.log('NEWCME:', newCme)
     if (newCme.newCmeCert != '' && this.isValidDate(newCme.newCmeExp)) {
       cmes.push({
         cert: newCme.newCmeCert,
@@ -141,7 +130,6 @@ export default class CME extends Component {
       this.setState({
         cmes,
       })
-      console.log('STATE IS', this.state)
 
       firebase
         .database()
@@ -295,8 +283,7 @@ export default class CME extends Component {
     allowsEditing: true,      
     quality:       1,     
   })     
-    if (!selectedImage.cancelled) {       
-      console.log(selectedImage.uri)       
+    if (!selectedImage.cancelled) {         
       this.handleCmePic(selectedImage.uri);  
      }   
   }
