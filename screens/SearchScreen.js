@@ -160,7 +160,7 @@ class SearchBox extends Component {
           underlineColorAndroid={'white'}
           spellCheck={false}
           autoCorrect={false}
-          autoCapitalize={'none'}
+          autoCapitalize={'sentences'}
         />
       </View>
     );
@@ -200,7 +200,7 @@ class Hits extends Component {
         <View style={styles.items}>
           <FlatList keyExtractor={(hit) => hit.objectID} data={this.props.hits} renderItem={this._renderRow} />
         </View>
-      ) : null;
+      ) : <Text> No Items Found </Text>;
     return hits;
   }
 
