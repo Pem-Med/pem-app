@@ -11,6 +11,7 @@ const ALGOLIA_ADMIN_KEY = "1e3fa3d043198970c9a7a5e308287b1c";
 const ALGOLIA_INDEX_NAME = "med_Categories";
 
 export const fetchCatContent = () => async (dispatch) => {
+  console.log("Funcation Called")
   // you can access here any async code!
   const response = await fetch('https://med-app-519aa.firebaseio.com/categories.json', {
   })
