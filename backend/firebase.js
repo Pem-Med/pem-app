@@ -211,6 +211,58 @@ class Firebase {
   };
 
   append = message => this.ref.push(message);
+
+    /**
+   * Adds the CME info to the list.
+   */
+
+  AddCme = async (cmes) => {
+        const { cert, exp, image } = cmes;
+        const remoteUri = await this.getImageRemoteUri(image);
+            firebase.database().ref(`userCmes/userId: ${firebase.auth().currentUser.uid}/cmes`)
+            .push({
+                cert: cert,
+                exp: exp,
+                image: remoteUri
+              })
+              
+            .then((data) =>{
+              console.log('data', data)
+            })
+            .catch((error) =>{
+              console.log('error', error)
+            })
+}
+
+getImageRemoteUri = (image) => {
+  const photoPath = `uploads/${Date.now()}.jpg`;
+  return new Promise(async (res, rej) => {
+      const response = await fetch(image);
+      const file = await response.blob();
+      var storageRef = firebase.storage().ref();
+      let upload = storageRef.child(photoPath).put(file);
+      upload.on('state_changed', snapshot => {
+
+      }, err => {
+          rej(err);
+
+      }, async () => {
+          const url = await upload.snapshot.ref.getDownloadURL();
+          res(url);
+      }
+      )
+  })
+}
+
+GetCmesRef = (cmes) => {
+  //if list is empty
+    if (!cmes) {
+        return null;
+    }
+  return firebase.database().ref('cmes');
+
+  }
+
 }
 
 Firebase.shared = new Firebase()
