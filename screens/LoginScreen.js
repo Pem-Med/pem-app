@@ -290,8 +290,8 @@ const Login = (props) => {
           >
             <Text style={styles.loginText}>Sign in with Google</Text>
           </TouchableOpacity>
-        )}
-        {showLoginScreen && (
+        )} */}
+        {/* {showLoginScreen && (
           <TouchableOpacity
             style={styles.facebookButton}
             onPress={() => loginWithFacebook()}
