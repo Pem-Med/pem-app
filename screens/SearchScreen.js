@@ -10,15 +10,17 @@ import Highlight from './Highlight';
 import PropTypes from 'prop-types';
 import { StyleSheet, Dimensions, Text, View, TextInput, Button, FlatList, Alert } from 'react-native';
 import {Card} from 'react-native-paper';
-import Colors from '../constants/Colors'
+import Colors from '../constants/Colors';
+import algoliaConfig from '../algoliaConfig';
+
 
 
 const  {height}  = Dimensions.get('window');
 //TODO: Add 'Search results Provided by Algolia' as per Algolia free account requirements.
 //Algolia Search, App ID and API Key (Search Only)
 //All in one place, so no need to search for every place its used
-const appID =  "WK4HK1IJPD";
-const apiKey = "3ce1d6fd9eb17d864916020e10616a2d";
+const appID =  algoliaConfig.appID;
+const apiKey = algoliaConfig.searchKey;
 
 
 const styles = StyleSheet.create({

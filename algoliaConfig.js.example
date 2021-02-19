@@ -1,0 +1,8 @@
+const algoliaConfig = {
+    appID: "YOUR-APP-ID",
+    adminKey: "YOUR-ADMIN-API-KEY",
+    searchKey: "YOUR-SEARCH-KEY",
+    indexName: "YOUR-ALGOLIA-INDEX",
+}
+
+export default algoliaConfig
