@@ -16,3 +16,6 @@ node_modules
 
 #backend config
 firebaseConfig.js
+
+#algolia config
+algoliaConfig.js

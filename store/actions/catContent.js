@@ -1,4 +1,5 @@
 import CatContent from '../../models/catContent'
+import algoliaConfig from '../../algoliaConfig'
 const algoliasearch = require('algoliasearch')
 
 export const DELETE_CATCONTENT = 'DELETE_CATCONTENT'
@@ -6,9 +7,9 @@ export const CREATE_CATCONTENT = 'CREATE_CATCONTENT'
 export const UPDATE_CATCONTENT = 'UPDATE_CATCONTENT'
 export const SET_CATCONTENT = 'SET_CATCONTENT'
 
-const ALGOLIA_APP_ID = "WK4HK1IJPD";
-const ALGOLIA_ADMIN_KEY = "1e3fa3d043198970c9a7a5e308287b1c";
-const ALGOLIA_INDEX_NAME = "med_Categories";
+const ALGOLIA_APP_ID = algoliaConfig.appID;
+const ALGOLIA_ADMIN_KEY = algoliaConfig.adminKey;
+const ALGOLIA_INDEX_NAME = algoliaConfig.indexName;
 
 export const fetchCatContent = () => async (dispatch) => {
   console.log("Funcation Called")
