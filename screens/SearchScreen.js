@@ -286,6 +286,9 @@ Hits.propTypes = {
 };
 const ConnectedHits = connectInfiniteHits(Hits);
 const ConnectedStats = connectStats(({ nbHits }) => (
+  <View style={{flex: 1}}>
   <Text style={{ paddingLeft: 8 }}>{nbHits} results</Text>
+  <Text style={{textAlign: 'right', paddingRight: 8, color: "#A7A9A9"}}>Search Results provided by Algolia Instant Search</Text>
+  </View>
 ));
 
