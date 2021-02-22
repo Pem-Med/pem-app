@@ -60,6 +60,13 @@ export default function ChatRoomScreen(props) {
             ...firebaseData,
           };
 
+          if(firebaseData.createdAt){
+            data.createdAt = firebaseData.createdAt.toDate();
+          }else{
+            //timestamp will be null the first time listener returns, this takes care of that
+            data.createdAt = Date.now();
+          }
+
           return data;
         });
         
@@ -68,6 +75,7 @@ export default function ChatRoomScreen(props) {
         setLoading(false);
       });
 
+    //clean up listener
     return () => messagesListener();
   }, []);
 
@@ -82,7 +90,7 @@ export default function ChatRoomScreen(props) {
       .collection('MESSAGES')
       .add({
         text,
-        createdAt: new Date().getTime(),
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         user: user
       })
       .catch(err =>{
