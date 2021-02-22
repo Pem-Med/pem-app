@@ -1,56 +1,44 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet, Image, FlatList, TouchableOpacity, Text, Alert } from 'react-native';
 import * as firebase from 'firebase';
-import { List, Divider } from 'react-native-paper';
+import { Divider } from 'react-native-paper';
 
 import Loading from '../../components/Loading';
+import Colors from '../../constants/Colors';
+
+// resource for creating private and group chats: https://levelup.gitconnected.com/structure-firestore-firebase-for-scalable-chat-app-939c7a6cd0f5 
 
 export default AddPrivateChatScreen = props => {
     const uid = firebase.auth().currentUser.uid;
-    const db = firebase.database()
-    const usersRef = db.ref('/users');
+    const usersList = props.navigation.getParam('usersList');
+    const [loading, setLoading] = useState(false);
 
-    const [usersList, setUsersList] = useState([]);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        //get the list of all users
-        usersRef.once("value", function (snapshot) {
-            const data = snapshot.val();
-            const loadedUsers = [];
-            //transform the objects into array
-            for (const key in data) {
-                if(uid === key){
-                    //exclude current user from the list
-                    continue;
+    const handleUserPress = (selectedUser) => {
+        setLoading(true);
+        //TODO: check if this private chat between 2 people has already been created, if so navigate to it
+        firebase.firestore()
+            .collection('THREADS')
+            .add({
+                description: 'Private Chat',
+                type: 'private',
+                members: [uid, selectedUser._id],
+                createdAt: new Date().getTime(),
+                createdBy: uid       
+            })
+            .then((docRef) => {
+                setLoading(false);
+                const thread = {
+                    _id: docRef.id,
+                    name: selectedUser.name
                 }
-                const profile = data[key].profile;
-                const user = {
-                    _id: key,
-                    avatar: profile.avatar,
-                    name: profile.name,
-                    status: profile.status
-                }
-                loadedUsers.push(user);
-            }
-
-            //sort
-            loadedUsers.sort(function (a, b) {
-                let itemA = a.name.toUpperCase();
-                let itemB = b.name.toUpperCase();
-                return (itemA < itemB) ? -1 : (itemA > itemB) ? 1 : 0
+                props.navigation.navigate('Room', { thread: thread });
+            })
+            .catch((err) => {
+                console.log(err);
+                Alert.alert("Error", "There was an error creating the chat room. Please try again later.");
+                setLoading(false);
             });
-
-            //set the list
-            setUsersList(loadedUsers);
-            setLoading(false);
-        }, function (errorObject) {
-            console.log("The read failed: " + errorObject.code);
-            Alert.alert('Error', 'There was a problem loading the users');
-            props.navigation.goBack();
-            setLoading(false);
-        });
-    }, [setLoading, setUsersList]);
+    };
 
     if (loading) {
         return <Loading />
@@ -62,11 +50,11 @@ export default AddPrivateChatScreen = props => {
 
     const getStatus = ({ status }) => {
         if (status === 'Active') {
-            return '#34FFB9';
+            return Colors.active;
         } else if (status === 'Busy') {
-            return 'red';
-        }else{
-            return 'grey';
+            return Colors.busy;
+        } else {
+            return Colors.offline;
         }
     }
 
@@ -78,7 +66,7 @@ export default AddPrivateChatScreen = props => {
                 ItemSeparatorComponent={() => <Divider />}
                 renderItem={({ item }) => (
                     <TouchableOpacity
-                        onPress={() => { }}
+                        onPress={() => handleUserPress(item)}
                     >
                         <View style={styles.itemContainer}>
                             <View>

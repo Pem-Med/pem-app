@@ -34,4 +34,13 @@ export default {
         surgicalLighter: '#ffe8cc',
         toxicologyLighter: '#d5ffcc',
         traumaLighter: '#fdffcc',
+
+        //----------CHAT-------------
+        chatPurple: '#6646ee',
+        systemMessage: '#f2ed88',
+
+        //-------PROFILE-------------
+        active: '#34FFB9',
+        busy: 'red',
+        offline: 'grey'
 };

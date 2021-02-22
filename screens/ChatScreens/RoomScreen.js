@@ -3,11 +3,12 @@ import { GiftedChat, Bubble, Send, SystemMessage } from 'react-native-gifted-cha
 import { View, StyleSheet, Alert } from 'react-native';
 import { IconButton } from 'react-native-paper';
 import * as firebase from 'firebase';
+
 import Loading from '../../components/Loading';
+import Colors from '../../constants/Colors';
 
 
-// this code wis based on a tutorial found at https://heartbeat.fritz.ai/chat-app-with-react-native-part-1-build-reusable-ui-form-elements-using-react-native-paper-75d82e2ca94f
-
+// resources used for using gifted chat: https://heartbeat.fritz.ai/chat-app-with-react-native-part-1-build-reusable-ui-form-elements-using-react-native-paper-75d82e2ca94f
 
 export default function ChatRoomScreen(props) {
   //firebase 
@@ -47,9 +48,9 @@ export default function ChatRoomScreen(props) {
   //Load messages
   useEffect(() => {
     const messagesListener = firebase.firestore()
-      .collection('THREADS')
+      .collection('MESSAGE')
       .doc(thread._id)
-      .collection('MESSAGES')
+      .collection('messages')
       .orderBy('createdAt', 'desc')
       .onSnapshot(querySnapshot => {
         const loadedMessages = querySnapshot.docs.map(doc => {
@@ -60,16 +61,17 @@ export default function ChatRoomScreen(props) {
             ...firebaseData,
           };
 
-          if(firebaseData.createdAt){
+          if (firebaseData.createdAt) {
+            //convert timestamp to date object
             data.createdAt = firebaseData.createdAt.toDate();
-          }else{
+          } else {
             //timestamp will be null the first time listener returns, this takes care of that
             data.createdAt = Date.now();
           }
 
           return data;
         });
-        
+
         //disclaimer message goes first
         setMessages([...loadedMessages, messages[0]]);
         setLoading(false);
@@ -85,15 +87,15 @@ export default function ChatRoomScreen(props) {
     const user = newMessages[0].user;
 
     firebase.firestore()
-      .collection('THREADS')
+      .collection('MESSAGE')
       .doc(thread._id)
-      .collection('MESSAGES')
+      .collection('messages')
       .add({
-        text,
+        text: text,
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         user: user
       })
-      .catch(err =>{
+      .catch(err => {
         Alert.alert('Error', 'There was an error sending the message, try again later.');
       });
   }
@@ -105,15 +107,15 @@ export default function ChatRoomScreen(props) {
         wrapperStyle={{
           right: {
             // Here is the color change
-            backgroundColor: '#6646ee'
+            backgroundColor: Colors.chatPurple
           },
-          left:{
-            backgroundColor: 'white'
+          left: {
+            backgroundColor: Colors.white
           }
         }}
         textStyle={{
           right: {
-            color: '#fff'
+            color: Colors.white
           }
         }}
       />
@@ -125,7 +127,7 @@ export default function ChatRoomScreen(props) {
     return (
       <Send {...props}>
         <View style={styles.sendingContainer}>
-          <IconButton icon='send-circle' size={32} color='#6646ee' />
+          <IconButton icon='send-circle' size={32} color={Colors.chatPurple} />
         </View>
       </Send>
     );
@@ -134,7 +136,7 @@ export default function ChatRoomScreen(props) {
   function scrollToBottomComponent() {
     return (
       <View style={styles.bottomComponentContainer}>
-        <IconButton icon='chevron-double-down' size={36} color='#6646ee' />
+        <IconButton icon='chevron-double-down' size={36} color={Colors.chatPurple} />
       </View>
     );
   }
@@ -147,7 +149,7 @@ export default function ChatRoomScreen(props) {
           {...props}
           containerStyle={{
             marginBottom: 15,
-            backgroundColor: '#f2ed88',
+            backgroundColor: Colors.systemMessage,
             width: '50%',
             padding: 10,
             borderRadius: 5
