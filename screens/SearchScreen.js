@@ -8,7 +8,7 @@ import {InstantSearch,
 import algoliasearch from 'algoliasearch/lite';
 import Highlight from './Highlight';
 import PropTypes from 'prop-types';
-import { StyleSheet, Dimensions, Text, View, TextInput, Button, FlatList, Alert } from 'react-native';
+import { StyleSheet, Dimensions, Text, View, TextInput, Button, FlatList, Alert, ColorPropType } from 'react-native';
 import {Card} from 'react-native-paper';
 import Colors from '../constants/Colors';
 import algoliaConfig from '../algoliaConfig';
@@ -116,10 +116,11 @@ class SearchScreen extends Component {
     this.setState({ searchState: { ...this.state.searchState, ...nextState } });
   };
 
-  navigateTo(subCatID) {
-    this.props.navigate( {routeName: "CatContent",
+  navigateTo(subCatID, title) {
+    this.props.navigation.navigate( {routeName: "CatContent",
     params: {
-      subcategoryId: subCatID
+      subcategoryId: subCatID,
+      subcategoryTitle: title,
     }});
   }
   
@@ -136,7 +137,7 @@ class SearchScreen extends Component {
             <View style={styles.options}>
             <ConnectedStats />
             </View>
-            <ConnectedHits />
+            <ConnectedHits navigateTo={(id,title) => this.navigateTo(id, title)}/>
           </InstantSearch>
       </View>
     );
@@ -176,18 +177,6 @@ SearchBox.propTypes = {
 
 const ConnectedSearchBox = connectSearchBox(SearchBox);
 
-
-const routeToCat = ({subCatID}) => {
-  var test = SearchScreen();
-  console.log(test);
-  navigator.navigate({
-    routeName: "CatContent",
-    params: {
-      subcategoryId: subCatID
-    }
-  })
-} 
-
 class Hits extends Component {
 
   onEndReached = () => {
@@ -221,7 +210,7 @@ class Hits extends Component {
     //Create card with padding 10 all arround and elevation of 20
     //bg color is extracted from hit
     <View padding={10,10,10,10}>
-    <Card elevation={20} onPress={() => { Alert.alert("Not implemented", "Move to expanded view is not yet implemented!")}}>
+    <Card elevation={20} onPress={ () => this.props.navigateTo(hit.objectID, hit.title)}>
       <Card.Title subtitle={this._getSubTitle(hit.subId)} title={(<Text style={styles.itemName}>
           <Highlight
             attribute="title"
@@ -267,6 +256,7 @@ class Hits extends Component {
     </Card>
     </View>
   );
+
   _renderSeparator = (sectionID, rowID, adjacentRowHighlighted) => (
     <View
       key={`${sectionID}-${rowID}`}
@@ -277,7 +267,6 @@ class Hits extends Component {
     />
   );
 }
-
 
 Hits.propTypes = {
   hits: PropTypes.array.isRequired,
