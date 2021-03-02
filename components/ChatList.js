@@ -5,21 +5,35 @@ import * as firebase from 'firebase';
 
 import Loading from './Loading';
 
-export default function ChatList({ navigation }) {
-
+export default function ChatList(props) {
+  const uid = firebase.auth().currentUser.uid;
+  const usersList = props.usersList;
+  
   const [threads, setThreads] = useState([]);
   const [loading, setLoading] = useState(true);
-
+ 
   useEffect(() => {
     //add a listener to the threads
     const unsubscribe = firebase.firestore()
       .collection('THREADS')
       .onSnapshot((querySnapshot) => {
         const loadedThreads = querySnapshot.docs.map((documentSnapshot) => {
-          return {
+          const data = documentSnapshot.data();
+          let thread = {};
+
+          thread = {
             _id: documentSnapshot.id,
-            ...documentSnapshot.data(),
+            ...data,
           };
+
+          if (thread.type === 'private') {
+            //set the thread name to the user you are messaging
+            //TODO: Fix this for group messages
+            const otherUser = thread.members.filter((user) => user !== uid)[0];
+            thread.name = usersList.find((user)=> user._id === otherUser).name
+          }
+
+          return thread;
         });
 
         setThreads(loadedThreads);
@@ -52,7 +66,7 @@ export default function ChatList({ navigation }) {
           ItemSeparatorComponent={() => <Divider />}
           renderItem={({ item }) => (
             <TouchableOpacity
-              onPress={() => navigation.navigate('Room', { thread: item })}
+              onPress={() => props.navigation.navigate('Room', { thread: item })}
             >
               <List.Item
                 title={item.name}

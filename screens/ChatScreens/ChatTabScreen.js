@@ -1,11 +1,14 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { View, Modal, TouchableOpacity, Text, StyleSheet, Platform, TouchableNativeFeedback } from 'react-native';
+import { View, StyleSheet, Platform, } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
+import { IconButton } from 'react-native-paper';
+import * as firebase from 'firebase';
+
 import CustomHeaderButton from '../../components/CustomHeaderButton';
 import ChatList from '../../components/ChatList';
 import Colors from '../../constants/Colors';
-import { IconButton } from 'react-native-paper';
-import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel } from 'react-native-simple-radio-button';
+import RadioModal from '../../components/RadioModal';
+import Loading from '../../components/Loading';
 
 
 /**
@@ -13,17 +16,60 @@ import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel } from 'reac
  * a user sees when they click on the chat section, and is meant to display all the chat rooms
  */
 const ChatTabScreen = (props) => {
-    const radio_props = [
+    const usersRef = firebase.database().ref('/users');
+    const uid = firebase.auth().currentUser.uid;
+    const radioOptions = [
         { label: 'Global Room', value: 0 },
         { label: 'Private', value: 1 }
     ];
-    const [chatType, setChatType] = useState(0);
+    
     const [modalVisible, setModalVisible] = useState(false);
+    const [usersList, setUsersList] = useState([]);
+    const [loading, setLoading] = useState(false);
 
-    let TouchableCmp = TouchableOpacity;
-    if (Platform.OS === 'android' && Platform.Version >= 21) {
-        TouchableCmp = TouchableNativeFeedback
-    }
+    //set up listener for user profiles
+    useEffect(() => {
+        setLoading(true);
+        const onValueChange = usersRef.on("value", function (snapshot) {
+            const data = snapshot.val();
+            const loadedUsers = [];
+            //transform the objects into array
+            for (const key in data) {
+                if (uid === key) {
+                    //exclude current user from the list
+                    continue;
+                }
+                const profile = data[key].profile;
+                const user = {
+                    _id: key,
+                    avatar: profile.avatar,
+                    name: profile.name,
+                    status: profile.status
+                }
+                loadedUsers.push(user);
+            }
+
+            //sort
+            loadedUsers.sort(function (a, b) {
+                let itemA = a.name.toUpperCase();
+                let itemB = b.name.toUpperCase();
+                return (itemA < itemB) ? -1 : (itemA > itemB) ? 1 : 0
+            });
+
+            //set the list
+            setUsersList(loadedUsers);
+            setLoading(false);
+        }, function (errorObject) {
+            console.log("The read failed: " + errorObject.code);
+            Alert.alert('Error', 'There was a problem loading the users');
+            props.navigation.goBack();
+            setLoading(false);
+        });
+
+        //clean up listener
+        return () => usersRef.off('value', onValueChange);
+
+    }, [setLoading, setUsersList]);
 
     //set up handler for button on header to open the modal
     const createHandler = useCallback(() => {
@@ -34,82 +80,30 @@ const ChatTabScreen = (props) => {
         props.navigation.setParams({ create: createHandler })
     }, [createHandler]);
 
-    const navigateToCreate = () => {
+    const navigateToCreate = (selectedOption) => {
         setModalVisible(false);
-        if (chatType == 0) {
+        if (selectedOption == 0) {
             props.navigation.navigate('AddRoom');
         } else {
-            props.navigation.navigate('AddPrivateChat');
+            props.navigation.navigate('AddPrivateChat', { usersList: usersList });
         }
     };
 
+    if(loading){
+        return <Loading/>
+    }
+
     return (
         <View style={styles.screen}>
-            <ChatList navigation={props.navigation} ></ChatList>
-            <Modal
-                animationType="slide"
-                transparent={true}
+            <ChatList navigation={props.navigation} usersList={usersList} ></ChatList>
+            <RadioModal
                 visible={modalVisible}
-                onRequestClose={() => {
-                    //on back button
-                    setModalVisible(false)
-                }}
-            >
-                <View style={styles.centeredView}>
-                    <View style={styles.modalView}>
-                        <Text style={styles.modalHeader}>Choose the type of chat:</Text>
-                        <View style={styles.radioButtonsContainer}>
-                            <RadioForm
-                                animation={false}
-                            >
-                                {/* To create radio buttons, loop through your array of options */}
-                                {
-                                    radio_props.map((obj, i) => (
-                                        <RadioButton
-                                            labelHorizontal={true}
-                                            key={i}
-                                            style={styles.radioButton}
-                                        >
-                                            <RadioButtonInput
-                                                obj={obj}
-                                                index={i}
-                                                isSelected={chatType === i}
-                                                onPress={(value) => setChatType(value)}
-                                                buttonInnerColor={Colors.primaryColor}
-                                                buttonOuterColor={Colors.primaryColor}
-                                                buttonSize={15}
-                                            />
-                                            <RadioButtonLabel
-                                                obj={obj}
-                                                index={i}
-                                                labelHorizontal={true}
-                                                onPress={(value) => setChatType(value)}
-                                                labelStyle={styles.radioLabel}
-                                            />
-                                        </RadioButton>
-                                    ))
-                                }
-                            </RadioForm>
-                        </View>
-                        <View style={styles.modalButtonsContainer}>
-                            <TouchableCmp
-                                onPress={() => { setModalVisible(prev => !prev) }}
-                            >
-                                <View style={styles.modalButton}>
-                                    <Text style={styles.buttonText}>CANCEL</Text>
-                                </View>
-                            </TouchableCmp>
-                            <TouchableCmp
-                                onPress={navigateToCreate}
-                            >
-                                <View style={styles.modalButton}>
-                                    <Text style={styles.buttonText}>OK</Text>
-                                </View>
-                            </TouchableCmp>
-                        </View>
-                    </View>
-                </View>
-            </Modal>
+                onClose={() => setModalVisible(false)}
+                onCancel={() => setModalVisible(false)}
+                onSubmit={navigateToCreate}
+                radioOptions={radioOptions}
+                headerText={'Choose the type of chat:'}
+            />
         </View>
     );
 
@@ -122,54 +116,6 @@ const styles = StyleSheet.create({
         paddingVertical: 5,
         backgroundColor: Colors.androidCustomWhite
     },
-    centeredView: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    modalView: {
-        margin: 20,
-        backgroundColor: 'white',
-        borderRadius: 10,
-        padding: 35,
-        paddingBottom: 15,
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 2
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5
-
-    },
-    radioButtonsContainer: {
-        marginTop: 35,
-    },
-    radioButton: {
-        paddingBottom: 10
-    },
-    radioLabel: {
-        fontSize: 18,
-        paddingLeft: 20
-    },
-    modalButtonsContainer: {
-        flexDirection: 'row',
-        justifyContent: 'flex-end',
-    },
-    modalButton: {
-        padding: 15,
-    },
-    buttonText: {
-        fontSize: 15,
-        color: Colors.primaryColor,
-        fontWeight: 'bold'
-    },
-    modalHeader: {
-        textAlign: "center",
-        fontSize: 20,
-        fontWeight: 'bold'
-    }
 });
 
 
