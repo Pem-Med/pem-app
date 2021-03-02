@@ -1,4 +1,4 @@
-import React, { useState, Component } from 'react';
+import React, { useState, Component, useEffect } from 'react';
 import {InstantSearch,
   connectSearchBox,
   connectStats,
@@ -12,6 +12,10 @@ import { StyleSheet, Dimensions, Text, View, TextInput, Button, FlatList, Alert,
 import {Card} from 'react-native-paper';
 import Colors from '../constants/Colors';
 import algoliaConfig from '../algoliaConfig';
+import { useSelector, useDispatch } from 'react-redux';
+import * as CatContentActions from '.././store/actions/catContent';
+
+
 
 
 
@@ -21,6 +25,8 @@ const  {height}  = Dimensions.get('window');
 //All in one place, so no need to search for every place its used
 const appID =  algoliaConfig.appID;
 const apiKey = algoliaConfig.searchKey;
+const indexName = "med_Categories";
+
 
 
 const styles = StyleSheet.create({
@@ -101,47 +107,51 @@ const searchClient = algoliasearch(
   apiKey
 );
 
-class SearchScreen extends Component {
- appID = appID;
- apiKey = apiKey;
- indexName = "med_Categories";
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      searchState: this.props.searchState ? this.props.searchState : {},
-    };
-  }
-  onSearchStateChange = nextState => {
-    this.setState({ searchState: { ...this.state.searchState, ...nextState } });
+const SearchScreen = props => {
+//class SearchScreen extends Component {
+ const state = {
+  searchState: props.searchState ? props.searchState : {}};
+  const [loading, setLoading] = useState(false);
+const dispatch = useDispatch();
+//class SearchBox extends Component {
+  useEffect( () => {
+    const loadingCatContent = async () => {
+      console.log("Getting categories")
+      setLoading(true);
+      await dispatch(CatContentActions.fetchCatContent());
+      setLoading(false);
+      console.log("Got Categories")
+    }; 
+    loadingCatContent();
+  }, [dispatch, setLoading])
+
+  const onSearchStateChange = nextState => {
+    setState({ searchState: { ...state.searchState, ...nextState } });
   };
 
-  navigateTo(subCatID, title) {
-    this.props.navigation.navigate( {routeName: "CatContent",
+  const navigateTo = (subCatID, title) => {
+    props.navigation.navigate( {routeName: "CatContent",
     params: {
       subcategoryId: subCatID,
       subcategoryTitle: title,
     }});
   }
   
-  
-
-  render() {
     return (
       <View style={styles.maincontainer}>
           <InstantSearch searchClient={searchClient}
             appId={appID}
             apiKey={apiKey}
-            indexName={this.indexName}>
+            indexName={indexName}>
             <ConnectedSearchBox />
             <View style={styles.options}>
             <ConnectedStats />
             </View>
-            <ConnectedHits navigateTo={(id,title) => this.navigateTo(id, title)}/>
+            <ConnectedHits navigateTo={(id,title) => navigateTo(id, title)}/>
           </InstantSearch>
       </View>
     );
-  }
 }
 SearchScreen.propTypes = {
   searchState: PropTypes.object,
@@ -149,15 +159,13 @@ SearchScreen.propTypes = {
 
 export default SearchScreen;
 
-class SearchBox extends Component {
-
-  render() {
+const SearchBox = props => {
     return (
       <View style={styles.searchBoxContainer} >
         <TextInput
           style={styles.searchBox}
-          onChangeText={text => this.props.refine(text)}
-          value={this.props.currentRefinement}
+          onChangeText={text => props.refine(text)}
+          value={props.currentRefinement}
           placeholder={'Search ...'}
           clearButtonMode={'always'}
           underlineColorAndroid={'white'}
@@ -167,7 +175,6 @@ class SearchBox extends Component {
         />
       </View>
     );
-  }
 }
 
 SearchBox.propTypes = {
