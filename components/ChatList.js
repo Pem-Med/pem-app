@@ -8,10 +8,22 @@ import Loading from './Loading';
 export default function ChatList(props) {
   const uid = firebase.auth().currentUser.uid;
   const usersList = props.usersList;
-  
+
   const [threads, setThreads] = useState([]);
   const [loading, setLoading] = useState(true);
- 
+
+  const getThreadName = (members) => {
+
+    const otherUserId = members.filter((user) => user !== uid)[0];
+    const name = usersList.find((user) => user._id === otherUserId).name
+
+    if (members.length === 2) {
+      return name;
+    }
+
+    return `${name} +${members.length - 2} others`;
+  };
+
   useEffect(() => {
     //add a listener to the threads
     const unsubscribe = firebase.firestore()
@@ -29,8 +41,7 @@ export default function ChatList(props) {
           if (thread.type === 'private') {
             //set the thread name to the user you are messaging
             //TODO: Fix this for group messages
-            const otherUser = thread.members.filter((user) => user !== uid)[0];
-            thread.name = usersList.find((user)=> user._id === otherUser).name
+            thread.name = getThreadName(thread.members);
           }
 
           return thread;

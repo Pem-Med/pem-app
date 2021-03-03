@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, StyleSheet, Image, FlatList, TouchableOpacity, Text, Alert } from 'react-native';
 import * as firebase from 'firebase';
-import { Divider } from 'react-native-paper';
+import { Divider, IconButton } from 'react-native-paper';
 import { Entypo } from '@expo/vector-icons';
 
 import Loading from '../../components/Loading';
@@ -13,7 +13,6 @@ export default AddPrivateChatScreen = props => {
     const uid = firebase.auth().currentUser.uid;
     const initialList = props.navigation.getParam('usersList');
     const [usersList, setUsersList] = useState(initialList);
-    const [selectedUsers, setSelectedUsers] = useState({});
     const [loading, setLoading] = useState(false);
     const [selectedCount, setSelectedCount] = useState(0);
 
@@ -28,15 +27,46 @@ export default AddPrivateChatScreen = props => {
         }
     }, []);
 
-    const handleUserPress = (selectedUser) => {
+    // const checkGroupExisting = () => {
+    //     const groupRef = firebase.firestore().collection('THREADS')
+    //     groupRef
+    //         .where('members', 'array-contains', uid)
+    //         .onSnapshot((querySnapshot) => {
+    //             const allGroups = []
+    //             querySnapshot.forEach((doc) => {
+    //                 const data = doc.data()
+    //                 data.id = doc.id
+    //                 if (data.recentMessage) allGroups.push(data)
+    //             })
+    //             vm.groups = allGroups
+    //         })
+    // })
+
+
+    const getThreadName = (selectedUsers) => {
+        if (selectedUsers.length === 1) {
+            return selectedUsers[0].name
+        }
+
+        const name = selectedUsers[0].name;
+        return `${name} +${selectedUsers.length - 1} others`;
+    };
+
+    const handleUserPress = () => {
         setLoading(true);
+
+        const selectedUsers = usersList.filter(user => user.selected === true);
+
         //TODO: check if this private chat between 2 people has already been created, if so navigate to it
+        const members = selectedUsers.map(user => user._id);
+        members.push(uid);
+
         firebase.firestore()
             .collection('THREADS')
             .add({
                 description: 'Private Chat',
                 type: 'private',
-                members: [uid, selectedUser._id],
+                members: members,
                 createdAt: new Date().getTime(),
                 createdBy: uid
             })
@@ -44,7 +74,7 @@ export default AddPrivateChatScreen = props => {
                 setLoading(false);
                 const thread = {
                     _id: docRef.id,
-                    name: selectedUser.name
+                    name: getThreadName(selectedUsers)
                 }
                 props.navigation.navigate('Room', { thread: thread });
             })
@@ -54,6 +84,13 @@ export default AddPrivateChatScreen = props => {
                 setLoading(false);
             });
     };
+
+    //set up handler for button on header to create chat
+    const createHandler = useCallback(handleUserPress, []);
+
+    useEffect(() => {
+        props.navigation.setParams({ create: createHandler })
+    }, [createHandler]);
 
     const onSelectUser = (selectedUser) => {
         const foundUser = usersList.find(user => user._id === selectedUser._id);
@@ -140,8 +177,18 @@ export default AddPrivateChatScreen = props => {
     )
 };
 
-AddPrivateChatScreen.navigationOptions = {
-    title: 'Select Users'
+AddPrivateChatScreen.navigationOptions = navigationData => {
+    return {
+        title: 'Select Users',
+        headerRight: () => (
+            <IconButton
+                icon='check'
+                size={28}
+                color={Platform.OS === 'android' ? Colors.white : Colors.primaryColor}
+                onPress={navigationData.navigation.getParam('create')}
+            />
+        )
+    }
 };
 
 const styles = StyleSheet.create({
