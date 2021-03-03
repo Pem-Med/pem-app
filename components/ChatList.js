@@ -9,11 +9,10 @@ export default function ChatList(props) {
   const uid = firebase.auth().currentUser.uid;
   const usersList = props.usersList;
 
-  const [threads, setThreads] = useState([]);
+  const [threads, setThreads] = useState({ global: [], private: [] });
   const [loading, setLoading] = useState(true);
 
   const getThreadName = (members) => {
-
     const otherUserId = members.filter((user) => user !== uid)[0];
     const name = usersList.find((user) => user._id === otherUserId).name
 
@@ -24,31 +23,41 @@ export default function ChatList(props) {
     return `${name} +${members.length - 2} others`;
   };
 
+  const transformLoadedData = (querySnapshot) => {
+    const loadedThreads = querySnapshot.docs.map((documentSnapshot) => {
+      const data = documentSnapshot.data();
+      let thread = {};
+
+      thread = {
+        _id: documentSnapshot.id,
+        ...data,
+      };
+
+      if (thread.type === 'private') {
+        //set the thread name to the user you are messaging
+        thread.name = getThreadName(thread.members);
+      }
+
+      return thread;
+    });
+
+    return loadedThreads;
+  }
+
+  //add a listener for private chats
   useEffect(() => {
-    //add a listener to the threads
     const unsubscribe = firebase.firestore()
       .collection('THREADS')
+      .where('members', 'array-contains', uid)
       .onSnapshot((querySnapshot) => {
-        const loadedThreads = querySnapshot.docs.map((documentSnapshot) => {
-          const data = documentSnapshot.data();
-          let thread = {};
+        const loadedThreads = transformLoadedData(querySnapshot);
 
-          thread = {
-            _id: documentSnapshot.id,
-            ...data,
-          };
-
-          if (thread.type === 'private') {
-            //set the thread name to the user you are messaging
-            //TODO: Fix this for group messages
-            thread.name = getThreadName(thread.members);
-          }
-
-          return thread;
+        setThreads(prevState => {
+          return { ...prevState, private: loadedThreads }
         });
 
-        setThreads(loadedThreads);
         setLoading(false);
+
       }, function (errorObject) {
         console.log("The read failed: " + errorObject.code);
         Alert.alert('Error', 'There was a problem loading the chats');
@@ -60,19 +69,50 @@ export default function ChatList(props) {
     return () => unsubscribe();
   }, [setLoading, setThreads]);
 
+  //add a listener for global chats
+  useEffect(() => {
+    const unsubscribe = firebase.firestore()
+      .collection('THREADS')
+      .where('type', '==', 'global')
+      .onSnapshot((querySnapshot) => {
+        const loadedThreads = transformLoadedData(querySnapshot);
+
+        setThreads(prevState => {
+          return { ...prevState, global: loadedThreads }
+        });
+
+        setLoading(false);
+
+      }, function (errorObject) {
+        console.log("The read failed: " + errorObject.code);
+        Alert.alert('Error', 'There was a problem loading the chats');
+        setLoading(false);
+      });
+
+
+    //clean up listener
+    return () => unsubscribe();
+  }, [setLoading, setThreads]);
+
+  //combine global and private chat lists
+  const getData = () => {
+    const data = threads.global.concat(threads.private);
+    return data;
+  }
+
   if (loading) {
     return <Loading />;
   }
 
   return (
     <View style={styles.container}>
-      {!threads || threads.length === 0 ?
+      {!threads || (threads.global.length === 0 && threads.private.length === 0) ?
         <View style={styles.textContainer}>
           <Text style={styles.text}>No Chats Available</Text>
         </View>
         :
         <FlatList
-          data={threads}
+          data={getData()}
           keyExtractor={(item) => item._id}
           ItemSeparatorComponent={() => <Divider />}
           renderItem={({ item }) => (

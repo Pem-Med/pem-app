@@ -30,7 +30,7 @@ export default AddPrivateChatScreen = props => {
     // const checkGroupExisting = () => {
     //     const groupRef = firebase.firestore().collection('THREADS')
     //     groupRef
-    //         .where('members', 'array-contains', uid)
+    //         .where('members', 'in', [[uid,'827V8QQ4V5YD8Yfcog6YdT3DGhl2'],['827V8QQ4V5YD8Yfcog6YdT3DGhl2',uid]])
     //         .onSnapshot((querySnapshot) => {
     //             const allGroups = []
     //             querySnapshot.forEach((doc) => {
@@ -53,9 +53,14 @@ export default AddPrivateChatScreen = props => {
     };
 
     const handleUserPress = () => {
-        setLoading(true);
-
         const selectedUsers = usersList.filter(user => user.selected === true);
+
+        if (selectedUsers.length === 0) {
+            Alert.alert('Sorry!', 'Please select at least one user.');
+            return;
+        }
+
+        setLoading(true);
 
         //TODO: check if this private chat between 2 people has already been created, if so navigate to it
         const members = selectedUsers.map(user => user._id);
@@ -140,9 +145,7 @@ export default AddPrivateChatScreen = props => {
     return (
         <View style={styles.screen}>
             <View style={styles.selectedCount}>
-                <TouchableOpacity>
-                    <Text>Selected: {selectedCount}</Text>
-                </TouchableOpacity>
+                <Text>Selected: {selectedCount}</Text>
             </View>
             <FlatList
                 data={usersList}
