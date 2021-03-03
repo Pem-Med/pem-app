@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Image, FlatList, TouchableOpacity, Text, Alert } from 'react-native';
 import * as firebase from 'firebase';
 import { Divider } from 'react-native-paper';
+import { Entypo } from '@expo/vector-icons';
 
 import Loading from '../../components/Loading';
 import Colors from '../../constants/Colors';
@@ -10,8 +11,22 @@ import Colors from '../../constants/Colors';
 
 export default AddPrivateChatScreen = props => {
     const uid = firebase.auth().currentUser.uid;
-    const usersList = props.navigation.getParam('usersList');
+    const initialList = props.navigation.getParam('usersList');
+    const [usersList, setUsersList] = useState(initialList);
+    const [selectedUsers, setSelectedUsers] = useState({});
     const [loading, setLoading] = useState(false);
+    const [selectedCount, setSelectedCount] = useState(0);
+
+    useEffect(() => {
+        //unselect all users so that next time this component shows, it is reset.
+        //called when the component unmounts
+        return function cleanup() {
+            initialList.map(user => {
+                delete user.selected;
+                return user;
+            })
+        }
+    }, []);
 
     const handleUserPress = (selectedUser) => {
         setLoading(true);
@@ -23,7 +38,7 @@ export default AddPrivateChatScreen = props => {
                 type: 'private',
                 members: [uid, selectedUser._id],
                 createdAt: new Date().getTime(),
-                createdBy: uid       
+                createdBy: uid
             })
             .then((docRef) => {
                 setLoading(false);
@@ -39,6 +54,33 @@ export default AddPrivateChatScreen = props => {
                 setLoading(false);
             });
     };
+
+    const onSelectUser = (selectedUser) => {
+        const foundUser = usersList.find(user => user._id === selectedUser._id);
+        if (foundUser.selected) {
+            //unselect this user
+            setUsersList(prevList => prevList.map(user => {
+                if (user._id === selectedUser._id) {
+                    user.selected = false;
+                    return user;
+                }
+                return user;
+            }));
+
+            setSelectedCount(count => count - 1);
+        } else {
+            //select this user
+            setUsersList(prevList => prevList.map(user => {
+                if (user._id === selectedUser._id) {
+                    user.selected = true;
+                    return user;
+                }
+                return user;
+            }));
+
+            setSelectedCount(count => count + 1);
+        }
+    }
 
     if (loading) {
         return <Loading />
@@ -60,23 +102,35 @@ export default AddPrivateChatScreen = props => {
 
     return (
         <View style={styles.screen}>
+            <View style={styles.selectedCount}>
+                <TouchableOpacity>
+                    <Text>Selected: {selectedCount}</Text>
+                </TouchableOpacity>
+            </View>
             <FlatList
                 data={usersList}
                 keyExtractor={(item) => item._id}
                 ItemSeparatorComponent={() => <Divider />}
                 renderItem={({ item }) => (
                     <TouchableOpacity
-                        onPress={() => handleUserPress(item)}
+                        onPress={() => onSelectUser(item)}
                     >
                         <View style={styles.itemContainer}>
-                            <View>
-                                <View style={styles.profileImage}>
-                                    <Image source={getProfileImage(item)} style={styles.avatar} resizeMode={'cover'} width={40} height={40} />
+                            {item.selected
+                                ?
+                                <View style={styles.selectedUser}>
+                                    <Entypo name="check" size={24} color={Colors.white} />
                                 </View>
+                                :
                                 <View>
-                                    <View style={styles.active} backgroundColor={getStatus(item)} />
+                                    <View style={styles.profileImage}>
+                                        <Image source={getProfileImage(item)} style={styles.avatar} resizeMode={'cover'} width={40} height={40} />
+                                    </View>
+                                    <View>
+                                        <View style={styles.active} backgroundColor={getStatus(item)} />
+                                    </View>
                                 </View>
-                            </View>
+                            }
                             <Text style={styles.text}>{item.name}</Text>
                         </View>
                     </TouchableOpacity>
@@ -87,7 +141,7 @@ export default AddPrivateChatScreen = props => {
 };
 
 AddPrivateChatScreen.navigationOptions = {
-    title: 'Choose User'
+    title: 'Select Users'
 };
 
 const styles = StyleSheet.create({
@@ -100,8 +154,22 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         paddingVertical: 10
     },
+    selectedCount: {
+        paddingHorizontal: 20,
+        paddingVertical: 10
+    },
     text: {
         fontSize: 15
+    },
+    selectedUser: {
+        borderRadius: 100,
+        width: 40,
+        height: 40,
+        backgroundColor: Colors.primaryColor,
+        aspectRatio: 1,
+        marginRight: 15,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     profileImage: {
         borderRadius: 100,
