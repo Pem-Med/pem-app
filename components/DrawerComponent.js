@@ -43,9 +43,9 @@ const DrawerComponent = (props) => {
 
   useEffect(() => {
     if (status === 'Active') {
-      setButtonColor('#34FFB9')
+      setButtonColor(Colors.active)
     } else if (status === 'Busy') {
-      setButtonColor('red')
+      setButtonColor(Colors.busy)
     }
   })
 

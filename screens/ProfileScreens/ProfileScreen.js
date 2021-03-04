@@ -39,7 +39,7 @@ const ProfileScreen = (props) => {
   const [avatar, setAvatar] = useState('')
   const [loading, setLoading] = useState(true)
 
-  const [buttonColor, setButtonColor] = useState('#34FFB9')
+  const [buttonColor, setButtonColor] = useState(Colors.active)
   const [selected, setSelected] = useState(false)
 
   const uid = firebase.auth().currentUser.uid
@@ -97,14 +97,14 @@ const ProfileScreen = (props) => {
 
   useEffect(() => {
     if (selected === 'Turn On') {
-      setButtonColor('#34FFB9')
+      setButtonColor(Colors.active)
       setStatus('Active')
       userRef.update({
         status,
       })
     }
     if (selected === 'Turn Off') {
-      setButtonColor('red')
+      setButtonColor(Colors.busy)
       setStatus('Busy')
       userRef.update({
         status,

@@ -1,4 +1,4 @@
-import React, { useState, Component } from 'react';
+import React, { useState, Component, useEffect } from 'react';
 import {InstantSearch,
   connectSearchBox,
   connectStats,
@@ -8,10 +8,14 @@ import {InstantSearch,
 import algoliasearch from 'algoliasearch/lite';
 import Highlight from './Highlight';
 import PropTypes from 'prop-types';
-import { StyleSheet, Dimensions, Text, View, TextInput, Button, FlatList, Alert } from 'react-native';
+import { StyleSheet, Dimensions, Text, View, TextInput, Button, FlatList, Alert, ColorPropType } from 'react-native';
 import {Card} from 'react-native-paper';
 import Colors from '../constants/Colors';
 import algoliaConfig from '../algoliaConfig';
+import { useSelector, useDispatch } from 'react-redux';
+import * as CatContentActions from '.././store/actions/catContent';
+
+
 
 
 
@@ -21,6 +25,8 @@ const  {height}  = Dimensions.get('window');
 //All in one place, so no need to search for every place its used
 const appID =  algoliaConfig.appID;
 const apiKey = algoliaConfig.searchKey;
+const indexName = "med_Categories";
+
 
 
 const styles = StyleSheet.create({
@@ -101,46 +107,51 @@ const searchClient = algoliasearch(
   apiKey
 );
 
-class SearchScreen extends Component {
- appID = appID;
- apiKey = apiKey;
- indexName = "med_Categories";
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      searchState: this.props.searchState ? this.props.searchState : {},
-    };
-  }
-  onSearchStateChange = nextState => {
-    this.setState({ searchState: { ...this.state.searchState, ...nextState } });
+const SearchScreen = props => {
+//class SearchScreen extends Component {
+ const state = {
+  searchState: props.searchState ? props.searchState : {}};
+  const [loading, setLoading] = useState(false);
+const dispatch = useDispatch();
+//class SearchBox extends Component {
+  useEffect( () => {
+    const loadingCatContent = async () => {
+      console.log("Getting categories")
+      setLoading(true);
+      await dispatch(CatContentActions.fetchCatContent());
+      setLoading(false);
+      console.log("Got Categories")
+    }; 
+    loadingCatContent();
+  }, [dispatch, setLoading])
+
+  const onSearchStateChange = nextState => {
+    setState({ searchState: { ...state.searchState, ...nextState } });
   };
 
-  navigateTo(subCatID) {
-    this.props.navigate( {routeName: "CatContent",
+  const navigateTo = (subCatID, title) => {
+    props.navigation.navigate( {routeName: "CatContent",
     params: {
-      subcategoryId: subCatID
+      subcategoryId: subCatID,
+      subcategoryTitle: title,
     }});
   }
   
-  
-
-  render() {
     return (
       <View style={styles.maincontainer}>
           <InstantSearch searchClient={searchClient}
             appId={appID}
             apiKey={apiKey}
-            indexName={this.indexName}>
+            indexName={indexName}>
             <ConnectedSearchBox />
             <View style={styles.options}>
             <ConnectedStats />
             </View>
-            <ConnectedHits />
+            <ConnectedHits navigateTo={(id,title) => navigateTo(id, title)}/>
           </InstantSearch>
       </View>
     );
-  }
 }
 SearchScreen.propTypes = {
   searchState: PropTypes.object,
@@ -148,15 +159,13 @@ SearchScreen.propTypes = {
 
 export default SearchScreen;
 
-class SearchBox extends Component {
-
-  render() {
+const SearchBox = props => {
     return (
       <View style={styles.searchBoxContainer} >
         <TextInput
           style={styles.searchBox}
-          onChangeText={text => this.props.refine(text)}
-          value={this.props.currentRefinement}
+          onChangeText={text => props.refine(text)}
+          value={props.currentRefinement}
           placeholder={'Search ...'}
           clearButtonMode={'always'}
           underlineColorAndroid={'white'}
@@ -166,7 +175,6 @@ class SearchBox extends Component {
         />
       </View>
     );
-  }
 }
 
 SearchBox.propTypes = {
@@ -175,18 +183,6 @@ SearchBox.propTypes = {
 };
 
 const ConnectedSearchBox = connectSearchBox(SearchBox);
-
-
-const routeToCat = ({subCatID}) => {
-  var test = SearchScreen();
-  console.log(test);
-  navigator.navigate({
-    routeName: "CatContent",
-    params: {
-      subcategoryId: subCatID
-    }
-  })
-} 
 
 class Hits extends Component {
 
@@ -221,7 +217,7 @@ class Hits extends Component {
     //Create card with padding 10 all arround and elevation of 20
     //bg color is extracted from hit
     <View padding={10,10,10,10}>
-    <Card elevation={20} onPress={() => { Alert.alert("Not implemented", "Move to expanded view is not yet implemented!")}}>
+    <Card elevation={20} onPress={ () => this.props.navigateTo(hit.objectID, hit.title)}>
       <Card.Title subtitle={this._getSubTitle(hit.subId)} title={(<Text style={styles.itemName}>
           <Highlight
             attribute="title"
@@ -267,6 +263,7 @@ class Hits extends Component {
     </Card>
     </View>
   );
+
   _renderSeparator = (sectionID, rowID, adjacentRowHighlighted) => (
     <View
       key={`${sectionID}-${rowID}`}
@@ -277,7 +274,6 @@ class Hits extends Component {
     />
   );
 }
-
 
 Hits.propTypes = {
   hits: PropTypes.array.isRequired,
