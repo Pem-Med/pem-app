@@ -13,9 +13,11 @@ import * as firebase from 'firebase'
 
 const fb = Firebase.shared;
 
+
 const newCmeScreen = (props) => {
     const [isVisibleForm, setIsVisibleForm] = useState(false);
     const [list, setList] = useState([]);
+    const [deleteItem, setdeleteItem] = useState([]);
     // const [ActiveRowKey, setActiveRowKey] = useState([]);
 
     const onSubmit = (cert, exp, image) => {
@@ -34,7 +36,6 @@ const newCmeScreen = (props) => {
     }
 
 
-
     const onDismiss = () => {
             Alert.alert('Oops', 'You sure you want to cancel?',
                 [
@@ -44,7 +45,7 @@ const newCmeScreen = (props) => {
 
     }
 
-    var swipeoutBtns = [
+    var swipeoutBtns = (id) = [
         {
             text: 'Edit',
             backgroundColor: 'pink',
@@ -54,24 +55,25 @@ const newCmeScreen = (props) => {
             text: 'Delete',
               backgroundColor: 'red',
               underlayColor: 'rgba(0, 0, 0, 1, 0.6)',
+            onPress: () => {
+                handleDelete();
+                console.log('Deleted!')
+            }
           }
       ]
+
 
     useEffect(() => {
         const cmeRef = firebase.database().ref(`userCmes/userId: ${firebase.auth().currentUser.uid}/cmes`)
         const onValuechange = cmeRef.on('value', (snapshot) => {
             const newList = [];
-
-            snapshot.forEach((childSnapshot) => {
-
+            snapshot.forEach((childSnapshot) => {           
                 newList.push({
                         key: childSnapshot.key,
                         cert: childSnapshot.val().cert,
                         exp: childSnapshot.val().exp,
                         image: childSnapshot.val().image,
                     });
-                    
-                
             });
             setList(newList);
             // setActiveRowKey(keys)
@@ -81,31 +83,33 @@ const newCmeScreen = (props) => {
         return () => cmeRef.off('value', onValuechange)
       },[]);
 
-    //   const cmeRef = firebase.database().ref(`userCmes/userId: ${firebase.auth().currentUser.uid}/cmes`)
-    //   cmeRef.on('value', (dataSnapshot) => {
-    //     var aux = [];
-    //     dataSnapshot.forEach((child) => {
-    //       aux.push({
-    //         date: child.val().date,
-    //         notita: child.val().notita,
-    //         id: child.key
-    //       });
-    //     });
-    //     this.setState({all_notitas: aux});
-    //   }
+          //childSnapshot.child(id).remove()
 
-//     const handleDelete = (deleteKey, setDeleteKey) = {
-//         firebase.database().ref(`userCmes/userId: ${firebase.auth().currentUser.uid}/cmes`)
-        
-//  }
+
+      function handleDelete (){
+        console.log('Deleted working?')
+        let deleteRef = firebase.database().ref(`userCmes/userId: ${firebase.auth().currentUser.uid}/cmes/`);
+        deleteRef.once("value").then((snapshot) => {
+            let masterKey = snapshot.key;
+            console.log("Master key: \n" + masterKey );
+            snapshot.forEach((childSnapshot) => {
+            let key = childSnapshot.key;
+             console.log("Here are the filtered item: " + key );
+             //deleteRef.child(key).remove();
+
+         });
+        });
+        //setdeleteItem(deleteItem);
+    }
 
      const renderItem = ({item}) => {
 
         return (
             <Swipeout
             keyExtractor = {(item) => item.key}  
+            //onClick = {() => handleDelete()}
             right={swipeoutBtns} > 
-                <View  style ={{flexDirection: 'row', marginVertical: '5%'}}>
+                <View style ={{flexDirection: 'row', marginVertical: '5%'}}>
                     <Text style={styles.cmeItem}>ID: {item.key}</Text>
                     <Text style={styles.cmeItem}>Cert: {item.cert}</Text>
                     <Text style={styles.cmeItem} >Exp: {item.exp}</Text>

@@ -223,7 +223,7 @@ class Firebase {
             .push({
                 cert: cert,
                 exp: exp,
-                image: remoteUri
+                image: remoteUri,
               })
               
             .then((data) =>{
