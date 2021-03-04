@@ -27,22 +27,6 @@ export default AddPrivateChatScreen = props => {
         }
     }, []);
 
-    // const checkGroupExisting = () => {
-    //     const groupRef = firebase.firestore().collection('THREADS')
-    //     groupRef
-    //         .where('members', 'in', [[uid,'827V8QQ4V5YD8Yfcog6YdT3DGhl2'],['827V8QQ4V5YD8Yfcog6YdT3DGhl2',uid]])
-    //         .onSnapshot((querySnapshot) => {
-    //             const allGroups = []
-    //             querySnapshot.forEach((doc) => {
-    //                 const data = doc.data()
-    //                 data.id = doc.id
-    //                 if (data.recentMessage) allGroups.push(data)
-    //             })
-    //             vm.groups = allGroups
-    //         })
-    // })
-
-
     const getThreadName = (selectedUsers) => {
         if (selectedUsers.length === 1) {
             return selectedUsers[0].name
@@ -52,17 +36,45 @@ export default AddPrivateChatScreen = props => {
         return `${name} +${selectedUsers.length - 1} others`;
     };
 
-    const handleUserPress = () => {
+    //check if group exists, only for groups of 2
+    const checkGroupExisting = async (selectedUser) => {
+        const snapshot = await firebase.firestore().collection('THREADS')
+            .where('members', 'in', [[uid, selectedUser._id], [selectedUser._id, uid]])
+            .get();
+
+        if (snapshot.empty) {
+            return;
+        } else {
+            const thread = {
+                _id: snapshot.docs[0].id,
+                ...snapshot.docs[0].data(),
+                name: getThreadName([selectedUser])
+            };
+
+            return thread;
+        }
+    };
+
+    const onCreateHandler = async () => {
         const selectedUsers = usersList.filter(user => user.selected === true);
+        setLoading(true);
 
         if (selectedUsers.length === 0) {
             Alert.alert('Sorry!', 'Please select at least one user.');
+            setLoading(false);
+
             return;
+        } else if (selectedUsers.length === 1) {
+            //check if this private chat between 2 people has already been created, if so navigate to it
+            const thread = await checkGroupExisting(selectedUsers[0]);
+
+            if (thread) {
+                setLoading(false);
+                props.navigation.navigate('Room', { thread: thread });
+                return;
+            }
         }
 
-        setLoading(true);
-
-        //TODO: check if this private chat between 2 people has already been created, if so navigate to it
         const members = selectedUsers.map(user => user._id);
         members.push(uid);
 
@@ -91,15 +103,14 @@ export default AddPrivateChatScreen = props => {
     };
 
     //set up handler for button on header to create chat
-    const createHandler = useCallback(handleUserPress, []);
+    const createHandler = useCallback(onCreateHandler, []);
 
     useEffect(() => {
         props.navigation.setParams({ create: createHandler })
     }, [createHandler]);
 
     const onSelectUser = (selectedUser) => {
-        const foundUser = usersList.find(user => user._id === selectedUser._id);
-        if (foundUser.selected) {
+        if (selectedUser.selected) {
             //unselect this user
             setUsersList(prevList => prevList.map(user => {
                 if (user._id === selectedUser._id) {
