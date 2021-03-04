@@ -13,6 +13,11 @@ import * as firebase from 'firebase'
 
 const fb = Firebase.shared;
 
+export const deleteItem = (item) => {
+    return (dispatch)=>{
+        
+    }
+}
 
 const newCmeScreen = (props) => {
     const [isVisibleForm, setIsVisibleForm] = useState(false);
@@ -87,28 +92,21 @@ const newCmeScreen = (props) => {
 
 
       function handleDelete (){
-        console.log('Deleted working?')
-        let deleteRef = firebase.database().ref(`userCmes/userId: ${firebase.auth().currentUser.uid}/cmes/`);
-        deleteRef.once("value").then((snapshot) => {
-            let masterKey = snapshot.key;
-            console.log("Master key: \n" + masterKey );
-            snapshot.forEach((childSnapshot) => {
-            let key = childSnapshot.key;
-             console.log("Here are the filtered item: " + key );
-             //deleteRef.child(key).remove();
 
+
+        // console.log('Deleted working?')
+         let deleteRef = firebase.database().ref(`userCmes/userId: ${firebase.auth().currentUser.uid}/cmes/${deleteItem}`);
+         deleteRef.remove().then(function() {
+            console.log("Deleted: " + deleteItem);
          });
-        });
-        //setdeleteItem(deleteItem);
-    }
+      }
 
      const renderItem = ({item}) => {
 
         return (
             <Swipeout
             keyExtractor = {(item) => item.key}  
-            //onClick = {() => handleDelete()}
-            right={swipeoutBtns} > 
+            right={swipeoutBtns} onOpen = {() => setdeleteItem(item.key)}> 
                 <View style ={{flexDirection: 'row', marginVertical: '5%'}}>
                     <Text style={styles.cmeItem}>ID: {item.key}</Text>
                     <Text style={styles.cmeItem}>Cert: {item.cert}</Text>
@@ -138,6 +136,7 @@ const newCmeScreen = (props) => {
                     style={{ marginTop: '5%', flexGrow: 0, marginBottom: '10%' }}
                     data={list}
                     keyExtractor = { item => item.id}
+                    onPress = {() => handleDelete(item.key)}
                     renderItem={renderItem}
                 />                
             </View>
