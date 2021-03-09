@@ -13,7 +13,7 @@ export default function ChatList(props) {
   const [loading, setLoading] = useState(true);
 
   const getThreadName = (members) => {
-    const otherUserId = members.filter((user) => user !== uid)[0];
+    const otherUserId = members.filter((userId) => userId !== uid)[0];
     const name = usersList.find((user) => user._id === otherUserId).name
 
     if (members.length === 2) {

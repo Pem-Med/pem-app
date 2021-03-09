@@ -164,6 +164,10 @@ export default function ChatRoomScreen(props) {
     )
   }
 
+  function onAvatarClicked(user){
+    props.navigation.navigate('UserProfileScreen', {ID: user._id});
+  }
+
   if (loading) {
     return <Loading />
   }
@@ -176,6 +180,7 @@ export default function ChatRoomScreen(props) {
       renderBubble={renderBubble}
       placeholder='Type your message here...'
       showUserAvatar
+      onPressAvatar={onAvatarClicked}
       alwaysShowSend
       renderSend={renderSend}
       scrollToBottom

@@ -216,7 +216,8 @@ const HomeNavigator = createStackNavigator(
      }
     },
     AddRoom: AddRoomScreen,
-    AddPrivateChat: AddPrivateChatScreen
+    AddPrivateChat: AddPrivateChatScreen,
+    UserProfileScreen: UserProfileScreen
   },
   {
     mode: 'modal',
