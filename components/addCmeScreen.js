@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, ScrollView, SafeAreaView,Text, Platform, TextInput, Button, Image, Alert, Modal, Icon } from 'react-native';
+import { View, StyleSheet, ImageBackground, ScrollView, SafeAreaView,Text, Platform, TextInput, Button, Image, Alert, Modal, Icon } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 
 const AddCmeScreen = props => {
@@ -45,10 +45,17 @@ const AddCmeScreen = props => {
 
     return (
         <SafeAreaView >
+  
         <ScrollView>
         <Modal visible={props.visible} animationType='slide' >
+        <ImageBackground
+        source={require("../components/img/colors3.jpeg")}
+        style={styles.background}
+      >
+
+        <Text style={styles.title}>{props.header}</Text>
             <View style={styles.container}>
-                <Text style={styles.title}>{props.header}</Text>
+                
 
                 {/* Name of certification */}
                 {/* Start */}
@@ -105,6 +112,8 @@ const AddCmeScreen = props => {
                 {/* End */}
 
             </View>
+            </ImageBackground>
+
         </Modal>
         </ScrollView>
         </SafeAreaView>
@@ -113,9 +122,13 @@ const AddCmeScreen = props => {
 
 const styles = StyleSheet.create({
     container: {
-        marginHorizontal: 20,
-        marginTop: 20
+        marginHorizontal: 50,
+        marginTop: 70
     },
+    background: {
+        width: "100%",
+        height: "100%",
+      },
     rowItem: {
         flexDirection: "row",
         alignItems: 'center',
@@ -146,6 +159,7 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 30,
+        marginTop: 60,
         marginBottom: 30,
         textAlign: 'center'
     },

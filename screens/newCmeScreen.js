@@ -7,7 +7,7 @@ import {
   Alert,
   FlatList,
   Image,
-  ImageBackground
+  ImageBackground,
 } from "react-native";
 import Swipeout from "react-native-swipeout";
 
@@ -126,7 +126,6 @@ const newCmeScreen = (props) => {
         source={require("../components/img/colors3.jpeg")}
         style={styles.background}
       >
-
         <View>
           <AddCmeScreen
             visible={isVisibleForm}
@@ -136,7 +135,10 @@ const newCmeScreen = (props) => {
             onDismiss={onDismiss}
           />
           <View style={styles.btn}>
-            <Button title="Add Document" onPress={() => setIsVisibleForm(true)} />
+            <Button
+              title="Add Document"
+              onPress={() => setIsVisibleForm(true)}
+            />
           </View>
         </View>
 
@@ -159,8 +161,8 @@ const styles = StyleSheet.create({
     flexDirection: "column",
   },
   background: {
-    width:  '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
   },
   btn: {
     width: "100%",
