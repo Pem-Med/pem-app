@@ -7,6 +7,7 @@ import {
   Alert,
   FlatList,
   Image,
+  ImageBackground
 } from "react-native";
 import Swipeout from "react-native-swipeout";
 
@@ -121,28 +122,34 @@ const newCmeScreen = (props) => {
 
   return (
     <View style={styles.container}>
-      <View>
-        <AddCmeScreen
-          visible={isVisibleForm}
-          header="Add Document"
-          onSubmit={onSubmit}
-          onClose={onClose}
-          onDismiss={onDismiss}
-        />
-        <View style={styles.btn}>
-          <Button title="Add Document" onPress={() => setIsVisibleForm(true)} />
-        </View>
-      </View>
+      <ImageBackground
+        source={require("../components/img/colors3.jpeg")}
+        style={styles.background}
+      >
 
-      <View>
-        <FlatList
-          style={{ marginTop: "5%", flexGrow: 0, marginBottom: "10%" }}
-          data={list}
-          keyExtractor={(item) => item.id}
-          onPress={() => handleDelete(item.key)}
-          renderItem={renderItem}
-        />
-      </View>
+        <View>
+          <AddCmeScreen
+            visible={isVisibleForm}
+            header="Add Document"
+            onSubmit={onSubmit}
+            onClose={onClose}
+            onDismiss={onDismiss}
+          />
+          <View style={styles.btn}>
+            <Button title="Add Document" onPress={() => setIsVisibleForm(true)} />
+          </View>
+        </View>
+
+        <View>
+          <FlatList
+            style={{ marginTop: "5%", flexGrow: 0, marginBottom: "10%" }}
+            data={list}
+            keyExtractor={(item) => item.id}
+            onPress={() => handleDelete(item.key)}
+            renderItem={renderItem}
+          />
+        </View>
+      </ImageBackground>
     </View>
   );
 };
@@ -150,6 +157,10 @@ const newCmeScreen = (props) => {
 const styles = StyleSheet.create({
   container: {
     flexDirection: "column",
+  },
+  background: {
+    width:  '100%',
+    height: '100%',
   },
   btn: {
     width: "100%",
