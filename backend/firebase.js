@@ -1,5 +1,6 @@
 import * as firebase from 'firebase'
 import config from '../firebaseConfig'
+import Cmes from '../models/cmes'
 
 class Firebase {
   constructor() {
@@ -217,15 +218,15 @@ class Firebase {
    */
 
   AddCme = async (cmes) => {
-        const { cert, exp, image } = cmes;
-        const remoteUri = await this.getImageRemoteUri(image);
+        const { cert, exp, image, id } = cmes;
+        const remoteUri = await this.getImageRemoteUri(image, cmes);
             firebase.database().ref(`userCmes/userId: ${firebase.auth().currentUser.uid}/cmes`)
             .push({
                 cert: cert,
                 exp: exp,
                 image: remoteUri,
+                id: id,
               })
-              
             .then((data) =>{
               console.log('data', data)
             })
@@ -234,8 +235,10 @@ class Firebase {
             })
 }
 
-getImageRemoteUri = (image) => {
-  const photoPath = `uploads/${Date.now()}.jpg`;
+getImageRemoteUri = (image, cme) => {
+
+  const photoPath = `uploads/${firebase.auth().currentUser.uid}/${cme.id}.jpg`;
+
   return new Promise(async (res, rej) => {
       const response = await fetch(image);
       const file = await response.blob();

@@ -34,9 +34,6 @@ const AddCmeScreen = props => {
     const onSubmit = () => {
             props.onSubmit(cert, exp, image);
             console.log("It submitted!")
-            // console.log(cert);
-            // console.log(exp);
-            // console.log(image);
     };
 
     const onDismiss = () => {

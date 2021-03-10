@@ -259,6 +259,7 @@ const Login = (props) => {
             />
           </>
         )}
+        
         <TouchableOpacity
           style={
             disabledLoginButton
@@ -374,24 +375,6 @@ const styles = StyleSheet.create({
     width: 250,
     backgroundColor: Colors.secondaryColor,
     borderRadius: 25,
-  },
-  googleButton: {
-    marginTop: 20,
-    alignSelf: "center",
-    padding: 10,
-    // width: '50%',
-    backgroundColor: Colors.googleBlue,
-    borderRadius: 25,
-    width: 250,
-  },
-  facebookButton: {
-    marginTop: 20,
-    alignSelf: "center",
-    padding: 10,
-    // width: '50%',
-    backgroundColor: Colors.facebookBlue,
-    borderRadius: 25,
-    width: 250,
   },
   signUpButton: {
     marginTop: 20,

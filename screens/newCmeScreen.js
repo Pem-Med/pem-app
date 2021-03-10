@@ -8,11 +8,13 @@ import {
   FlatList,
   Image,
   ImageBackground,
+  TouchableOpacity
 } from "react-native";
 import Swipeout from "react-native-swipeout";
 
 import AddCmeScreen from "../components/addCmeScreen";
 import Cmes from "../models/cmes";
+import Colors from '../constants/Colors'
 
 import "firebase/firestore";
 import Firebase from "../backend/firebase";
@@ -24,8 +26,8 @@ const fb = Firebase.shared;
 const newCmeScreen = (props) => {
   const [isVisibleForm, setIsVisibleForm] = useState(false);
   const [list, setList] = useState([]);
-  const [dataRow, setdataRow] = useState([]);
-  // const [ActiveRowKey, setActiveRowKey] = useState([]);
+  const [dataRow, setdataRow] = useState();
+  
 
   const onSubmit = (cert, exp, image) => {
     const cmes = new Cmes(cert, exp, image);
@@ -81,24 +83,29 @@ const newCmeScreen = (props) => {
           cert: childSnapshot.val().cert,
           exp: childSnapshot.val().exp,
           image: childSnapshot.val().image,
+          id: childSnapshot.val().id
         });
       });
       setList(newList);
-      console.log(newList);
     });
 
     return () => cmeRef.off("value", onValuechange);
   }, []);
 
   function handleDelete() {
+
     let deleteRef = firebase
       .database()
       .ref(
-        `userCmes/userId: ${firebase.auth().currentUser.uid}/cmes/${dataRow}`
+        `userCmes/userId: ${firebase.auth().currentUser.uid}/cmes/${dataRow.key}`
       );
     deleteRef.remove().then(function () {
-      console.log("Delete: " + dataRow);
     });
+
+    let imageRef = firebase.storage().ref(`uploads/${firebase.auth().currentUser.uid}/${dataRow.id}.jpg`);
+    imageRef.delete().then(() =>{
+    });
+
   }
 
   const renderItem = ({ item }) => {
@@ -106,7 +113,7 @@ const newCmeScreen = (props) => {
       <Swipeout
         keyExtractor={(item) => item.key}
         right={swipeoutBtns}
-        onOpen={() => setdataRow(item.key)} //when button is open, get item.key
+        onOpen={() => {setdataRow(item)}} //when button is open, get item.key
       >
         <View style={{ flexDirection: "row", marginVertical: "5%" }}>
           <Text style={styles.cmeItem}>Cert: {item.cert}</Text>
@@ -134,12 +141,12 @@ const newCmeScreen = (props) => {
             onClose={onClose}
             onDismiss={onDismiss}
           />
-          <View style={styles.btn}>
-            <Button
-              title="Add Document"
-              onPress={() => setIsVisibleForm(true)}
-            />
-          </View>
+          <TouchableOpacity style={styles.btn}>
+            <Text
+            style={styles.addBtn}
+            onPress={() => setIsVisibleForm(true)}
+            >Add Document</Text>
+          </TouchableOpacity>
         </View>
 
         <View>
@@ -147,7 +154,6 @@ const newCmeScreen = (props) => {
             style={{ marginTop: "5%", flexGrow: 0, marginBottom: "10%" }}
             data={list}
             keyExtractor={(item) => item.id}
-            onPress={() => handleDelete(item.key)}
             renderItem={renderItem}
           />
         </View>
@@ -164,12 +170,18 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
   },
+  addBtn:{
+    fontFamily: "open-sans-bold",
+    textAlign: "center",
+    color: Colors.androidCustomWhite,
+  },
   btn: {
-    width: "100%",
-    marginBottom: 15,
-    marginTop: 10,
-    justifyContent: "center",
-    backgroundColor: "black",
+    marginTop: 20,
+    alignSelf: "center",
+    padding: 10,
+    width: 250,
+    backgroundColor: Colors.primaryColor,
+    borderRadius: 25,
   },
   detailBox: {
     flex: 1,
