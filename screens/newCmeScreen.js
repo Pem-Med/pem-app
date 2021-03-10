@@ -112,6 +112,7 @@ const newCmeScreen = (props) => {
     return (
       <Swipeout
         keyExtractor={(item) => item.key}
+        close ={item !== item.key}
         right={swipeoutBtns}
         onOpen={() => {setdataRow(item)}} //when button is open, get item.key
       >
