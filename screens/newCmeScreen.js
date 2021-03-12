@@ -20,6 +20,7 @@ import "firebase/firestore";
 import Firebase from "../backend/firebase";
 import "firebase/storage";
 import * as firebase from "firebase";
+import { Card } from "react-native-paper";
 
 const fb = Firebase.shared;
 
@@ -110,21 +111,29 @@ const newCmeScreen = (props) => {
 
   const renderItem = ({ item }) => {
     return (
+      <View padding={10,10,10,10}>
       <Swipeout
         keyExtractor={(item) => item.key}
         close ={item !== item.key}
         right={swipeoutBtns}
         onOpen={() => {setdataRow(item)}} //when button is open, get item.key
       >
-        <View style={{ flexDirection: "row", marginVertical: "5%" }}>
+
+      <Card elevation ={10}>
+        <Card.Cover source = {{uri: item.image}}/>
+        <Card.Title title = {item.cert} subtitle={'Expires: ' + item.exp}/>
+       </Card>
+
+        {/* <View style={{ flexDirection: "row", marginVertical: "5%" }}>
           <Text style={styles.cmeItem}>Cert: {item.cert}</Text>
           <Text style={styles.cmeItem}>Exp: {item.exp}</Text>
           <Image
             style={{ flex: 2, height: 150 }}
             source={{ uri: item.image }}
           />
-        </View>
+        </View> */}
       </Swipeout>
+      </View>
     );
   };
 
