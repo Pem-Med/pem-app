@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Text, Alert } from 'react-native';
-import 'firebase/firestore';
+import { View, StyleSheet, Alert } from 'react-native';
 import * as firebase from 'firebase';
 
 import FormInput from '../../components/FormInput';
@@ -9,28 +8,29 @@ import Loading from '../../components/Loading';
 
 
 export default function AddRoomScreen({ navigation }) {
+  const uid = firebase.auth().currentUser.uid;
   const [roomName, setRoomName] = useState('');
   const [description, setDescription] = useState('');
   const [loading, setLoading] = useState(false);
 
   function handleButtonPress() {
     setLoading(true);
-    if (roomName.length > 0) {
-      firebase.firestore()
-        .collection('THREADS')
-        .add({
-          name: roomName ,
-          description: description        
-        })
-        .then(() => {
-          setLoading(false);
-          navigation.navigate('Chat');
-        })
-        .catch((err) => {
-          Alert.alert("Error","There was an error creating the chat room. Please try again later.");
-          setLoading(false);
-        });
-    }
+    firebase.firestore()
+      .collection('THREADS')
+      .add({
+        name: roomName,
+        description: description,
+        type: 'global',
+        createdBy: uid
+      })
+      .then(() => {
+        setLoading(false);
+        navigation.navigate('Chat');
+      })
+      .catch((err) => {
+        Alert.alert("Error", "There was an error creating the chat room. Please try again later.");
+        setLoading(false);
+      });
   }
 
   if (loading) {

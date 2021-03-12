@@ -39,7 +39,7 @@ const ProfileScreen = (props) => {
   const [avatar, setAvatar] = useState('')
   const [loading, setLoading] = useState(true)
 
-  const [buttonColor, setButtonColor] = useState('#34FFB9')
+  const [buttonColor, setButtonColor] = useState(Colors.active)
   const [selected, setSelected] = useState(false)
 
   const uid = firebase.auth().currentUser.uid
@@ -97,14 +97,14 @@ const ProfileScreen = (props) => {
 
   useEffect(() => {
     if (selected === 'Turn On') {
-      setButtonColor('#34FFB9')
+      setButtonColor(Colors.active)
       setStatus('Active')
       userRef.update({
         status,
       })
     }
     if (selected === 'Turn Off') {
-      setButtonColor('red')
+      setButtonColor(Colors.busy)
       setStatus('Busy')
       userRef.update({
         status,
@@ -200,10 +200,12 @@ const ProfileScreen = (props) => {
                   <Text style={[styles.text, styles.subText]}>{number}</Text>
                 </View>
               </View>
+              
               <View style={[styles.detailContainer]}>
                 <View style={styles.iconBox}>
                   <Entypo name={'medal'} size={20} color={'black'} />
                 </View>
+
                 <View style={styles.detailBox}>
                   <Text style={styles.text}>MyDocs:</Text>
                   <Text
@@ -218,6 +220,7 @@ const ProfileScreen = (props) => {
 
                   </Text>
                 </View>
+
               </View>
               <View style={styles.buttonStyle}>
                 <TouchableOpacity onPress={handleSignOut}>
