@@ -44,13 +44,13 @@ const AddCmeScreen = props => {
     return (
         <SafeAreaView >
   
-        <ScrollView>
+        
         <Modal visible={props.visible} animationType='slide' >
         <ImageBackground
         source={require("../components/img/colors3.jpeg")}
         style={styles.background}
       >
-
+        <ScrollView>
         <Text style={styles.title}>{props.header}</Text>
             <View style={styles.container}>
                 
@@ -94,7 +94,7 @@ const AddCmeScreen = props => {
                         <Button mode='contained'  color={'blue'} onPress={pickImage}>Pick image</Button>
                     </View>
                     <View style={styles.removeBtn}>
-                        {image && <Button  mode='contained' color={'red'}onPress={() => setImage(null)}>Remove</Button>}
+                        {image && <Button  mode='contained' color={'red'} onPress={() => setImage(null)}>Remove</Button>}
                     </View>
                 </View>
                 {/* End */}
@@ -104,7 +104,7 @@ const AddCmeScreen = props => {
                 </View>
 
                 <View style={styles.submit}>
-                    {image && <Button title='cancel' mode='contained'  color={'blue'} onPress={onDismiss}>Cancel</Button> }
+                    <Button title='cancel' mode='contained'  color={'blue'} onPress={onDismiss}>Cancel</Button>
                 </View>
 
                 <View style={styles.submit}>
@@ -116,10 +116,10 @@ const AddCmeScreen = props => {
                 {/* End */}
 
             </View>
+            </ScrollView>
             </ImageBackground>
-
-        </Modal>
-        </ScrollView>
+            
+         </Modal>
         </SafeAreaView>
     );
 };
@@ -127,7 +127,7 @@ const AddCmeScreen = props => {
 const styles = StyleSheet.create({
     container: {
         marginHorizontal: 20,
-        marginTop: 70
+        marginTop: 40
     },
     background: {
         width: "100%",
@@ -141,6 +141,10 @@ const styles = StyleSheet.create({
     },
     pickImg: {
         fontSize: 19,
+        paddingTop: 10,
+        alignContent: 'center'
+    },
+    removeBtn: {
         paddingTop: 10,
         alignContent: 'center'
     },
@@ -165,9 +169,7 @@ const styles = StyleSheet.create({
         margin: 20
     },
 
-    removeBtn: {
-        padding: 10
-    },
+
     title: {
         fontSize: 30,
         marginTop: 60,
