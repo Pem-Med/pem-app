@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { GiftedChat, Bubble, Send, SystemMessage } from 'react-native-gifted-chat';
-import { View, StyleSheet, Alert } from 'react-native';
+import { View, StyleSheet, Alert, Platform, Dimensions } from 'react-native';
 import { IconButton } from 'react-native-paper';
 import * as firebase from 'firebase';
 
@@ -28,6 +28,19 @@ export default function ChatRoomScreen(props) {
     }
   ]);
   const [loading, setLoading] = useState(true);
+
+  //this is code to fix disappearing textbox on ios
+  const [bottomOffset, setBottomOffset] = useState(0)
+  const wrapper = useRef()
+  const handleLayout = useCallback(() => {
+    if(Platform.OS === 'android'){
+      return;
+    }
+    wrapper.current && wrapper.current.measureInWindow((_x, y, _width, height) => {
+      const nextBottomOffset = Dimensions.get('window').height - y - height
+      setBottomOffset(nextBottomOffset)
+    })
+  }, [])
 
 
   //get user info
@@ -171,11 +184,12 @@ export default function ChatRoomScreen(props) {
   if (loading) {
     return <Loading />
   }
-  
+
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1 }} onLayout={handleLayout} ref={wrapper}>
       <GiftedChat
         messages={messages}
+        bottomOffset={Platform.OS === 'ios' ? bottomOffset : null}
         onSend={newMessage => handleSend(newMessage)}
         user={{ _id: uid, name: currentUser.name, avatar: currentUser.avatar }}
         renderBubble={renderBubble}

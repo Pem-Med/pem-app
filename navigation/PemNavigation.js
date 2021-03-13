@@ -198,8 +198,9 @@ const MenuTabNavigator =
     : createBottomTabNavigator(
       tabScreenConfig,
       {
-        tabOptions: {
-          activeTinColor: Colors.accentColor,
+        tabBarOptions: {
+          activeTinColor: Colors.primaryColor,
+          keyboardHidesTabBar: !(Platform.OS === 'ios'),
         },
       },
       {
