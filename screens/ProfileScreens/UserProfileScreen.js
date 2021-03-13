@@ -20,8 +20,7 @@ import CustomHeaderButton from '../../components/CustomHeaderButton'
 import Colors from '../../constants/Colors'
 
 const UserProfileScreen = (props) => {
-  const uid = props.navigation.getParam('ID')
-  const data = ''
+  const uid = props.navigation.getParam('ID');
   const db = firebase.database()
 
   let TouchableCmp = TouchableOpacity
@@ -121,11 +120,11 @@ const UserProfileScreen = (props) => {
                   <Text style={[styles.text, styles.subText]}>{number}</Text>
                 </View>
               </View>
-              <View style={styles.buttonStyle}>
+              {/* <View style={styles.buttonStyle}>
                 <TouchableOpacity>
                   <Text style={styles.button}>Send Message</Text>
                 </TouchableOpacity>
-              </View>
+              </View> */}
             </ScrollView>
           </View>
         </SafeAreaView>

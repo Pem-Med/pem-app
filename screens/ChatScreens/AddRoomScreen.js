@@ -14,18 +14,21 @@ export default function AddRoomScreen({ navigation }) {
   const [loading, setLoading] = useState(false);
 
   function handleButtonPress() {
+    const thread = {
+      name: roomName,
+      description: description,
+      type: 'global',
+      createdBy: uid
+    };
     setLoading(true);
+
     firebase.firestore()
       .collection('THREADS')
-      .add({
-        name: roomName,
-        description: description,
-        type: 'global',
-        createdBy: uid
-      })
-      .then(() => {
+      .add(thread)
+      .then((docRef) => {
         setLoading(false);
-        navigation.navigate('Chat');
+        thread._id = docRef.id;
+        navigation.navigate('Room', { thread: thread });
       })
       .catch((err) => {
         Alert.alert("Error", "There was an error creating the chat room. Please try again later.");
