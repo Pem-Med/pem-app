@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, ScrollView, SafeAreaView,Text, Platform, TextInput, Button, Image, Alert, Modal, Icon } from 'react-native';
+import { View, StyleSheet, ImageBackground, ScrollView, SafeAreaView,Text, Platform, Image, Alert, Modal, Icon } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import { Button, TextInput } from "react-native-paper";
 
 const AddCmeScreen = props => {
 
@@ -34,9 +35,6 @@ const AddCmeScreen = props => {
     const onSubmit = () => {
             props.onSubmit(cert, exp, image);
             console.log("It submitted!")
-            // console.log(cert);
-            // console.log(exp);
-            // console.log(image);
     };
 
     const onDismiss = () => {
@@ -45,17 +43,25 @@ const AddCmeScreen = props => {
 
     return (
         <SafeAreaView >
-        <ScrollView>
+  
+        
         <Modal visible={props.visible} animationType='slide' >
+        <ImageBackground
+        source={require("../components/img/colors3.jpeg")}
+        style={styles.background}
+      >
+        <ScrollView>
+        <Text style={styles.title}>{props.header}</Text>
             <View style={styles.container}>
-                <Text style={styles.title}>{props.header}</Text>
+                
 
                 {/* Name of certification */}
                 {/* Start */}
                 <View style={styles.rowItem}>
-                    <Text style={styles.label}>Cert: </Text>
                     <View style={styles.textInputContainer}>
                         <TextInput
+                            label='Certification name'
+                            mode='outlined'
                             maxLength={40}
                             multiline
                             onChangeText={text => setCert(text)}
@@ -67,9 +73,10 @@ const AddCmeScreen = props => {
                 {/* Date that certification expires */}
                 {/* Start */}
                 <View style={styles.rowItem}>
-                    <Text style={styles.label}>Expires: </Text>
                     <View style={styles.textInputContainer}>
                         <TextInput
+                            label='Expiration Date'
+                            mode='outlined'
                             maxLength={40}
                             multiline
                             onChangeText={text => setExp(text)}
@@ -78,14 +85,16 @@ const AddCmeScreen = props => {
                     </View>
                 </View>
                 {/* End */}
+
                 
                 {/* Pick and Add image */}
                 {/* Start */}
                 <View style={styles.rowItem}>
-                    <Text style={styles.label}>Pick Image: </Text>
-                    <Button title='pick an image' onPress={pickImage} />
+                    <View style={styles.pickImg}>
+                        <Button mode='contained'  color={'blue'} onPress={pickImage}>Pick image</Button>
+                    </View>
                     <View style={styles.removeBtn}>
-                        {image && <Button title='Remove' color='red' onPress={() => setImage(null)} />}
+                        {image && <Button  mode='contained' color={'red'} onPress={() => setImage(null)}>Remove</Button>}
                     </View>
                 </View>
                 {/* End */}
@@ -95,18 +104,22 @@ const AddCmeScreen = props => {
                 </View>
 
                 <View style={styles.submit}>
-                    <Button title='submit' onPress={onSubmit} />
+                    <Button title='cancel' mode='contained'  color={'blue'} onPress={onDismiss}>Cancel</Button>
                 </View>
 
                 <View style={styles.submit}>
-                    <Button title='cancel' onPress={onDismiss} />
+                    {image && <Button mode='contained'  color={'green'} title='submit' onPress={onSubmit}>Submit</Button>}
                 </View>
+
+                
 
                 {/* End */}
 
             </View>
-        </Modal>
-        </ScrollView>
+            </ScrollView>
+            </ImageBackground>
+            
+         </Modal>
         </SafeAreaView>
     );
 };
@@ -114,23 +127,37 @@ const AddCmeScreen = props => {
 const styles = StyleSheet.create({
     container: {
         marginHorizontal: 20,
-        marginTop: 20
+        marginTop: 40
     },
+    background: {
+        width: "100%",
+        height: "100%",
+      },
     rowItem: {
         flexDirection: "row",
         alignItems: 'center',
-        paddingHorizontal: 10,
+        paddingHorizontal: 5,
         justifyContent: 'space-between'
+    },
+    pickImg: {
+        fontSize: 19,
+        paddingTop: 10,
+        alignContent: 'center'
+    },
+    removeBtn: {
+        paddingTop: 10,
+        alignContent: 'center'
     },
     label: {
         fontSize: 19,
         paddingVertical: 20,
-        paddingRight: 20
+        paddingRight: 20,
+        
     },
     textInputContainer: {
         borderBottomColor: '#000000',
         borderBottomWidth: 1,
-        width: 170
+        width: '100%'
     },
     imageContainer: {
         alignItems: "center",
@@ -141,11 +168,11 @@ const styles = StyleSheet.create({
         height: 200,
         margin: 20
     },
-    removeBtn: {
-        padding: 10
-    },
+
+
     title: {
         fontSize: 30,
+        marginTop: 60,
         marginBottom: 30,
         textAlign: 'center'
     },
