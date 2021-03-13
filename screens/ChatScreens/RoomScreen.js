@@ -164,29 +164,31 @@ export default function ChatRoomScreen(props) {
     )
   }
 
-  function onAvatarClicked(user){
-    props.navigation.navigate('UserProfileScreen', {ID: user._id});
+  function onAvatarClicked(user) {
+    props.navigation.navigate('UserProfileScreen', { ID: user._id });
   }
 
   if (loading) {
     return <Loading />
   }
-
+  
   return (
-    <GiftedChat
-      messages={messages}
-      onSend={newMessage => handleSend(newMessage)}
-      user={{ _id: uid, name: currentUser.name, avatar: currentUser.avatar }}
-      renderBubble={renderBubble}
-      placeholder='Type your message here...'
-      showUserAvatar
-      onPressAvatar={onAvatarClicked}
-      alwaysShowSend
-      renderSend={renderSend}
-      scrollToBottom
-      scrollToBottomComponent={scrollToBottomComponent}
-      renderSystemMessage={renderSystemMessage}
-    />
+    <View style={{ flex: 1 }}>
+      <GiftedChat
+        messages={messages}
+        onSend={newMessage => handleSend(newMessage)}
+        user={{ _id: uid, name: currentUser.name, avatar: currentUser.avatar }}
+        renderBubble={renderBubble}
+        placeholder='Type your message here...'
+        showUserAvatar
+        onPressAvatar={onAvatarClicked}
+        alwaysShowSend
+        renderSend={renderSend}
+        scrollToBottom
+        scrollToBottomComponent={scrollToBottomComponent}
+        renderSystemMessage={renderSystemMessage}
+      />
+    </View>
   );
 }
 
