@@ -2,11 +2,13 @@ import * as firebase from 'firebase'
 import config from '../firebaseConfig'
 import Cmes from '../models/cmes'
 
+
 class Firebase {
   constructor() {
     this.init()
     this.observeAuth()
   }
+  currentUser = null;
   /**
    * Initializes Firebase.
    * The if...else is used so the app won't crash
@@ -31,9 +33,15 @@ class Firebase {
 
   onAuthStateChanged = user => {
     if (user) {
-      //console.log('-----USER:', user.email, '-----')
+     if (this.currentUser == null) {
+       this.currentUser = user;
+     }
     } else {
-      //console.log('-----NO USER-----')
+     //console.log("Last User: " + this.currentUser.email)
+     this.removeOnlineUser(this.currentUser.email);
+    // console.log("Removed user with email: " + this.currentUser.email);
+     this.currentUser = null;
+    // console.log("Resseting current User to null");
     }
   }
 
