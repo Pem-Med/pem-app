@@ -31,9 +31,7 @@ export default function CustomAccordionList({item, section}) {
             expanded={expanded}
             onPress={handleOnPress}
             description={
-              expanded ? (
-                <Text></Text>
-              ) : (
+              expanded ? null : (
                 <Highlight
                   attribute={section}
                   hit={item}
