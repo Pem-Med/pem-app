@@ -10,7 +10,7 @@ export default connectHighlight(
       //Object.values(part).map( (val, key) => console.log(key + ":" + val))
       if (part.isHighlighted) {
         return (
-          <Text key={idx} style={{ backgroundColor: '#ffff99' }}>
+          <Text key={idx} style={{ backgroundColor: '#FCD600' }}>
             {part.value}
           </Text>
         );
