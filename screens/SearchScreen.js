@@ -26,8 +26,7 @@ import { useSelector, useDispatch } from "react-redux";
 import * as CatContentActions from ".././store/actions/catContent";
 import CustomAccordionList from "../components/CustomAccordionList";
 import Highlight from "../components/Highlight";
-
-const { height } = Dimensions.get("window");
+import ScreenSize from "../constants/ScreenSize"
 //TODO: Add 'Search results Provided by Algolia' as per Algolia free account requirements.
 //Algolia Search, App ID and API Key (Search Only)
 //All in one place, so no need to search for every place its used
@@ -43,9 +42,9 @@ const styles = StyleSheet.create({
   items: {
     ...Platform.select({
       ios: {
-        height: height - 100,
+        height: ScreenSize.ScreenHeight - 100,
       },
-      android: { height: height - 200 },
+      android: { height: ScreenSize.ScreenHeight - 200 },
     }),
   },
   item: {
@@ -231,7 +230,7 @@ class Hits extends Component {
   _renderRow = ({ item: hit }) => (
     //Create card with padding 10 all arround and elevation of 20
     //bg color is extracted from hit
-    <View padding={(10, 10, 10, 10)}>
+    <View style={{transform: [{scale: 0.90}]}}>
       <Card
         elevation={20}
         onPress={() => this.props.navigateTo(hit.objectID, hit.title)}

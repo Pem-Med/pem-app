@@ -10,6 +10,7 @@ import {
   Dimensions,
   Image,
 } from "react-native";
+import ScreenSize from '../constants/ScreenSize'
 import * as firebase from "firebase";
 import "firebase/firestore";
 import Firebase from "../backend/firebase";
@@ -330,7 +331,7 @@ let screenWidth = Math.round(Dimensions.get("window").width);
 
 const styles = StyleSheet.create({
   container: {
-    // flex: 1,
+    //flex: 1,
     // justifyContent: 'center',
     // alignItems: 'center',
     backgroundColor: Colors.primaryColor,
@@ -338,7 +339,7 @@ const styles = StyleSheet.create({
   textField: {
     fontFamily: "open-sans-bold",
     height: 50,
-    width: "60%",
+    width: screenWidth * 0.70,
     textAlign: "center",
     alignSelf: "center",
     borderBottomColor: "gray",
@@ -348,41 +349,47 @@ const styles = StyleSheet.create({
   },
   email: {
     marginBottom: 5,
-    marginTop: screenHeight * 0.1,
+    marginTop: screenHeight * 0.01,
   },
   loginButton: {
     marginTop: 20,
     alignSelf: "center",
     padding: 10,
-    width: 250,
+    width: screenWidth * 0.50,
     backgroundColor: Colors.primaryColor,
     borderRadius: 25,
+    transform: [{scaleY: 0.85}]
+
   },
 
   disabledLoginButton: {
-    marginTop: 20,
+    marginTop: 10,
     alignSelf: "center",
     padding: 10,
-    width: 250,
+    width: screenWidth * 0.50,
     backgroundColor: Colors.grayedOut,
     borderRadius: 25,
+    transform: [{scaleY: 0.85}]
+
   },
   forgotPassword: {
-    marginTop: 20,
+    marginTop: 5,
     alignSelf: "center",
     padding: 10,
-    width: 250,
+    width: screenWidth * 0.50,
     backgroundColor: Colors.secondaryColor,
     borderRadius: 25,
+    transform: [{scaleY: 0.85}]
+
   },
   googleButton: {
-    marginTop: 20,
+    marginTop: 5,
     alignSelf: "center",
     padding: 10,
     // width: '50%',
     backgroundColor: Colors.googleBlue,
     borderRadius: 25,
-    width: 250,
+    width: screenWidth * 0.70,
   },
   facebookButton: {
     marginTop: 20,
@@ -394,14 +401,15 @@ const styles = StyleSheet.create({
     width: 250,
   },
   signUpButton: {
-    marginTop: 20,
+    marginTop: 5,
     borderColor: Colors.primaryColor,
     color: Colors.primaryColor,
     borderWidth: 1,
     alignSelf: "center",
     padding: 10,
-    width: 250,
+    width: screenWidth * 0.50,
     borderRadius: 25,
+    transform: [{scaleY: 0.85}]
   },
   text: {
     fontFamily: "open-sans-bold",
@@ -422,7 +430,8 @@ const styles = StyleSheet.create({
     width: 250,
     height: 250,
     alignSelf: "center",
-    marginTop: 20,
+    marginTop: 30,
+    transform: [{scaleX: 0.7}, {scaleY: 0.7}]
   },
 });
 

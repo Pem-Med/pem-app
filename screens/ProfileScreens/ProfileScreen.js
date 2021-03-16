@@ -23,6 +23,7 @@ import CustomHeaderButton from '../../components/CustomHeaderButton'
 import Colors from '../../constants/Colors'
 import SignOut from '../SignOut'
 import Login from '../LoginScreen'
+import ScreenSize from "../../constants/ScreenSize"
 
 const ProfileScreen = (props) => {
   let TouchableCmp = TouchableOpacity
@@ -145,15 +146,15 @@ const ProfileScreen = (props) => {
                 <View style={styles.status}>
                   <ModalDropdown
                     options={menuArray}
-                    dropdownStyle={{ height: 40 * menuArray.length, alignItems: 'center' }}
-                    dropdownTextStyle={{ fontSize: 0.04 * screenWidth, color: 'black' }}
-                    textStyle={{ fontSize: 0.04 * screenWidth, color: 'black', alignSelf: 'center' }}
+                    dropdownStyle={{ height: 40 * menuArray.length, alignItems: 'center', transform: [{scale: 0.90}] }}
+                    dropdownTextStyle={{ fontSize: 0.04 * ScreenSize.ScreenWidth, color: 'black', transform: [{scale: 0.90}] }}
+                    textStyle={{ fontSize: 0.04 * ScreenSize.ScreenWidth, color: 'black', alignSelf: 'center', transform: [{scale: 0.90}] }}
                     defaultValue={''}
                     onSelect={(index, value) => { setSelected(value) }}
                   >
                     <View style={{ alignItems: 'center' }}>
                       <FontAwesome name={'smile-o'} size={20} color={'black'} />
-                      <Text style={{ fontSize: 0.04 * screenWidth }}>Active Status</Text>
+                      <Text style={{ fontSize: 0.04 * ScreenSize.ScreenWidth }}>Active Status</Text>
                     </View>
                   </ModalDropdown>
                 </View>
@@ -168,7 +169,7 @@ const ProfileScreen = (props) => {
                     })}
                   >
                     <MaterialIcons name={'edit'} size={20} />
-                    <Text style={{ fontSize: 0.04 * screenWidth }}>Edit Profile</Text>
+                    <Text style={{ fontSize: 0.04 * ScreenSize.ScreenWidth }}>Edit Profile</Text>
                   </TouchableOpacity>
                 </View>
                 <View style={styles.status}>
@@ -177,7 +178,7 @@ const ProfileScreen = (props) => {
                     onPress={() => props.navigation.navigate({ routeName: 'Calendar' })}
                   >
                     <FontAwesome name={'calendar'} size={20} color={'black'} />
-                    <Text style={{ fontSize: 0.04 * screenWidth }}>Calendar</Text>
+                    <Text style={{ fontSize: 0.04 * ScreenSize.ScreenWidth }}>Calendar</Text>
                   </TouchableOpacity>
                 </View>
               </View>
@@ -237,28 +238,28 @@ const ProfileScreen = (props) => {
 
 export default ProfileScreen
 
-const screenHeight = Math.round(Dimensions.get('window').height)
-let screenWidth = Math.round(Dimensions.get('window').width)
-
 const styles = StyleSheet.create({
   container: {
     flex:            1,
     backgroundColor: 'white',
     borderRadius:    20,
   },
+  dropdownStyle: {
+
+  },
   background: {
-    width:  screenWidth,
-    height: screenHeight,
+    width:  ScreenSize.ScreenWidth,
+    height: ScreenSize.ScreenHeight,
 
   },
   responsiveBox: {
-    width:  screenWidth,
-    height: screenHeight,
+    width:  ScreenSize.ScreenWidth,
+    height: ScreenSize.ScreenHeight,
   },
   text: {
     fontFamily: 'open-sans',
     color:      'black',
-    fontSize:   0.043 * screenWidth,
+    fontSize:   0.030 * ScreenSize.ScreenWidth,
   },
   avatar: {
     flex:       1,
@@ -267,14 +268,15 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   profileImage: {
-    width:        screenWidth * 0.30,
-    height:       screenHeight * 0.20,
+    width:        ScreenSize.ScreenWidth * 0.30,
+    height:       ScreenSize.ScreenHeight * 0.20,
     borderRadius: 100,
     overflow:     'hidden',
     marginTop:    '4%',
     aspectRatio:  1,
     borderWidth:  2,
     borderColor:  'white',
+    transform: [{scale: 0.80}]
   },
   active: {
     position:     'absolute',
@@ -284,17 +286,19 @@ const styles = StyleSheet.create({
     height:       25,
     width:        25,
     borderRadius: 15,
+    transform: [{scale: 0.80}]
   },
   infoContainer: {
     alignSelf:    'center',
     alignItems:   'center',
     marginTop:    '2%',
     marginBottom: '3%',
+    transform: [{scale: 0.85}]
   },
   detailContainer: {
     flexDirection:    'row',
     alignItems:       'center',
-    height:           screenHeight * 0.101,
+    height:           ScreenSize.ScreenHeight * 0.1,
     alignSelf:        'center',
     marginTop:        '4%',
     marginHorizontal: 25,
@@ -309,17 +313,21 @@ const styles = StyleSheet.create({
     elevation:     10,
     borderRadius:  12,
     opacity:       0.8,
+    transform: [{scale: 0.90}]
+    
   },
 
   status: {
     flex:       1,
     alignItems: 'center',
+    transform: [{scale: 0.99}]
   },
   statusContainer: {
     flexDirection: 'row',
     alignSelf:     'center',
     marginBottom:  '1%',
     width:         '85%',
+    transform: [{scale: 0.80}]
   },
   iconBox: {
     flex:       0.3,
@@ -333,7 +341,7 @@ const styles = StyleSheet.create({
     marginLeft:      40,
   },
   subText: {
-    fontSize:      0.038 * screenWidth,
+    fontSize:      0.038 * ScreenSize.ScreenWidth,
     color:         'black',
     opacity:       0.5,
     textTransform: 'uppercase',
@@ -341,7 +349,7 @@ const styles = StyleSheet.create({
     marginTop:     5,
   },
   buttonStyle: {
-    marginTop:    screenHeight * 0.02,
+    marginTop:    ScreenSize.ScreenHeight * 0.02,
     alignContent: 'center',
     alignSelf:    'center',
   },
@@ -351,7 +359,7 @@ const styles = StyleSheet.create({
     borderWidth:     1,
     borderRadius:    20,
     color:           'white',
-    fontSize:        0.038 * screenWidth,
+    fontSize:        0.038 * ScreenSize.ScreenWidth,
     fontWeight:      'bold',
     overflow:        'hidden',
     padding:         15,
