@@ -81,7 +81,6 @@ export default AddPrivateChatScreen = props => {
         firebase.firestore()
             .collection('THREADS')
             .add({
-                description: 'Private Chat',
                 type: 'private',
                 members: members,
                 createdAt: new Date().getTime(),

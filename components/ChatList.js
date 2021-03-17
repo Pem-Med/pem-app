@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, FlatList, TouchableOpacity, Text, Alert } from 'react-native';
+import { View, StyleSheet, FlatList, SectionList, TouchableOpacity, Text, Alert } from 'react-native';
 import { List, Divider } from 'react-native-paper';
 import * as firebase from 'firebase';
 
 import Loading from './Loading';
+import Colors from '../constants/Colors';
 
 export default function ChatList(props) {
   const uid = firebase.auth().currentUser.uid;
@@ -94,10 +95,17 @@ export default function ChatList(props) {
     return () => unsubscribe();
   }, [setLoading, setThreads]);
 
-  //combine global and private chat lists
-  const getData = () => {
-    const data = threads.global.concat(threads.private);
-    return data;
+  //created rounded corners for the section by modifiying individual item styles
+  const getItemStyle = (index, section) => {
+    const lastItem = section.data.length - 1;
+
+    return {
+      borderTopLeftRadius: index === 0 ? 10 : 0,
+      borderTopRightRadius: index === 0 ? 10 : 0,
+      borderBottomLeftRadius: index === lastItem ? 10 : 0,
+      borderBottomRightRadius: index === lastItem ? 10 : 0,
+      backgroundColor: Colors.white,
+    }
   }
 
   if (loading) {
@@ -107,28 +115,43 @@ export default function ChatList(props) {
   return (
     <View style={styles.container}>
       {!threads || (threads.global.length === 0 && threads.private.length === 0) ?
-        <View style={styles.textContainer}>
-          <Text style={styles.text}>No Chats Available</Text>
+        <View style={styles.emptyTextContainer}>
+          <Text style={styles.emptyText}>No Chats Available</Text>
         </View>
         :
-        <FlatList
-          data={getData()}
-          keyExtractor={(item) => item._id}
+        <SectionList
           ItemSeparatorComponent={() => <Divider />}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              onPress={() => props.navigation.navigate('Room', { thread: item })}
-            >
-              <List.Item
-                title={item.name}
-                description={item.description || 'Chat Room'}
-                titleNumberOfLines={1}
-                titleStyle={styles.listTitle}
-                descriptionStyle={styles.listDescription}
-                descriptionNumberOfLines={1}
-              />
-            </TouchableOpacity>
-          )}
+          keyExtractor={(item, index) => item._id}
+          sections={[
+            { title: 'Global Chats', data: threads.global },
+            { title: 'Private Chats', data: threads.private },
+          ]}
+          renderSectionHeader={({ section }) => {
+            if (section.data.length !== 0) {
+              return (
+                <Text style={styles.sectionHeaderStyle}>
+                  {section.title}
+                </Text>
+              )
+            }
+          }}
+          renderItem={({ item, section, index }) => {
+            return (
+              <TouchableOpacity
+                onPress={() => props.navigation.navigate('Room', { thread: item })}
+              >
+                <List.Item
+                  title={item.name}
+                  description={item.description}
+                  titleNumberOfLines={1}
+                  titleStyle={styles.itemTitle}
+                  descriptionStyle={styles.itemDescription}
+                  descriptionNumberOfLines={1}
+                  style={getItemStyle(index, section)}
+                />
+              </TouchableOpacity>
+            )
+          }}
         />
       }
     </View>
@@ -137,21 +160,27 @@ export default function ChatList(props) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#f5f5f5',
-    flex: 1
+    flex: 1,
+    marginHorizontal: 10,
+    marginTop: 5
   },
-  textContainer: {
+  emptyTextContainer: {
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center'
   },
-  text: {
+  emptyText: {
     fontSize: 22
   },
-  listTitle: {
+  itemTitle: {
     fontSize: 22
   },
-  listDescription: {
+  itemDescription: {
     fontSize: 16
-  }
+  },
+  sectionHeaderStyle: {
+    fontSize: 15,
+    color: Colors.lightGrey,
+    paddingVertical: 5,
+  },
 });

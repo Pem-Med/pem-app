@@ -112,9 +112,7 @@ const ChatTabScreen = (props) => {
 const styles = StyleSheet.create({
     screen: {
         flex: 1,
-        padding: 5,
-        paddingVertical: 5,
-        backgroundColor: Colors.androidCustomWhite
+        backgroundColor: '#f2f2f2',
     },
 });
 
