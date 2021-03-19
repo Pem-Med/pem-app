@@ -1,6 +1,5 @@
 import * as firebase from 'firebase'
 import config from '../firebaseConfig'
-import Cmes from '../models/cmes'
 
 class Firebase {
   constructor() {
@@ -31,7 +30,7 @@ class Firebase {
 
   _currentUser = null
   onAuthStateChanged = user => {
-    Userstatus = "";
+    Userstatus = ''
     if (user != null) {
       this._currentUser = user;
       db = firebase.database()
@@ -47,7 +46,7 @@ class Firebase {
       }, (err) => {
         console.log(err)
       } )
-    } else if (_currentUser != null){
+    } else{
      this.removeOnlineUser(this._currentUser.email)
      this._currentUser = null;
     }
@@ -136,7 +135,10 @@ class Firebase {
         })
       } else {
         userArr = snapshot.val().onlineUsers
-        userArr.push(userEmail)
+        if(!userArr.includes(userEmail)) {
+          userArr.push(userEmail)
+        }
+        console.log(userArr)
         firebase.database().ref('onlineUsers').set({
           onlineUsers: userArr
         })
@@ -155,6 +157,7 @@ class Firebase {
    * @param {string} userEmail
    */
   removeOnlineUser(userEmail) {
+    console.log(`Removing ${userEmail} from online users.`)
     firebase.database().ref('onlineUsers').once('value').then(function (snapshot) {
       if ((snapshot.val().onlineUsers).length === 1) {
         firebase.database().ref('onlineUsers').set({
@@ -163,6 +166,7 @@ class Firebase {
       } else {
         let userArr = snapshot.val().onlineUsers
         userArr = userArr.filter(email => email != userEmail)
+        console.log(userArr)
         firebase.database().ref('onlineUsers').set({
           onlineUsers: userArr
         })
@@ -197,6 +201,7 @@ class Firebase {
 
   off() {
     this.ref.off();
+    firebase.auth().signOut();
   }
 
   get uid() {
@@ -234,15 +239,15 @@ class Firebase {
    */
 
   AddCme = async (cmes) => {
-        const { cert, exp, image, id } = cmes;
-        const remoteUri = await this.getImageRemoteUri(image, cmes);
+        const { cert, exp, image } = cmes;
+        const remoteUri = await this.getImageRemoteUri(image);
             firebase.database().ref(`userCmes/userId: ${firebase.auth().currentUser.uid}/cmes`)
             .push({
                 cert: cert,
                 exp: exp,
-                image: remoteUri,
-                id: id,
+                image: remoteUri
               })
+              
             .then((data) =>{
               console.log('data', data)
             })
@@ -251,10 +256,8 @@ class Firebase {
             })
 }
 
-getImageRemoteUri = (image, cme) => {
-
-  const photoPath = `uploads/${firebase.auth().currentUser.uid}/${cme.id}.jpg`;
-
+getImageRemoteUri = (image) => {
+  const photoPath = `uploads/${Date.now()}.jpg`;
   return new Promise(async (res, rej) => {
       const response = await fetch(image);
       const file = await response.blob();
