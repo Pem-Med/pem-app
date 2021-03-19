@@ -2,13 +2,11 @@ import * as firebase from 'firebase'
 import config from '../firebaseConfig'
 import Cmes from '../models/cmes'
 
-
 class Firebase {
   constructor() {
     this.init()
     this.observeAuth()
   }
-  currentUser = null;
   /**
    * Initializes Firebase.
    * The if...else is used so the app won't crash
@@ -31,17 +29,27 @@ class Firebase {
     firebase.auth().onAuthStateChanged(this.onAuthStateChanged);
   }
 
+  _currentUser = null
   onAuthStateChanged = user => {
-    if (user) {
-     if (this.currentUser == null) {
-       this.currentUser = user;
-     }
-    } else {
-     //console.log("Last User: " + this.currentUser.email)
-     this.removeOnlineUser(this.currentUser.email);
-    // console.log("Removed user with email: " + this.currentUser.email);
-     this.currentUser = null;
-    // console.log("Resseting current User to null");
+    Userstatus = "";
+    if (user != null) {
+      this._currentUser = user;
+      db = firebase.database()
+      userRef = db.ref(`users/${user.uid}/profile`)
+      userRef.on('value', (snapshot) => {
+         Userstatus = snapshot.val().status
+         if(Userstatus == 'Active') {
+           console.log(`Adding User ${user.email} to Online Users!`)
+           this.addOnlineUser(this._currentUser.email)
+         } else if(Userstatus == 'Busy') {
+           this.removeOnlineUser(this._currentUser.email)
+         }
+      }, (err) => {
+        console.log(err)
+      } )
+    } else if (_currentUser != null){
+     this.removeOnlineUser(this._currentUser.email)
+     this._currentUser = null;
     }
   }
 
