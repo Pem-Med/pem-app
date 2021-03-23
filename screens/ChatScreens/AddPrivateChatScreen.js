@@ -66,11 +66,11 @@ export default AddPrivateChatScreen = props => {
             return;
         } else if (selectedUsers.length === 1) {
             //check if this private chat between 2 people has already been created, if so navigate to it
-            const thread = await checkGroupExisting(selectedUsers[0]);
+            const loadedThread = await checkGroupExisting(selectedUsers[0]);
 
-            if (thread) {
+            if (loadedThread) {
                 setLoading(false);
-                props.navigation.navigate('Room', { thread: thread });
+                props.navigation.navigate('Room', { thread: loadedThread });
                 return;
             }
         }
@@ -78,20 +78,20 @@ export default AddPrivateChatScreen = props => {
         const members = selectedUsers.map(user => user._id);
         members.push(uid);
 
+        let thread = {
+            type: 'private',
+            members: members,
+            createdAt: new Date().getTime(),
+            createdBy: uid
+        };
+
         firebase.firestore()
             .collection('THREADS')
-            .add({
-                type: 'private',
-                members: members,
-                createdAt: new Date().getTime(),
-                createdBy: uid
-            })
+            .add(thread)
             .then((docRef) => {
                 setLoading(false);
-                const thread = {
-                    _id: docRef.id,
-                    name: getThreadName(selectedUsers)
-                }
+                thread._id = docRef.id;
+                thread.name = getThreadName(selectedUsers);
                 props.navigation.navigate('Room', { thread: thread });
             })
             .catch((err) => {

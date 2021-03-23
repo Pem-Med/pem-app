@@ -33,7 +33,7 @@ export default function ChatRoomScreen(props) {
   const [bottomOffset, setBottomOffset] = useState(0)
   const wrapper = useRef()
   const handleLayout = useCallback(() => {
-    if(Platform.OS === 'android'){
+    if (Platform.OS === 'android') {
       return;
     }
     wrapper.current && wrapper.current.measureInWindow((_x, y, _width, height) => {
@@ -209,7 +209,15 @@ export default function ChatRoomScreen(props) {
 ChatRoomScreen.navigationOptions = (navigationData) => {
   const thread = navigationData.navigation.getParam('thread');
   return {
-    title: thread.name
+    title: thread.name,
+    headerRight: () => (
+      <IconButton
+        icon='information-outline'
+        size={28}
+        color={Platform.OS === 'android' ? Colors.white : Colors.primaryColor}
+        onPress={() => navigationData.navigation.navigate('ChatDetail', { thread: thread })}
+      />
+    )
   }
 }
 

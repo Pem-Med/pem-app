@@ -144,4 +144,4 @@ ChatTabScreen.navigationOptions = navigationData => {
     }
 };
 
-export default ChatTabScreen; ChatTabScreen
+export default ChatTabScreen;
