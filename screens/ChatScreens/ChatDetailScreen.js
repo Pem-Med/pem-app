@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Text, FlatList, Image, TouchableOpacity, ImageBackground, Button, ScrollView } from 'react-native';
+import {
+    View, StyleSheet, Text, FlatList, Image,
+    TouchableOpacity, ImageBackground, Alert, ScrollView
+} from 'react-native';
 import { Divider } from 'react-native-paper';
 import * as firebase from 'firebase';
 
@@ -16,15 +19,13 @@ const ChatDetailScreen = props => {
     //get users info for list
     useEffect(() => {
         if (!isGlobal) {
-            fetchUsersByThread(thread)
-                .then(loadedUsers => setUsers(loadedUsers))
-                .catch(err => console.log(err));
+            fetchUsersByThread();
         } else {
             getCreatedByName();
         }
     }, [setUsers]);
 
-    const fetchUsersByThread = (thread) => {
+    const fetchUsersByThread = () => {
         thread.users = [];
         const promises = [];
         //get user info for each user in the thread to display
@@ -45,8 +46,14 @@ const ChatDetailScreen = props => {
                     });
             });
             promises.push(promise);
-        })
-        return Promise.all(promises);
+        });
+
+        Promise.all(promises)
+            .then(loadedUsers => setUsers(loadedUsers))
+            .catch(err => {
+                console.log(err);
+                Alert.alert("Error", "There was an error loading the users.");
+            });
     };
 
     const getCreatedByName = () => {
@@ -56,6 +63,7 @@ const ChatDetailScreen = props => {
                 setCreatedByName(user.name);
             }, (err) => {
                 console.log(err);
+                Alert.alert("Error", "There was an error loading created by name.");
             });
     };
 
@@ -67,13 +75,20 @@ const ChatDetailScreen = props => {
         props.navigation.navigate('UserProfileScreen', { ID: user._id });
     };
 
+    const onDelete = () => {
+        Alert.alert('Are you sure?', 'Are you sure you want to delete this chat?', [
+            { text: 'Cancel' },
+            { text: 'Delete', style: 'destructive', onPress: () => console.log('to be deleted') }
+        ]);
+    };
+
     const renderUsersList = () => {
         return (
             <>
-                <View style={styles.headerContainer}>
+                <View style={[styles.headerContainer, styles.sectionsElevation]}>
                     <Text style={styles.headerText}>Users ({thread.members.length})</Text>
                 </View>
-                <View style={styles.detailContainer}>
+                <View style={[styles.detailContainer, styles.sectionsElevation]}>
                     <FlatList
                         data={users}
                         keyExtractor={(item) => item._id}
@@ -106,20 +121,26 @@ const ChatDetailScreen = props => {
                 style={styles.background}
             >
                 <View style={styles.container}>
-                    <View style={styles.headerContainer}>
+                    {/* General Info about the chat */}
+                    <View style={[styles.headerContainer, styles.sectionsElevation]}>
                         <Text style={styles.headerText}>Info</Text>
                     </View>
-                    <View style={styles.detailContainer}>
+                    <View style={[styles.detailContainer, styles.sectionsElevation]}>
                         <Text style={styles.detailText}>Type: {thread.type}</Text>
                         {isGlobal && <Text style={styles.detailText}>Name: {thread.name}</Text>}
                         {isGlobal && <Text style={styles.detailText}>Description: {thread.description}</Text>}
                         <Text style={styles.detailText}>Created By: {createdByName}</Text>
                     </View>
+
+                    {/* Users listed if its a private chat */}
                     {!isGlobal && renderUsersList()}
+
+                    {/* delete button visible to owner of chat */}
                     {canDelete &&
-                        <View style={styles.button}>
-                            <Button title='Delete' color={Colors.DeleteColor} />
-                        </View>}
+                        <TouchableOpacity style={styles.deleteButton} onPress={onDelete}>
+                            <Text style={styles.deleteText}>Delete</Text>
+                        </TouchableOpacity>
+                    }
                 </View>
             </ImageBackground>
         </View>
@@ -133,7 +154,6 @@ ChatDetailScreen.navigationOptions = {
 const styles = StyleSheet.create({
     screen: {
         flex: 1,
-        // backgroundColor: '#f2f2f2',
     },
     background: {
         width: '100%',
@@ -156,6 +176,7 @@ const styles = StyleSheet.create({
         fontSize: 17,
         color: Colors.primaryColor,
         fontWeight: 'bold',
+        paddingLeft: 15
     },
     detailContainer: {
         backgroundColor: Colors.white,
@@ -169,6 +190,7 @@ const styles = StyleSheet.create({
     detailText: {
         fontSize: 17,
         padding: 3,
+        paddingLeft: 15,
         fontFamily: 'open-sans',
     },
     userContainer: {
@@ -188,8 +210,27 @@ const styles = StyleSheet.create({
     userName: {
         fontSize: 15
     },
-    button: {
-        width: '85%'
+    deleteButton: {
+        width: '85%',
+        backgroundColor: Colors.DeleteColor,
+        height: 20,
+        borderRadius: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 20
+    },
+    deleteText: {
+        color: Colors.white,
+    },
+    sectionsElevation: {
+        shadowColor: 'gray',
+        shadowOffset: {
+            width: 0,
+            height: 3,
+        },
+        shadowOpacity: 0.34,
+        shadowRadius: 6.27,
+        elevation: 3,
     }
 });
 
