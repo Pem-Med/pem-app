@@ -6,15 +6,17 @@ export default connectHighlight(
   ({ highlight, attribute, hit, highlightProperty }) => {
     const parsedHit = highlight({ attribute, hit, highlightProperty });
     const highligtedHit = parsedHit.map((part, idx) => {
+      //console.log("IDX: " + idx)
+      //Object.values(part).map( (val, key) => console.log(key + ":" + val))
       if (part.isHighlighted) {
         return (
-          <Text key={idx} style={{ backgroundColor: '#ffff99' }}>
+          <Text key={idx} style={{ backgroundColor: '#FCD600' }}>
             {part.value}
           </Text>
         );
       }
 
-      return part.value;
+      return part.value
     });
 
     return <Text>{highligtedHit}</Text>;
