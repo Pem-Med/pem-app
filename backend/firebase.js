@@ -213,33 +213,34 @@ class Firebase {
 
   append = message => this.ref.push(message);
 
-    /**
-   * Adds the CME info to the list.
-   */
+  /**
+ * Adds the CME info to the list.
+ */
 
   AddCme = async (cmes) => {
-        const { cert, exp, image, id } = cmes;
-        const remoteUri = await this.getImageRemoteUri(image, cmes);
-            firebase.database().ref(`userCmes/userId: ${firebase.auth().currentUser.uid}/cmes`)
-            .push({
-                cert: cert,
-                exp: exp,
-                image: remoteUri,
-                id: id,
-              })
-            .then((data) =>{
-              console.log('data', data)
-            })
-            .catch((error) =>{
-              console.log('error', error)
-            })
-}
+    const { cert, exp, image, id } = cmes;
+    const remoteUri = await this.getImageRemoteUri(image, cmes);
+    firebase.database().ref(`userCmes/userId: ${firebase.auth().currentUser.uid}/cmes`)
+      .push({
+        cert: cert,
+        exp: exp,
+        image: remoteUri,
+        id: id,
+      })
+      .then((data) => {
+        console.log('data', data)
+      })
+      .catch((error) => {
+        console.log('error', error)
+      })
+  }
 
-getImageRemoteUri = (image, cme) => {
 
-  const photoPath = `uploads/${firebase.auth().currentUser.uid}/${cme.id}.jpg`;
+  getImageRemoteUri = (image, cme) => {
 
-  return new Promise(async (res, rej) => {
+    const photoPath = `uploads/${firebase.auth().currentUser.uid}/${cme.id}.jpg`;
+
+    return new Promise(async (res, rej) => {
       const response = await fetch(image);
       const file = await response.blob();
       var storageRef = firebase.storage().ref();
@@ -247,24 +248,61 @@ getImageRemoteUri = (image, cme) => {
       upload.on('state_changed', snapshot => {
 
       }, err => {
-          rej(err);
+        rej(err);
 
       }, async () => {
-          const url = await upload.snapshot.ref.getDownloadURL();
-          res(url);
+        const url = await upload.snapshot.ref.getDownloadURL();
+        res(url);
       }
       )
-  })
-}
+    })
+  }
 
-GetCmesRef = (cmes) => {
-  //if list is empty
+  GetCmesRef = (cmes) => {
+    //if list is empty
     if (!cmes) {
-        return null;
+      return null;
     }
-  return firebase.database().ref('cmes');
+    return firebase.database().ref('cmes');
 
   }
+
+  _deleteQueryBatch = async (db, query, resolve) => {
+    const snapshot = await query.get();
+
+    const batchSize = snapshot.size;
+    if (batchSize === 0) {
+      // When there are no documents left, we are done
+      resolve();
+      return;
+    }
+
+    // Delete documents in a batch
+    const batch = db.batch();
+    snapshot.docs.forEach((doc) => {
+      batch.delete(doc.ref);
+    });
+    await batch.commit();
+
+    // Recurse on the next process tick, to avoid
+    // exploding the stack.
+    process.nextTick(() => {
+      this._deleteQueryBatch(db, query, resolve);
+    });
+  };
+
+  /**
+   * Delete all the messages for a given thread. Batch size limit is 500
+   */
+  deleteThreadMessagesSubCollection = async (threadId, batchSize) => {
+    const db = firebase.firestore();
+    const collectionRef = db.collection('MESSAGE').doc(threadId).collection('messages');
+    const query = collectionRef.orderBy('__name__').limit(batchSize);
+
+    return new Promise((resolve, reject) => {
+      this._deleteQueryBatch(db, query, resolve).catch(reject);
+    });
+  };
 
 }
 

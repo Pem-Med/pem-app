@@ -133,6 +133,9 @@ const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
 export default function App() {
   const [fontLoaded, setFontLoaded] = useState(false);
 
+  //used for batch delete in firestore
+  process.nextTick = setImmediate
+
   if (!fontLoaded) {
     return (
       <AppLoading

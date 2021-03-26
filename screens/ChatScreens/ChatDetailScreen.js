@@ -5,16 +5,21 @@ import {
 } from 'react-native';
 import { Divider } from 'react-native-paper';
 import * as firebase from 'firebase';
+import Firebase from "../../backend/firebase";
 
 import Colors from '../../constants/Colors';
+import Loading from '../../components/Loading';
 
 const ChatDetailScreen = props => {
     const thread = props.navigation.getParam('thread');
     const isGlobal = thread.type === 'global';
+    const canDelete = firebase.auth().currentUser.uid === thread.createdBy;
     const db = firebase.database();
+    const fb = Firebase.shared;
+
     const [users, setUsers] = useState([]);
     const [createdByName, setCreatedByName] = useState('');
-    const canDelete = firebase.auth().currentUser.uid === thread.createdBy;
+    const [loading, setLoading] = useState(false);
 
     //get users info for list
     useEffect(() => {
@@ -75,10 +80,30 @@ const ChatDetailScreen = props => {
         props.navigation.navigate('UserProfileScreen', { ID: user._id });
     };
 
+    const deleteThread = () => {
+        setLoading(true);
+
+        //delete message subcollection first
+        fb.deleteThreadMessagesSubCollection(thread._id, 500)
+            .then(() => {
+                //delete thread document
+                firebase.firestore().collection('THREADS').doc(thread._id).delete();
+            })
+            .then(()=>{
+                setLoading(false);
+                props.navigation.navigate('Chat');
+            })
+            .catch(err => {
+                console.log(err);
+                setLoading(false);
+                Alert.alert("Error", "There was an error deleting this chat, try again later.");
+            });
+    };
+
     const onDelete = () => {
         Alert.alert('Are you sure?', 'Are you sure you want to delete this chat?', [
             { text: 'Cancel' },
-            { text: 'Delete', style: 'destructive', onPress: () => console.log('to be deleted') }
+            { text: 'Delete', style: 'destructive', onPress: deleteThread }
         ]);
     };
 
@@ -113,6 +138,9 @@ const ChatDetailScreen = props => {
         );
     };
 
+    if(loading){
+        return <Loading/>;
+    }
 
     return (
         <View style={styles.screen}>
