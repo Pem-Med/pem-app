@@ -183,8 +183,10 @@ const ChatDetailScreen = props => {
 
                     {/* delete button visible to owner of chat */}
                     {isOwner &&
-                        <TouchableOpacity style={styles.deleteButton} onPress={onDelete}>
-                            <Text style={styles.deleteText}>Delete</Text>
+                        <TouchableOpacity style={styles.deleteContainer} onPress={onDelete}>
+                            <View style={styles.deleteButton}>
+                                <Text style={styles.deleteText}>Delete</Text>
+                            </View>
                         </TouchableOpacity>
                     }
                 </View>
@@ -251,7 +253,7 @@ const styles = StyleSheet.create({
     addUserBtn: {
         alignItems: 'center',
         justifyContent: 'space-between',
-        width:'15%'
+        width: '15%'
     },
     userContainer: {
         flexDirection: 'row',
@@ -260,7 +262,7 @@ const styles = StyleSheet.create({
         width: '100%',
         paddingHorizontal: 20,
         paddingVertical: 10,
-        overflow:'hidden'
+        overflow: 'hidden'
     },
     profileImage: {
         borderRadius: 100,
@@ -278,14 +280,15 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         width: '15%'
     },
-    deleteButton: {
+    deleteContainer:{
         width: '85%',
+        height: '10%',
+    },
+    deleteButton: {
         backgroundColor: Colors.DeleteColor,
-        height: 20,
         borderRadius: 10,
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 20
+        padding: '3.5%',
+        alignItems:'center'
     },
     deleteText: {
         color: Colors.white,
