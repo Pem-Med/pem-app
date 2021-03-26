@@ -6,6 +6,7 @@ import {
 import { Divider } from 'react-native-paper';
 import * as firebase from 'firebase';
 import Firebase from "../../backend/firebase";
+import { Ionicons } from '@expo/vector-icons';
 
 import Colors from '../../constants/Colors';
 import Loading from '../../components/Loading';
@@ -13,7 +14,8 @@ import Loading from '../../components/Loading';
 const ChatDetailScreen = props => {
     const thread = props.navigation.getParam('thread');
     const isGlobal = thread.type === 'global';
-    const canDelete = firebase.auth().currentUser.uid === thread.createdBy;
+    const currentUserId = firebase.auth().currentUser.uid;
+    const isOwner = currentUserId === thread.createdBy;
     const db = firebase.database();
     const fb = Firebase.shared;
 
@@ -89,7 +91,7 @@ const ChatDetailScreen = props => {
                 //delete thread document
                 firebase.firestore().collection('THREADS').doc(thread._id).delete();
             })
-            .then(()=>{
+            .then(() => {
                 setLoading(false);
                 props.navigation.navigate('Chat');
             })
@@ -111,7 +113,14 @@ const ChatDetailScreen = props => {
         return (
             <>
                 <View style={[styles.headerContainer, styles.sectionsElevation]}>
-                    <Text style={styles.headerText}>Users ({thread.members.length})</Text>
+                    <View style={styles.userListHeader}>
+                        <Text style={[styles.headerText, isOwner ? { width: '85%' } : {}]}>Users ({thread.members.length})</Text>
+                        {isOwner &&
+                            <TouchableOpacity style={styles.addUserBtn}>
+                                <Ionicons name="md-person-add" size={24} color={Colors.greenAdd} />
+                            </TouchableOpacity>
+                        }
+                    </View>
                 </View>
                 <View style={[styles.detailContainer, styles.sectionsElevation]}>
                     <FlatList
@@ -119,18 +128,27 @@ const ChatDetailScreen = props => {
                         keyExtractor={(item) => item._id}
                         ItemSeparatorComponent={() => <Divider />}
                         renderItem={({ item }) => (
-                            <TouchableOpacity
-                                onPress={() => onSelectUser(item)}
-                            >
-                                <View style={styles.userContainer}>
+                            <View style={styles.listItem}>
+                                {/* User details */}
+                                <TouchableOpacity
+                                    onPress={() => onSelectUser(item)}
+                                    style={[styles.userContainer, isOwner ? { width: '85%' } : {}]}
+                                >
                                     <View>
                                         <View style={styles.profileImage}>
                                             <Image source={getProfileImage(item)} style={styles.avatar} resizeMode={'cover'} width={40} height={40} />
                                         </View>
                                     </View>
                                     <Text style={styles.userName}>{item.name}</Text>
-                                </View>
-                            </TouchableOpacity>
+                                </TouchableOpacity>
+
+                                {/* Remove user button, current user cant remove themselves */}
+                                {isOwner && item._id !== currentUserId &&
+                                    <TouchableOpacity style={styles.removeUser}>
+                                        <Ionicons name="md-remove-circle-outline" size={30} color={Colors.DeleteColor} />
+                                    </TouchableOpacity>
+                                }
+                            </View>
                         )}
                     />
                 </View>
@@ -138,8 +156,8 @@ const ChatDetailScreen = props => {
         );
     };
 
-    if(loading){
-        return <Loading/>;
+    if (loading) {
+        return <Loading />;
     }
 
     return (
@@ -164,7 +182,7 @@ const ChatDetailScreen = props => {
                     {!isGlobal && renderUsersList()}
 
                     {/* delete button visible to owner of chat */}
-                    {canDelete &&
+                    {isOwner &&
                         <TouchableOpacity style={styles.deleteButton} onPress={onDelete}>
                             <Text style={styles.deleteText}>Delete</Text>
                         </TouchableOpacity>
@@ -176,7 +194,7 @@ const ChatDetailScreen = props => {
 };
 
 ChatDetailScreen.navigationOptions = {
-    title: 'Chat Info'
+    title: 'Chat Details'
 };
 
 const styles = StyleSheet.create({
@@ -198,7 +216,7 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
         borderBottomColor: Colors.primaryColor,
-        borderBottomWidth: 1
+        borderBottomWidth: 1,
     },
     headerText: {
         fontSize: 17,
@@ -221,11 +239,28 @@ const styles = StyleSheet.create({
         paddingLeft: 15,
         fontFamily: 'open-sans',
     },
+    listItem: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
+    userListHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center'
+    },
+    addUserBtn: {
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        width:'15%'
+    },
     userContainer: {
         flexDirection: 'row',
+        justifyContent: 'flex-start',
         alignItems: 'center',
+        width: '100%',
         paddingHorizontal: 20,
-        paddingVertical: 10
+        paddingVertical: 10,
+        overflow:'hidden'
     },
     profileImage: {
         borderRadius: 100,
@@ -237,6 +272,11 @@ const styles = StyleSheet.create({
     },
     userName: {
         fontSize: 15
+    },
+    removeUser: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '15%'
     },
     deleteButton: {
         width: '85%',

@@ -39,6 +39,7 @@ export default {
         chatPurple: '#6646ee',
         systemMessage: '#f2ed88',
         lightGrey: '#8a8a8a',
+        greenAdd: '#34AC44',
 
         //-------PROFILE-------------
         active: '#34FFB9',
