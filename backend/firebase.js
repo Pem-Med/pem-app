@@ -28,26 +28,18 @@ class Firebase {
     firebase.auth().onAuthStateChanged(this.onAuthStateChanged);
   }
 
-  _currentUser = null
+  _currentUser = "";
   onAuthStateChanged = user => {
     Userstatus = ''
     if (user != null) {
       this._currentUser = user;
-      db = firebase.database()
-      userRef = db.ref(`users/${user.uid}/profile`)
-      userRef.on('value', (snapshot) => {
-         Userstatus = snapshot.val().status
-         if(Userstatus == 'Active') {
-           console.log(`Adding User ${user.email} to Online Users!`)
-           this.addOnlineUser(this._currentUser.email)
-         } else if(Userstatus == 'Busy') {
-           this.removeOnlineUser(this._currentUser.email)
-         }
-      }, (err) => {
-        console.log(err)
-      } )
+      firebase.database().ref(`users/${user.uid}/profile`).update({
+        online: true
+      })
     } else{
-     this.removeOnlineUser(this._currentUser.email)
+      firebase.database().ref(`users/${this._currentUser.uid}/profile`).update({
+        online: false
+      })
      this._currentUser = null;
     }
   }
