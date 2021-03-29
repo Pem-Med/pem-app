@@ -130,7 +130,6 @@ class Firebase {
         if(!userArr.includes(userEmail)) {
           userArr.push(userEmail)
         }
-        console.log(userArr)
         firebase.database().ref('onlineUsers').set({
           onlineUsers: userArr
         })
