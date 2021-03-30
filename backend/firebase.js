@@ -248,7 +248,7 @@ class Firebase {
 }
 
 getImageRemoteUri = (image) => {
-  const photoPath = `uploads/${Date.now()}.jpg`;
+  const photoPath = `uploads/${firebase.auth().currentUser.uid}/${cme.id}.jpg`;
   return new Promise(async (res, rej) => {
       const response = await fetch(image);
       const file = await response.blob();
