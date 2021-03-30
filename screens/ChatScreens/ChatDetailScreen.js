@@ -12,38 +12,66 @@ import Colors from '../../constants/Colors';
 import Loading from '../../components/Loading';
 
 const ChatDetailScreen = props => {
-    const thread = props.navigation.getParam('thread');
-    const isGlobal = thread.type === 'global';
+    const threadId = props.navigation.getParam('threadId');
     const currentUserId = firebase.auth().currentUser.uid;
-    const isOwner = currentUserId === thread.createdBy;
     const db = firebase.database();
     const fb = Firebase.shared;
 
+    const [isOwner, setIsOwner] = useState(false);
+    const [isGlobal, setIsGlobal] = useState(false);
+    const [thread, setThread] = useState({});
     const [users, setUsers] = useState([]);
     const [createdByName, setCreatedByName] = useState('');
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
 
-    //get users info for list
+    //get thread info
     useEffect(() => {
-        if (!isGlobal) {
-            fetchUsersByThread();
-        } else {
-            getCreatedByName();
-        }
-    }, [setUsers]);
+        firebase.firestore()
+            .collection('THREADS')
+            .doc(threadId)
+            .get()
+            .then((documentSnapshot) => {
+                const data = documentSnapshot.data();
+                let loadedThread = {};
 
-    const fetchUsersByThread = () => {
-        thread.users = [];
+                loadedThread = {
+                    _id: documentSnapshot.id,
+                    ...data,
+                };
+                const isGlobal = loadedThread.type === 'global';
+                
+                setIsGlobal(isGlobal);
+                setIsOwner(currentUserId === loadedThread.createdBy);
+                setThread(loadedThread);
+
+                if (!isGlobal) {
+                    fetchUsersByThread(loadedThread);
+                } else {
+                    getCreatedByName(loadedThread);
+                }
+
+                setLoading(false);
+
+            })
+            .catch((errorObject)=>{
+                console.log("The read failed: " + errorObject);
+                Alert.alert('Error', 'There was a problem loading the chat details');
+                setLoading(false);
+            });
+
+    }, []);
+
+    const fetchUsersByThread = (loadedThread) => {
         const promises = [];
         //get user info for each user in the thread to display
-        thread.members.forEach((userId) => {
+        loadedThread.members.forEach((userId) => {
             const promise = new Promise((resolve, reject) => {
                 db.ref(`users/${userId}/profile`)
                     .once("value", function (snapshot) {
                         const user = snapshot.val();
                         user._id = userId;
 
-                        if (thread.createdBy === userId) {
+                        if (loadedThread.createdBy === userId) {
                             setCreatedByName(user.name);
                         }
 
@@ -63,8 +91,8 @@ const ChatDetailScreen = props => {
             });
     };
 
-    const getCreatedByName = () => {
-        db.ref(`users/${thread.createdBy}/profile`)
+    const getCreatedByName = (loadedThread) => {
+        db.ref(`users/${loadedThread.createdBy}/profile`)
             .once("value", function (snapshot) {
                 const user = snapshot.val();
                 setCreatedByName(user.name);
@@ -102,12 +130,42 @@ const ChatDetailScreen = props => {
             });
     };
 
-    const onDelete = () => {
+    const removeUser = (user) => {
+        firebase.firestore().collection('THREADS').doc(thread._id)
+            .update({
+                members: firebase.firestore.FieldValue.arrayRemove(user._id)
+            })
+            .then(() => {
+                setUsers((prevList) => prevList.filter(person => person._id !== user._id));
+                Alert.alert('Success', 'The user has been removed from the chat!');
+            })
+            .catch((err) => {
+                console.log(err);
+                Alert.alert("Error", "There was an error removing the user from the chat, please try again later.");
+            });
+
+    };
+
+    const onDeleteChat = () => {
         Alert.alert('Are you sure?', 'Are you sure you want to delete this chat?', [
             { text: 'Cancel' },
             { text: 'Delete', style: 'destructive', onPress: deleteThread }
         ]);
     };
+
+    const onRemoveUser = (user) => {
+        if (users.length === 2) {
+            Alert.alert('Warning', 'If you remove this user, the chat will be deleted. Do you want to continue?', [
+                { text: 'Cancel' },
+                { text: 'Delete', style: 'destructive', onPress: deleteThread }
+            ]);
+        } else {
+            Alert.alert('Are you sure?', 'Are you sure you want to remove this user from the chat?', [
+                { text: 'Cancel' },
+                { text: 'Delete', style: 'destructive', onPress: () => removeUser(user) }
+            ]);
+        }
+    }
 
     const renderUsersList = () => {
         return (
@@ -144,7 +202,7 @@ const ChatDetailScreen = props => {
 
                                 {/* Remove user button, current user cant remove themselves */}
                                 {isOwner && item._id !== currentUserId &&
-                                    <TouchableOpacity style={styles.removeUser}>
+                                    <TouchableOpacity style={styles.removeUser} onPress={() => onRemoveUser(item)}>
                                         <Ionicons name="md-remove-circle-outline" size={30} color={Colors.DeleteColor} />
                                     </TouchableOpacity>
                                 }
@@ -158,6 +216,10 @@ const ChatDetailScreen = props => {
 
     if (loading) {
         return <Loading />;
+    }
+
+    if (!thread) {
+        return <View style={{ alignItems: 'center', justifyContent: 'center' }}>No info available</View>
     }
 
     return (
@@ -183,7 +245,7 @@ const ChatDetailScreen = props => {
 
                     {/* delete button visible to owner of chat */}
                     {isOwner &&
-                        <TouchableOpacity style={styles.deleteContainer} onPress={onDelete}>
+                        <TouchableOpacity style={styles.deleteContainer} onPress={onDeleteChat}>
                             <View style={styles.deleteButton}>
                                 <Text style={styles.deleteText}>Delete</Text>
                             </View>
@@ -280,7 +342,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         width: '15%'
     },
-    deleteContainer:{
+    deleteContainer: {
         width: '85%',
         height: '10%',
     },
@@ -288,7 +350,7 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.DeleteColor,
         borderRadius: 10,
         padding: '3.5%',
-        alignItems:'center'
+        alignItems: 'center'
     },
     deleteText: {
         color: Colors.white,

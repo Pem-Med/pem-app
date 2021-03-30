@@ -138,7 +138,7 @@ export default function ChatList(props) {
           renderItem={({ item, section, index }) => {
             return (
               <TouchableOpacity
-                onPress={() => props.navigation.navigate('Room', { thread: item })}
+                onPress={() => props.navigation.navigate('Room', { threadId: item._id , threadName: item.name, usersList: usersList})}
               >
                 <List.Item
                   title={item.name}

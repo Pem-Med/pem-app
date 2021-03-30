@@ -17,7 +17,10 @@ export default function ChatRoomScreen(props) {
   const userRef = db.ref(`users/${uid}/profile`);
 
   //components stuff
-  const thread = props.navigation.getParam('thread');
+  const threadId = props.navigation.getParam('threadId');
+  const originalThreadName = props.navigation.getParam('threadName');
+  const usersList = props.navigation.getParam('usersList');
+  const [threadName, setThreadName] = useState(originalThreadName);
   const [currentUser, setCurrentUser] = useState({});
   const [messages, setMessages] = useState([
     // system message
@@ -42,6 +45,17 @@ export default function ChatRoomScreen(props) {
     })
   }, [])
 
+  const getThreadName = (members) => {
+    const otherUserId = members.filter((userId) => userId !== uid)[0];
+    const name = usersList.find((user) => user._id === otherUserId).name
+
+    if (members.length === 2) {
+      return name;
+    }
+
+    return `${name} +${members.length - 2} others`;
+  };
+
 
   //get user info
   useEffect(() => {
@@ -58,11 +72,46 @@ export default function ChatRoomScreen(props) {
     );
   }, [setCurrentUser]);
 
+  useEffect(() => {
+    props.navigation.setParams({ getName: threadName })
+  }, [threadName]);
+
+  //add listener for thread name, name can change when users are added/delete for private chat
+  useEffect(() => {
+    const unsubscribe = firebase.firestore()
+      .collection('THREADS')
+      .doc(threadId)
+      .onSnapshot((documentSnapshot) => {
+        const data = documentSnapshot.data();
+        let loadedThread = {};
+
+        loadedThread = {
+          _id: documentSnapshot.id,
+          ...data,
+        };
+
+        if (loadedThread.type === 'private') {
+          const name = getThreadName(loadedThread.members);
+          setThreadName(name);
+        } else {
+          setThreadName(loadedThread.name);
+        }
+
+      }, function (errorObject) {
+        console.log("The read failed: " + errorObject.code);
+        Alert.alert('Error', 'There was a problem loading the chat details');
+      });
+
+
+    //clean up listener
+    return () => unsubscribe();
+  }, []);
+
   //Load messages
   useEffect(() => {
     const messagesListener = firebase.firestore()
       .collection('MESSAGE')
-      .doc(thread._id)
+      .doc(threadId)
       .collection('messages')
       .orderBy('createdAt', 'desc')
       .onSnapshot(querySnapshot => {
@@ -101,7 +150,7 @@ export default function ChatRoomScreen(props) {
 
     firebase.firestore()
       .collection('MESSAGE')
-      .doc(thread._id)
+      .doc(threadId)
       .collection('messages')
       .add({
         text: text,
@@ -207,15 +256,18 @@ export default function ChatRoomScreen(props) {
 }
 
 ChatRoomScreen.navigationOptions = (navigationData) => {
-  const thread = navigationData.navigation.getParam('thread');
+  const threadId = navigationData.navigation.getParam('threadId');
+  const originalThreadName = navigationData.navigation.getParam('threadName');
+  const dynamicThreadName = navigationData.navigation.getParam('getName');
+
   return {
-    title: thread.name,
+    title: dynamicThreadName || originalThreadName,
     headerRight: () => (
       <IconButton
         icon='information-outline'
         size={28}
         color={Platform.OS === 'android' ? Colors.white : Colors.primaryColor}
-        onPress={() => navigationData.navigation.navigate('ChatDetail', { thread: thread })}
+        onPress={() => navigationData.navigation.navigate('ChatDetail', { threadId: threadId })}
       />
     )
   }

@@ -70,7 +70,7 @@ export default AddPrivateChatScreen = props => {
 
             if (loadedThread) {
                 setLoading(false);
-                props.navigation.navigate('Room', { thread: loadedThread });
+                props.navigation.navigate('Room', { threadId: loadedThread._id, threadName: loadedThread.name, usersList:usersList });
                 return;
             }
         }
@@ -92,7 +92,7 @@ export default AddPrivateChatScreen = props => {
                 setLoading(false);
                 thread._id = docRef.id;
                 thread.name = getThreadName(selectedUsers);
-                props.navigation.navigate('Room', { thread: thread });
+                props.navigation.navigate('Room', { threadId: thread._id, threadName: thread.name, usersList:usersList });
             })
             .catch((err) => {
                 console.log(err);
