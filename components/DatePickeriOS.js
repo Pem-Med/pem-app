@@ -1,181 +1,179 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
-    View,
-    StyleSheet,
-    TouchableHighlight,
-    Text,
-    Modal,
-  } from "react-native";
+  View,
+  StyleSheet,
+  TouchableHighlight,
+  Text,
+  Modal,
+} from "react-native";
+import moment from 'moment'
 import { Picker } from "react-native-wheel-pick";
 import { Button } from "react-native-paper";
 
 
 
-const DatePickeriOS = () => {
-    const [show, setShow] = useState(false);
-    const [month, setMonth] = useState('')
-    const [day, setDay] =useState('')
-    const [year, setYear] =useState('')
 
-    let months = [
-        "January" ,
-        "February",
-        "March",
-        "April" ,
-        "May" ,
-        "June" ,
-        "July" ,
-        "August" ,
-        "September" ,
-        "October",
-        "November" ,
-        "December",
-      ];
+const DatePickeriOS = () => {
+  const [show, setShow] = useState(false);
+  const [month, setMonth] = useState([]);
+  const [day, setDay] = useState(1);
+  const [year, setYear] = useState(2021);
+  const[exp, setExp] = useState([])
+
+  
+  let months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
+  let days = [
+    1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,
+    21,22,23,24,25,26,27,28,29,30,31,
+  ];
+
+  let years = [
+    2020,
+    2021,
+    2022,
+    2024,
+    2025,
+    2026,
+    2027,
+    2028,
+    2029,
+    2030,
+    2031
+  ];
+
+  // const onConfirmDate = () => {
+
+  //   setExp(exp);
     
-      let days = [
-        "1",
-        "2",
-        "3",
-        "4",
-        "5",
-        "6",
-        "7",
-        "9",
-        "10",
-        "11",
-        "12",
-        "13",
-        "14",
-        "15",
-        "16",
-        "17",
-        "18",
-        "19",
-        "20",
-        "21",
-        "22",
-        "23",
-        "24",
-        "25",
-        "26",
-        "27",
-        "28",
-        "29",
-        "30",
-      ];
-    
-      let years = [
-        "2020",
-        "2021",
-        "2022",
-        "2024",
-        "2025",
-        "2026",
-        "2027",
-        "2028",
-        "2029",
-        "2030",
-      ];
-return(
-  <TouchableHighlight activeOpacity={0} onPress={() => setShow(true)}>
-    <View>
-      <Button>Expiration date</Button>
-      <Modal
-        transparent={true}
-        animationType="slide"
-        visible={show}
-        supportedOrientations={["portrait"]}
-        onRequestClose={() => setShow(false)}
-      >
-        <View style={{ flex: 1 }}>
-          <TouchableHighlight
-            style={{
-              flex: 1,
-              alignItems: "flex-end",
-              flexDirection: "row",
-            }}
-            activeOpacity={1}
-            visible={show}
-            onPress={() => setShow(false)}
-          >
+  // }
+
+  const onSubmit = () => {
+    let date = moment().date(day).month(month).year(year).format("LL")
+     setExp(date);
+    console.log('Date added: ' + exp)
+  }
+
+useEffect(()=>{
+  
+  console.log('Date: ' + exp);
+
+});
+
+  return (
+    <TouchableHighlight activeOpacity={0} onPress={() => setShow(true)}>
+      <View>
+        <Button>Expiration date</Button>
+        <Modal
+          transparent={true}
+          animationType="slide"
+          visible={show}
+          supportedOrientations={["portrait"]}
+          onRequestClose={() => setShow(false)}
+        >
+          <View style={{ flex: 1 }}>
             <TouchableHighlight
-              underlayColor={"#FFFFFF"}
               style={{
                 flex: 1,
-                borderTopColor: "#E9E9E9",
-                borderTopWidth: 1,
+                alignItems: "flex-end",
+                flexDirection: "row",
               }}
-              onPress={() => console.log("Date Clicked!")}
+              activeOpacity={1}
+              visible={show}
+              onPress={() => setShow(false)}
             >
-              <View
+              <TouchableHighlight
+                underlayColor={"#FFFFFF"}
                 style={{
-                  backgroundColor: `#FFFFFF`,
-                  height: 300,
-                  overflow: "hidden",
+                  flex: 1,
+                  borderTopColor: "#E9E9E9",
+                  borderTopWidth: 1,
                 }}
+                
               >
-                <View>
-                  <View style={styles.rowItem}>
-                    <Button onPress={() => setShow(false)}>
-                      <Text>Cancel</Text>
-                    </Button>
-                    <Button>Confirm</Button>
-                  </View>
-                  <View style={styles.rowItem}>
-                    <Picker
-                      style={{
-                        backgroundColor: "white",
-                        width: 150,
-                        height: 180,
-                      }}
-                      selectedValue={1}
-                      onValueChange={(date) => {
-                        setMonth(date);
-                      }}
-                      pickerData={months}
-                    />
-                    <Picker
-                      style={{
-                        width: 50,
-                        height: 180,
-                        backgroundColor: "white",
-                      }}
-                      selectedValue={3}
-                      onValueChange={(date) => {
-                        setDay(date);
-                      }}
-                      pickerData={days}
-                    />
-                    <Picker
-                      style={{
-                        width: 150,
-                        height: 180,
-                        backgroundColor: "white",
-                      }}
-                      selectedValue={3}
-                      onValueChange={(date) => {
-                        setYear(date);
-                      }}
-                      pickerData={years}
-                    />
+                <View
+                  style={{
+                    backgroundColor: `#FFFFFF`,
+                    height: 300,
+                    overflow: "hidden",
+                  }}
+                >
+                  <View>
+                    <View style={styles.rowItem}>
+                      <Button onPress={() => setShow(false)}>
+                        <Text>Cancel</Text>
+                      </Button>
+                      <Button onPress={onSubmit} >Confirm</Button>
+                    </View>
+                    <View style={styles.rowItem}>
+                      <Picker
+                        style={{
+                          backgroundColor: "white",
+                          width: 150,
+                          height: 180,
+                        }}
+                        onValueChange={(date) => {
+                          setMonth(date);
+                        }}
+                        selectedValue={1}
+                        pickerData={months}
+                      />
+                      <Picker
+                        style={{
+                          width: 50,
+                          height: 180,
+                          backgroundColor: "white",
+                        }}
+                        onValueChange={(date) => {
+                          setDay(date);
+                        }}
+                        selectedValue={1}
+                        pickerData={days}
+                      />
+                      <Picker
+                        style={{
+                          width: 150,
+                          height: 180,
+                          backgroundColor: "white",
+                        }}
+                        onValueChange={(date) => {
+                          setYear(date);
+                        }}
+                        selectedValue={2021}
+                        pickerData={years}
+                      />
+                    </View>
                   </View>
                 </View>
-              </View>
+              </TouchableHighlight>
             </TouchableHighlight>
-          </TouchableHighlight>
-        </View>
-      </Modal>
-    </View>
-  </TouchableHighlight>)
+          </View>
+        </Modal>
+      </View>
+    </TouchableHighlight>
+  );
 };
 
 const styles = StyleSheet.create({
-    rowItem: {
+  rowItem: {
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 5,
     justifyContent: "space-between",
-  }
-})
+  },
+});
 
 export default DatePickeriOS;

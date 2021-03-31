@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {
   View,
-  TouchableHighlight,
   StyleSheet,
   ImageBackground,
   ScrollView,
@@ -15,12 +14,20 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import { Button, TextInput } from "react-native-paper";
 import DatePicker from "react-native-datepicker";
-import DatePickeriOS from '../components/DatePickeriOS'
+import DatePickeriOS from "../components/DatePickeriOS";
 
 const AddCmeScreen = (props) => {
+  //These states are used for:
+  //Capturing Certification name function
   const [cert, setCert] = useState("");
+
+  //Capturing Image function
   const [image, setImage] = useState(null);
-  const [exp, setExp] =useState('')
+
+  //Capturing Expiration function
+  const [exp, setExp] = useState(new Date(1598051730000));
+  const [show, setShow] = useState(false);
+
 
   useEffect(() => {
     (async () => {
@@ -59,8 +66,6 @@ const AddCmeScreen = (props) => {
     props.onDismiss();
   };
 
-
-
   return (
     <SafeAreaView>
       <Modal visible={props.visible} animationType="slide">
@@ -90,35 +95,21 @@ const AddCmeScreen = (props) => {
               {/* Date that certification expires */}
               {/* Start */}
               <View style={styles.rowItem}>
+                
 
                 {/* ANDROID */}
-                {Platform.OS === "android" && (
                   <View>
                     <DatePicker
-                    mode="date"
-                    placeholder="select date"
-                    format="YYYY-MM-DD"
-                    confirmBtnText="Confirm"
-                    cancelBtnText="Cancel"
-                    customStyles={{
-                      dateIcon: {
-                        position: 'absolute',
-                        left: 0,
-                        top: 0,
-                        marginLeft: 0
-                      },
-                      dateInput: {
-                        marginLeft: 36
-                      }
-                    }}
+                      mode='date'
+                      date={exp}
+                      format='LL'
+                      onDateChange = {(date) => {setExp(date)}}
                     />
                   </View>
-                )}
+
 
                 {/* iOS */}
-                {Platform.OS === "ios" && (
-                  <DatePickeriOS />
-                )}
+                {Platform.OS === "ios" && <DatePickeriOS value={exp} />}
               </View>
               {/* End */}
 
