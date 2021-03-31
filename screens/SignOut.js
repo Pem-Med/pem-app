@@ -41,7 +41,6 @@ class SignOut extends Component {
       const signOutUser = Firebase.shared.userEmail
       firebase.auth().signOut().then(() => {
         Firebase.shared.setUserCount = -1
-        Firebase.shared.removeOnlineUser(signOutUser)
         firebase.database().ref('userCount').on('value', (snapshot) => {
           if (snapshot.val().count <= 0) {
             deleteAllMessages()
