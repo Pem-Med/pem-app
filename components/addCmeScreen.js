@@ -11,12 +11,14 @@ import {
   Alert,
   Modal,
 } from "react-native";
+import moment from 'moment'
 import * as ImagePicker from "expo-image-picker";
 import { Button, TextInput } from "react-native-paper";
 import DatePicker from "react-native-datepicker";
 import DatePickeriOS from "../components/DatePickeriOS";
 
 const AddCmeScreen = (props) => {
+
   //These states are used for:
   //Capturing Certification name function
   const [cert, setCert] = useState("");
@@ -25,9 +27,9 @@ const AddCmeScreen = (props) => {
   const [image, setImage] = useState(null);
 
   //Capturing Expiration function
-  const [exp, setExp] = useState(new Date(1598051730000));
-  const [show, setShow] = useState(false);
+  const [exp, setExp] = useState([]);
 
+  
 
   useEffect(() => {
     (async () => {
@@ -61,6 +63,12 @@ const AddCmeScreen = (props) => {
     props.onSubmit(cert, exp, image);
     console.log("It submitted!");
   };
+
+  const onConfirm = (month,day,year) => {
+    const dates = moment().date(day).month(month).year(year).format("LL")
+    console.log('Date added: ' + dates)
+    setExp(dates);
+  }
 
   const onDismiss = () => {
     props.onDismiss();
@@ -96,20 +104,20 @@ const AddCmeScreen = (props) => {
               {/* Start */}
               <View style={styles.rowItem}>
                 
-
                 {/* ANDROID */}
-                  <View>
+                {Platform.OS === "android" &&
+                  (<View>
                     <DatePicker
                       mode='date'
-                      date={exp}
+                      date={date}
                       format='LL'
                       onDateChange = {(date) => {setExp(date)}}
                     />
-                  </View>
+                  </View>)}
 
 
                 {/* iOS */}
-                {Platform.OS === "ios" && <DatePickeriOS value={exp} />}
+                {Platform.OS === "ios" && <DatePickeriOS onConfirm={onConfirm} />}
               </View>
               {/* End */}
 

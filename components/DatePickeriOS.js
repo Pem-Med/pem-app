@@ -1,24 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   View,
   StyleSheet,
   TouchableHighlight,
-  Text,
   Modal,
 } from "react-native";
 import moment from 'moment'
 import { Picker } from "react-native-wheel-pick";
-import { Button } from "react-native-paper";
+import { Button, TextInput, Text } from "react-native-paper";
 
 
+const DatePickeriOS = (props) => {
 
-
-const DatePickeriOS = () => {
   const [show, setShow] = useState(false);
   const [month, setMonth] = useState([]);
-  const [day, setDay] = useState(1);
-  const [year, setYear] = useState(2021);
-  const[exp, setExp] = useState([])
+  const [day, setDay] = useState([1]);
+  const [year, setYear] = useState([2021]);
+  const[date, setDate] = useState([])
 
   
   let months = [
@@ -54,29 +52,19 @@ const DatePickeriOS = () => {
     2030,
     2031
   ];
-
-  // const onConfirmDate = () => {
-
-  //   setExp(exp);
-    
-  // }
-
-  const onSubmit = () => {
-    let date = moment().date(day).month(month).year(year).format("LL")
-     setExp(date);
-    console.log('Date added: ' + exp)
-  }
-
-useEffect(()=>{
   
-  console.log('Date: ' + exp);
 
-});
+  const onConfirm = () => {
+    props.onConfirm(month,day,year);
+    const dates = moment().date(day).month(month).year(year).format("LL");
+    setDate(dates);
+  }
 
   return (
     <TouchableHighlight activeOpacity={0} onPress={() => setShow(true)}>
       <View>
-        <Button>Expiration date</Button>
+        <Button>Expiration date: <TextInput placeholder="Select Date">{date}</TextInput></Button>
+        
         <Modal
           transparent={true}
           animationType="slide"
@@ -116,7 +104,7 @@ useEffect(()=>{
                       <Button onPress={() => setShow(false)}>
                         <Text>Cancel</Text>
                       </Button>
-                      <Button onPress={onSubmit} >Confirm</Button>
+                      <Button onPress={() => onConfirm()}>Confirm</Button>
                     </View>
                     <View style={styles.rowItem}>
                       <Picker

@@ -32,6 +32,9 @@ const newCmeScreen = (props) => {
 
   const onSubmit = (cert, exp, image) => {
     const cmes = new Cmes(cert, exp, image);
+
+    console.log('Date: ' + exp)
+
     fb.AddCme(cmes).then(() => {
       Alert.alert(
         "Success",
@@ -45,8 +48,6 @@ const newCmeScreen = (props) => {
   const onClose = () => {
     setIsVisibleForm(false);
   };
-
- 
 
   const onDismiss = () => {
     Alert.alert(
@@ -77,7 +78,8 @@ const newCmeScreen = (props) => {
   useEffect(() => {
     const cmeRef = firebase
       .database()
-      .ref(`userCmes/userId: ${firebase.auth().currentUser.uid}/cmes`);
+      .ref(`userCmes/userId: ${firebase.auth().currentUser.uid}/cmes`)
+      .orderByChild('exp');
     const onValuechange = cmeRef.on("value", (snapshot) => {
       const newList = [];
       snapshot.forEach((childSnapshot) => {
