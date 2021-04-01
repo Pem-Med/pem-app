@@ -23,6 +23,7 @@ import CustomHeaderButton from '../../components/CustomHeaderButton'
 import Colors from '../../constants/Colors'
 import SignOut from '../SignOut'
 import Login from '../LoginScreen'
+import Firebase from '../../backend/firebase'
 
 const ProfileScreen = (props) => {
   let TouchableCmp = TouchableOpacity

@@ -2,6 +2,7 @@ import * as firebase from 'firebase'
 import config from '../firebaseConfig'
 
 class Firebase {
+
   constructor() {
     this.init()
     this.observeAuth()
@@ -27,12 +28,19 @@ class Firebase {
   observeAuth = () => {
     firebase.auth().onAuthStateChanged(this.onAuthStateChanged);
   }
-
+  _currentUser = "";
   onAuthStateChanged = user => {
-    if (user) {
-      //console.log('-----USER:', user.email, '-----')
-    } else {
-      //console.log('-----NO USER-----')
+    Userstatus = ''
+    if (user != null) {
+      this._currentUser = user;
+      firebase.database().ref(`users/${user.uid}/profile`).update({
+        online: true
+      })
+    } else{
+      firebase.database().ref(`users/${this._currentUser.uid}/profile`).update({
+        online: false
+      })
+     this._currentUser = null;
     }
   }
 
@@ -107,19 +115,21 @@ class Firebase {
    * set onlineUsers to an array with just the userEmail inside it. Otherwise,
    * take the current value of onlineUsers, push userEmail onto it, and set onlineUsers
    * to that new array.
-   * @param {string} userEmail
    */
-  addOnlineUser(userEmail) {
+  addOnlineUser() {
     let userArr;
     firebase.database().ref('onlineUsers').once('value').then(function (snapshot) {
       userArr = snapshot.val().onlineUsers
       if (userArr === 0) {
         firebase.database().ref('onlineUsers').set({
-          onlineUsers: [userEmail]
+          onlineUsers: [this._currentUser.email]
         })
       } else {
         userArr = snapshot.val().onlineUsers
-        userArr.push(userEmail)
+        if(!userArr.includes(this._currentUser.email)) {
+          userArr.push(this._currentUser.email)
+        }
+        console.log(userArr)
         firebase.database().ref('onlineUsers').set({
           onlineUsers: userArr
         })
@@ -137,7 +147,9 @@ class Firebase {
    * equals userEmail. That new array becomes the value of onlineUsers.
    * @param {string} userEmail
    */
-  removeOnlineUser(userEmail) {
+  removeOnlineUser() {
+    console.log(JSON.stringify(this._currentUser));
+    console.log(`Removing ${this._currentUser.email} from online users.`)
     firebase.database().ref('onlineUsers').once('value').then(function (snapshot) {
       if ((snapshot.val().onlineUsers).length === 1) {
         firebase.database().ref('onlineUsers').set({
@@ -145,7 +157,8 @@ class Firebase {
         })
       } else {
         let userArr = snapshot.val().onlineUsers
-        userArr = userArr.filter(email => email != userEmail)
+        userArr = userArr.filter(email => email != this._currentUser.email)
+        console.log(userArr)
         firebase.database().ref('onlineUsers').set({
           onlineUsers: userArr
         })
@@ -180,6 +193,7 @@ class Firebase {
 
   off() {
     this.ref.off();
+    firebase.auth().signOut();
   }
 
   get uid() {
@@ -241,7 +255,7 @@ getImageRemoteUri = (image) => {
       const file = await response.blob();
       var storageRef = firebase.storage().ref();
       let upload = storageRef.child(photoPath).put(file);
-      upload.on('state_changed', snapshot => {
+      upload.on('state_changed', () => {
 
       }, err => {
           rej(err);
