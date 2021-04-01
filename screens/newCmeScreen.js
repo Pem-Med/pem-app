@@ -49,15 +49,6 @@ const newCmeScreen = (props) => {
     setIsVisibleForm(false);
   };
 
-  const onDismiss = () => {
-    Alert.alert(
-      "Oops",
-      "You sure you want to cancel?",
-      [{ text: "Yes, cancel", onPress: () => setIsVisibleForm(false) }],
-      { cancelable: false }
-    );
-  };
-
   var swipeoutBtns = (id = [
     {
       text: "Edit",
@@ -99,6 +90,7 @@ const newCmeScreen = (props) => {
 
   function handleDelete() {
 
+    //Deletes entire certification from Firebase > Realtime Database
     let deleteRef = firebase
       .database()
       .ref(
@@ -107,6 +99,9 @@ const newCmeScreen = (props) => {
     deleteRef.remove().then(function () {
     });
 
+    //AND
+
+    //Deletes image in Firebase > Storage > Uploads folder
     let imageRef = firebase.storage().ref(`uploads/${firebase.auth().currentUser.uid}/${dataRow.id}.jpg`);
     imageRef.delete().then(() =>{
     });
@@ -127,15 +122,6 @@ const newCmeScreen = (props) => {
         <Card.Cover source = {{uri: item.image}}/>
         <Card.Title title = {item.cert} subtitle={'Expires: ' + item.exp}/>
        </Card>
-
-        {/* <View style={{ flexDirection: "row", marginVertical: "5%" }}>
-          <Text style={styles.cmeItem}>Cert: {item.cert}</Text>
-          <Text style={styles.cmeItem}>Exp: {item.exp}</Text>
-          <Image
-            style={{ flex: 2, height: 150 }}
-            source={{ uri: item.image }}
-          />
-        </View> */}
       </Swipeout>
       </View>
     );
@@ -153,7 +139,6 @@ const newCmeScreen = (props) => {
             header="Add Document"
             onSubmit={onSubmit}
             onClose={onClose}
-            onDismiss={onDismiss}
           />
           <TouchableOpacity style={styles.btn}>
             <Text

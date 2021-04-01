@@ -35,7 +35,6 @@ const ProfileScreen = (props) => {
   const [title, setTitle] = useState('')
   const [number, setNumber] = useState('')
   const [status, setStatus] = useState('')
-  const [certs, setCerts] = useState([])
   const [avatar, setAvatar] = useState('')
   const [loading, setLoading] = useState(true)
 
@@ -61,7 +60,6 @@ const ProfileScreen = (props) => {
         setAvatar(avatar)
         setTitle(title)
         setNumber(number)
-        setCerts(certs)
       },
       (err) => {
         console.log(`Encountered error: ${err}`)
@@ -75,21 +73,8 @@ const ProfileScreen = (props) => {
     new SignOut().signOut(props)
   }
 
-  useEffect(() => {
-    const cmeRef = firebase.database().ref(`userCmes/userId:${uid}`)
-    cmeRef.orderByChild('cmes').on('value', (snapshot) => {
-      snapshot.forEach((childSnapshot) => {
-        const childData = childSnapshot.val()
-        childData.key = childSnapshot.key
-        setCerts(childData)
-      })
-    })
-  }, [])
-
+  //Navigates to Certification (CME) screen
   const handleCerts = () => {
-    userRef.update({
-      certs,
-    })
     props.navigation.navigate('CME')
   }
 

@@ -27,7 +27,7 @@ const AddCmeScreen = (props) => {
   const [image, setImage] = useState(null);
 
   //Capturing Expiration function
-  const [exp, setExp] = useState([]);
+  const [exp, setExp] = useState('');
 
   
 
@@ -70,9 +70,9 @@ const AddCmeScreen = (props) => {
     setExp(dates);
   }
 
-  const onDismiss = () => {
-    props.onDismiss();
-  };
+  const onClose = () =>{
+    props.onClose();
+  }
 
   return (
     <SafeAreaView>
@@ -106,10 +106,10 @@ const AddCmeScreen = (props) => {
                 
                 {/* ANDROID */}
                 {Platform.OS === "android" &&
-                  (<View>
+                  (<View >
                     <DatePicker
                       mode='date'
-                      date={date}
+                      date={exp}
                       format='LL'
                       onDateChange = {(date) => {setExp(date)}}
                     />
@@ -129,6 +129,16 @@ const AddCmeScreen = (props) => {
                     Pick image
                   </Button>
                 </View>
+                {!image && (<View style={styles.goBackBtn}>
+                <Button
+                  title="cancel"
+                  mode="contained"
+                  color={"blue"}
+                  onPress={onClose}
+                >
+                  Go back
+                </Button>
+              </View>)}
                 <View style={styles.removeBtn}>
                   {image && (
                     <Button
@@ -152,17 +162,17 @@ const AddCmeScreen = (props) => {
                   />
                 )}
               </View>
-
-              <View style={styles.submit}>
+            {image && (<View style={styles.submit}>
                 <Button
                   title="cancel"
                   mode="contained"
                   color={"blue"}
-                  onPress={onDismiss}
+                  onPress={onClose}
                 >
                   Cancel
                 </Button>
-              </View>
+              </View>)}
+              
 
               <View style={styles.submit}>
                 {image && (
@@ -198,6 +208,7 @@ const styles = StyleSheet.create({
   rowItem: {
     flexDirection: "row",
     alignItems: "center",
+    padding: 5,
     paddingHorizontal: 5,
     justifyContent: "space-between",
   },
@@ -209,6 +220,11 @@ const styles = StyleSheet.create({
   removeBtn: {
     paddingTop: 10,
     alignContent: "center",
+  },
+  goBackBtn: {
+    paddingTop: 10,
+    alignContent: "center",
+    marginLeft: 100
   },
   label: {
     fontSize: 19,

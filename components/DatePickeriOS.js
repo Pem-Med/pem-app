@@ -1,25 +1,18 @@
-import React, { useEffect, useState, useCallback } from "react";
-import {
-  View,
-  StyleSheet,
-  TouchableHighlight,
-  Modal,
-} from "react-native";
-import moment from 'moment'
+import React, { useState } from "react";
+import { View, StyleSheet, TouchableHighlight, Modal } from "react-native";
+import moment from "moment";
 import { Picker } from "react-native-wheel-pick";
 import { Button, TextInput, Text } from "react-native-paper";
 
-
 const DatePickeriOS = (props) => {
-
   const [show, setShow] = useState(false);
-  const [month, setMonth] = useState([]);
-  const [day, setDay] = useState([1]);
-  const [year, setYear] = useState([2021]);
-  const[date, setDate] = useState([])
+  const [month, setMonth] = useState(new Date());
+  const [day, setDay] = useState(new Date());
+  const [year, setYear] = useState(new Date());
+  const [date, setDate] = useState([]);
 
-  
   let months = [
+    "Month",
     "January",
     "February",
     "March",
@@ -35,11 +28,42 @@ const DatePickeriOS = (props) => {
   ];
 
   let days = [
-    1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,
-    21,22,23,24,25,26,27,28,29,30,31,
+    "Day",
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
   ];
 
   let years = [
+    "Year",
     2020,
     2021,
     2022,
@@ -50,21 +74,23 @@ const DatePickeriOS = (props) => {
     2028,
     2029,
     2030,
-    2031
+    2031,
   ];
-  
 
   const onConfirm = () => {
-    props.onConfirm(month,day,year);
+    props.onConfirm(month, day, year);
     const dates = moment().date(day).month(month).year(year).format("LL");
     setDate(dates);
-  }
+    setShow(false);
+  };
 
   return (
     <TouchableHighlight activeOpacity={0} onPress={() => setShow(true)}>
-      <View>
-        <Button>Expiration date: <TextInput placeholder="Select Date">{date}</TextInput></Button>
-        
+      <View >
+        <View >
+          <Text style={styles.rowExp} label="Expiration Date">  Expiration date: {date}</Text>
+        </View>
+
         <Modal
           transparent={true}
           animationType="slide"
@@ -90,7 +116,6 @@ const DatePickeriOS = (props) => {
                   borderTopColor: "#E9E9E9",
                   borderTopWidth: 1,
                 }}
-                
               >
                 <View
                   style={{
@@ -106,7 +131,7 @@ const DatePickeriOS = (props) => {
                       </Button>
                       <Button onPress={() => onConfirm()}>Confirm</Button>
                     </View>
-                    <View style={styles.rowItem}>
+                    <View style={styles.rowWheels}>
                       <Picker
                         style={{
                           backgroundColor: "white",
@@ -116,19 +141,19 @@ const DatePickeriOS = (props) => {
                         onValueChange={(date) => {
                           setMonth(date);
                         }}
-                        selectedValue={1}
+                        selectedValue={"Month"}
                         pickerData={months}
                       />
                       <Picker
                         style={{
-                          width: 50,
+                          width: 70,
                           height: 180,
                           backgroundColor: "white",
                         }}
                         onValueChange={(date) => {
                           setDay(date);
                         }}
-                        selectedValue={1}
+                        selectedValue={"Day"}
                         pickerData={days}
                       />
                       <Picker
@@ -140,7 +165,7 @@ const DatePickeriOS = (props) => {
                         onValueChange={(date) => {
                           setYear(date);
                         }}
-                        selectedValue={2021}
+                        selectedValue={"Year"}
                         pickerData={years}
                       />
                     </View>
@@ -161,6 +186,28 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 5,
     justifyContent: "space-between",
+  },
+  rowWheels: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  rowExp: {
+    flexDirection: "row",
+    alignItems: "center",
+    alignItems: "center",
+    paddingHorizontal: 5,
+    padding: 15,
+    marginTop: 10,
+    borderRadius: 1,
+    borderWidth: 1,
+    backgroundColor: "white",
+    textAlign: "left",
+    alignItems: "stretch",
+    fontSize: 17,
+    width: 325,
+    height: 50,
+    borderColor: "grey",
+    color: 'grey'
   },
 });
 

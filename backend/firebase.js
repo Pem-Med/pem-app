@@ -1,6 +1,6 @@
 import * as firebase from 'firebase'
 import config from '../firebaseConfig'
-import Cmes from '../models/cmes'
+//import Cmes from '../models/cmes'
 
 class Firebase {
   constructor() {
