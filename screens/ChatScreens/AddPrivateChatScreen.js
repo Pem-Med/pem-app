@@ -20,7 +20,7 @@ export default AddPrivateChatScreen = props => {
         //unselect all users so that next time this component shows, it is reset.
         //called when the component unmounts
         return function cleanup() {
-            initialList.map(user => {
+            usersList.map(user => {
                 delete user.selected;
                 return user;
             })
