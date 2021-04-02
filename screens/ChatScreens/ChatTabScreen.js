@@ -44,7 +44,8 @@ const ChatTabScreen = (props) => {
                     _id: key,
                     avatar: profile.avatar,
                     name: profile.name,
-                    status: profile.status
+                    status: profile.status,
+                    online: profile.online
                 }
                 loadedUsers.push(user);
             }

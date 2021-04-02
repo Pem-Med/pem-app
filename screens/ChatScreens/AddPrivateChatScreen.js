@@ -12,7 +12,7 @@ import Colors from '../../constants/Colors';
 export default AddPrivateChatScreen = props => {
     const uid = firebase.auth().currentUser.uid;
     const initialList = props.navigation.getParam('usersList');
-    const [usersList, setUsersList] = useState(initialList);
+    const [usersList, setUsersList] = useState(initialList.filter(user => user.online === true));
     const [loading, setLoading] = useState(false);
     const [selectedCount, setSelectedCount] = useState(0);
 
@@ -70,7 +70,7 @@ export default AddPrivateChatScreen = props => {
 
             if (loadedThread) {
                 setLoading(false);
-                props.navigation.navigate('Room', { threadId: loadedThread._id, threadName: loadedThread.name, usersList:usersList });
+                props.navigation.navigate('Room', { threadId: loadedThread._id, threadName: loadedThread.name, usersList: usersList });
                 return;
             }
         }
@@ -92,7 +92,7 @@ export default AddPrivateChatScreen = props => {
                 setLoading(false);
                 thread._id = docRef.id;
                 thread.name = getThreadName(selectedUsers);
-                props.navigation.navigate('Room', { threadId: thread._id, threadName: thread.name, usersList:usersList });
+                props.navigation.navigate('Room', { threadId: thread._id, threadName: thread.name, usersList: usersList });
             })
             .catch((err) => {
                 console.log(err);
@@ -152,6 +152,14 @@ export default AddPrivateChatScreen = props => {
         }
     }
 
+    if (usersList.length === 0) {
+        return (
+            <View style={styles.emptyTextContainer}>
+                <Text style={styles.emptyText}>No users online, try again later!</Text>
+            </View>
+        );
+    }
+
     return (
         <View style={styles.screen}>
             <View style={styles.selectedCount}>
@@ -207,6 +215,16 @@ AddPrivateChatScreen.navigationOptions = navigationData => {
 const styles = StyleSheet.create({
     screen: {
         flex: 1
+    },
+    emptyTextContainer: {
+        height: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingHorizontal: 30
+    },
+    emptyText: {
+        fontSize: 22,
+        textAlign: 'center'
     },
     itemContainer: {
         flexDirection: 'row',
