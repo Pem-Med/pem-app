@@ -1,33 +1,39 @@
-import React, { useState, Component, useEffect } from 'react';
-import {InstantSearch,
+import React, { useState, Component, useEffect } from "react";
+import {
+  InstantSearch,
   connectSearchBox,
   connectStats,
-  connectInfiniteHits
-
+  connectInfiniteHits,
 } from "react-instantsearch-dom";
-import algoliasearch from 'algoliasearch/lite';
-import Highlight from './Highlight';
-import PropTypes from 'prop-types';
-import { StyleSheet, Dimensions, Text, View, TextInput, Button, FlatList, Alert, ColorPropType } from 'react-native';
-import {Card} from 'react-native-paper';
-import Colors from '../constants/Colors';
-import algoliaConfig from '../algoliaConfig';
-import { useSelector, useDispatch } from 'react-redux';
-import * as CatContentActions from '.././store/actions/catContent';
+import algoliasearch from "algoliasearch/lite";
+import PropTypes from "prop-types";
+import {
+  StyleSheet,
+  Dimensions,
+  Text,
+  View,
+  TextInput,
+  Button,
+  FlatList,
+  Alert,
+  ColorPropType,
+  SectionList,
+} from "react-native";
+import { Card } from "react-native-paper";
+import Colors from "../constants/Colors";
+import algoliaConfig from "../algoliaConfig";
+import { useSelector, useDispatch } from "react-redux";
+import * as CatContentActions from ".././store/actions/catContent";
+import CustomAccordionList from "../components/CustomAccordionList";
+import Highlight from "../components/Highlight";
 
-
-
-
-
-const  {height}  = Dimensions.get('window');
+const { height } = Dimensions.get("window");
 //TODO: Add 'Search results Provided by Algolia' as per Algolia free account requirements.
 //Algolia Search, App ID and API Key (Search Only)
 //All in one place, so no need to search for every place its used
-const appID =  algoliaConfig.appID;
+const appID = algoliaConfig.appID;
 const apiKey = algoliaConfig.searchKey;
 const indexName = "med_Categories";
-
-
 
 const styles = StyleSheet.create({
   maincontainer: {
@@ -39,33 +45,32 @@ const styles = StyleSheet.create({
       ios: {
         height: height - 100,
       },
-      android: { height: height - 100},
+      android: { height: height - 200 },
     }),
   },
   item: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'white',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "white",
   },
   options: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: 'white',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    backgroundColor: "white",
     padding: 5,
-    borderBottomColor: 'white',
+    borderBottomColor: "white",
     borderBottomWidth: 1,
   },
   searchBoxContainer: {
-    alignContent: 'flex-end',
+    alignContent: "flex-end",
     backgroundColor: Colors.primaryColor,
-    flexDirection: 'row',
-    alignItems: 'flex-end',
+    flexDirection: "row",
+    alignItems: "flex-end",
     height: 100,
-
   },
   searchBox: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     height: 40,
     borderWidth: 1,
     padding: 10,
@@ -82,100 +87,101 @@ const styles = StyleSheet.create({
   },
   itemContent: {
     paddingLeft: 15,
-    display: 'flex',
+    display: "flex",
     marginRight: 5,
   },
   itemName: {
     fontSize: 15,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     paddingBottom: 5,
-    textTransform: 'capitalize',
+    textTransform: "capitalize",
   },
   innerItem: {
     fontSize: 15,
     paddingBottom: 5,
-    textTransform: 'capitalize',
+    textTransform: "capitalize",
   },
-  button:{
-    justifyContent:'flex-start',
-    flexDirection:'column',
-    textAlign:'right',
+  button: {
+    justifyContent: "flex-start",
+    flexDirection: "column",
+    textAlign: "right",
   },
 });
-const searchClient = algoliasearch(
-  appID,
-  apiKey
-);
+const searchClient = algoliasearch(appID, apiKey);
 
-
-const SearchScreen = props => {
-//class SearchScreen extends Component {
- const state = {
-  searchState: props.searchState ? props.searchState : {}};
+const SearchScreen = (props) => {
+  //class SearchScreen extends Component {
+  const state = {
+    searchState: props.searchState ? props.searchState : {},
+  };
   const [loading, setLoading] = useState(false);
-const dispatch = useDispatch();
-//class SearchBox extends Component {
-  useEffect( () => {
+  const dispatch = useDispatch();
+  //class SearchBox extends Component {
+  useEffect(() => {
     const loadingCatContent = async () => {
-      console.log("Getting categories")
+      console.log("Getting categories");
       setLoading(true);
       await dispatch(CatContentActions.fetchCatContent());
       setLoading(false);
-      console.log("Got Categories")
-    }; 
+      console.log("Got Categories");
+    };
     loadingCatContent();
-  }, [dispatch, setLoading])
+  }, [dispatch, setLoading]);
 
-  const onSearchStateChange = nextState => {
+  const onSearchStateChange = (nextState) => {
     setState({ searchState: { ...state.searchState, ...nextState } });
   };
 
   const navigateTo = (subCatID, title) => {
-    props.navigation.navigate( {routeName: "CatContent",
-    params: {
-      subcategoryId: subCatID,
-      subcategoryTitle: title,
-    }});
-  }
-  
-    return (
-      <View style={styles.maincontainer}>
-          <InstantSearch searchClient={searchClient}
-            appId={appID}
-            apiKey={apiKey}
-            indexName={indexName}>
-            <ConnectedSearchBox />
-            <View style={styles.options}>
-            <ConnectedStats />
-            </View>
-            <ConnectedHits navigateTo={(id,title) => navigateTo(id, title)}/>
-          </InstantSearch>
-      </View>
-    );
-}
+    props.navigation.navigate({
+      routeName: "CatContent",
+      params: {
+        subcategoryId: subCatID,
+        subcategoryTitle: title,
+      },
+    });
+  };
+
+  return (
+    <View style={styles.maincontainer}>
+      <InstantSearch
+        searchClient={searchClient}
+        appId={appID}
+        apiKey={apiKey}
+        indexName={indexName}
+      >
+        <ConnectedSearchBox />
+        <View style={styles.options}>
+          <ConnectedStats />
+        </View>
+        <ConnectedHits navigateTo={(id, title) => navigateTo(id, title)} />
+      </InstantSearch>
+    </View>
+  );
+};
 SearchScreen.propTypes = {
   searchState: PropTypes.object,
 };
 
 export default SearchScreen;
 
-const SearchBox = props => {
-    return (
-      <View style={styles.searchBoxContainer} >
-        <TextInput
-          style={styles.searchBox}
-          onChangeText={text => props.refine(text)}
-          value={props.currentRefinement}
-          placeholder={'Search ...'}
-          clearButtonMode={'always'}
-          underlineColorAndroid={'white'}
-          spellCheck={false}
-          autoCorrect={false}
-          autoCapitalize={'sentences'}
-        />
-      </View>
-    );
-}
+const SearchBox = (props) => {
+  return (
+    <View style={styles.searchBoxContainer}>
+      <TextInput
+        style={styles.searchBox}
+        onChangeText={(text) => props.refine(text)}
+        value={props.currentRefinement}
+        placeholder={"Search ..."}
+        clearButtonMode={"always"}
+        underlineColorAndroid={"white"}
+        spellCheck={false}
+        autoCorrect={false}
+        autoCapitalize={"sentences"}
+      />
+    </View>
+  );
+};
 
 SearchBox.propTypes = {
   refine: PropTypes.func.isRequired,
@@ -183,9 +189,7 @@ SearchBox.propTypes = {
 };
 
 const ConnectedSearchBox = connectSearchBox(SearchBox);
-
 class Hits extends Component {
-
   onEndReached = () => {
     if (this.props.hasMore) {
       this.props.refine();
@@ -196,71 +200,78 @@ class Hits extends Component {
     const hits =
       this.props.hits.length > 0 ? (
         <View style={styles.items}>
-          <FlatList keyExtractor={(hit) => hit.objectID} data={this.props.hits} renderItem={this._renderRow} />
+          <FlatList
+            keyExtractor={(hit) => hit.objectID}
+            data={this.props.hits}
+            renderItem={this._renderRow}
+          />
         </View>
-      ) : <Text> No Items Found </Text>;
+      ) : (
+        <Text> No Items Found </Text>
+      );
     return hits;
   }
 
   /* Get the category based on the category id*/
   _getSubTitle = (cat) => {
-    switch(cat) {
-      case "c1": return "Medical";
-      case "c2": return "Surgical";
-      case "c3": return "Trauma";
-      case "c4": return "Toxicology";
-      case "c5": return "Foreign Ingestion";
-  }
-  }
+    switch (cat) {
+      case "c1":
+        return "Medical";
+      case "c2":
+        return "Surgical";
+      case "c3":
+        return "Trauma";
+      case "c4":
+        return "Toxicology";
+      case "c5":
+        return "Foreign Ingestion";
+    }
+  };
 
   _renderRow = ({ item: hit }) => (
     //Create card with padding 10 all arround and elevation of 20
     //bg color is extracted from hit
-    <View padding={10,10,10,10}>
-    <Card elevation={20} onPress={ () => this.props.navigateTo(hit.objectID, hit.title)}>
-      <Card.Title subtitle={this._getSubTitle(hit.subId)} title={(<Text style={styles.itemName}>
-          <Highlight
-            attribute="title"
-            hit={hit}
-            highlightProperty="_highlightResult"
-          />
-        </Text>)} backgroundColor={hit.color}>      
-      </Card.Title>
-      <Card.Content backgroundColor={hit.color}>
-      <Text style={styles.innerItem}>Evaluation: <Highlight
-            attribute="evaluation"
-            hit={hit}
-            highlightProperty="_highlightResult"
-          />
-        </Text>
-        <Text style={styles.innerItem}>Medications: <Highlight
-            attribute="medications"
-            hit={hit}
-            highlightProperty="_highlightResult"
-          />
-        </Text>
-        <Text style={styles.innerItem}>Signs: <Highlight
-            attribute="signs"
-            hit={hit}
-            highlightProperty="_highlightResult"
-          />
-        </Text>
-        <Text style={styles.innerItem}>Management:
-        <Highlight
-            attribute="management"
-            hit={hit}
-            highlightProperty="_highlightResult"
-          />
-        </Text>
-        <Text style={styles.innerItem}>Refereneces:
-          <Highlight
-            attribute="references"
-            hit={hit}
-            highlightProperty="_highlightResult"
-          />
-        </Text>
-      </Card.Content>
-    </Card>
+    <View padding={(10, 10, 10, 10)}>
+      <Card
+        elevation={20}
+        onPress={() => this.props.navigateTo(hit.objectID, hit.title)}
+      >
+        <Card.Title
+          subtitle={this._getSubTitle(hit.subId)}
+          title={
+            <Text style={styles.itemName}>
+              <Highlight
+                attribute="title"
+                hit={hit}
+                highlightProperty="_highlightResult"
+              />
+            </Text>
+          }
+          backgroundColor={hit.color}
+        ></Card.Title>
+        <Card.Content backgroundColor={hit.color}>
+          <CustomAccordionList
+            item={hit}
+            section={"evaluation"}
+          ></CustomAccordionList>
+          <CustomAccordionList
+            item={hit}
+            section={"medications"}
+          ></CustomAccordionList>
+          <CustomAccordionList
+            item={hit}
+            section={"signs"}
+          ></CustomAccordionList>
+          <CustomAccordionList
+            item={hit}
+            section={"management"}
+          ></CustomAccordionList>
+          <CustomAccordionList
+            item={hit}
+            section={"references"}
+          ></CustomAccordionList>
+        </Card.Content>
+      </Card>
     </View>
   );
 
@@ -269,7 +280,7 @@ class Hits extends Component {
       key={`${sectionID}-${rowID}`}
       style={{
         height: adjacentRowHighlighted ? 4 : 1,
-        backgroundColor: adjacentRowHighlighted ? '#3B5998' : '#CCCCCC',
+        backgroundColor: adjacentRowHighlighted ? "#3B5998" : "#CCCCCC",
       }}
     />
   );
@@ -282,9 +293,10 @@ Hits.propTypes = {
 };
 const ConnectedHits = connectInfiniteHits(Hits);
 const ConnectedStats = connectStats(({ nbHits }) => (
-  <View style={{flex: 1}}>
-  <Text style={{ paddingLeft: 8 }}>{nbHits} results</Text>
-  <Text style={{textAlign: 'right', paddingRight: 8, color: "#A7A9A9"}}>Search Results provided by Algolia Instant Search</Text>
+  <View style={{ flex: 1 }}>
+    <Text style={{ paddingLeft: 8 }}>{nbHits} results</Text>
+    <Text style={{ textAlign: "right", paddingRight: 8, color: "#A7A9A9" }}>
+      Search Results provided by Algolia Instant Search
+    </Text>
   </View>
 ));
-

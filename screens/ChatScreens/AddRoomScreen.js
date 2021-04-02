@@ -28,7 +28,7 @@ export default function AddRoomScreen({ navigation }) {
       .then((docRef) => {
         setLoading(false);
         thread._id = docRef.id;
-        navigation.navigate('Room', { thread: thread });
+        navigation.navigate('Room', { threadId: thread._id, threadName: thread.name });
       })
       .catch((err) => {
         Alert.alert("Error", "There was an error creating the chat room. Please try again later.");

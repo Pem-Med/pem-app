@@ -22,6 +22,7 @@
     "@react-navigation/native": "^5.9.2",
     "@react-navigation/stack": "^5.12.8",
     "algoliasearch": "^4.8.2",
+    "alpha-scroll-flat-list": "^0.2.20",
     "base-64": "^0.1.0",
     "dot-env": "0.0.1",
     "dotenv": "^8.2.0",
