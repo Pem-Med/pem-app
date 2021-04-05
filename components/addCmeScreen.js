@@ -47,6 +47,11 @@ const AddCmeScreen = (props) => {
     })();
   }, []);
 
+  const onDateChange = (date) => {
+    const dates = new Date(date);
+    setExp(dates)
+  }
+
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -65,7 +70,7 @@ const AddCmeScreen = (props) => {
   };
 
   const onConfirm = (month,day,year) => {
-    const dates = moment().date(day).month(month).year(year).format("LL")
+    const dates = moment().date(day).month(month).year(year).format("MM-DD-YYYY")
     console.log('Date added: ' + dates)
     setExp(dates);
   }
@@ -110,8 +115,7 @@ const AddCmeScreen = (props) => {
                     <DatePicker
                       mode='date'
                       date={exp}
-                      format='LL'
-                      onDateChange = {(date) => {setExp(date)}}
+                      onDateChange = {onDateChange}
                     />
                   </View>)}
 

@@ -81,7 +81,7 @@ const DatePickeriOS = (props) => {
 
   const onConfirm = () => {
     props.onConfirm(month, day, year);
-    const dates = moment().date(day).month(month).year(year).format("LL");
+    const dates = moment().date(day).month(month).year(year).format("MM-DD-YYYY");
     setDate(dates);
     setShow(false);
   };
