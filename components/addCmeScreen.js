@@ -27,7 +27,7 @@ const AddCmeScreen = (props) => {
   const [image, setImage] = useState(null);
 
   //Capturing Expiration function
-  const [exp, setExp] = useState('');
+  const [exp, setExp] = useState([]);
 
   
 

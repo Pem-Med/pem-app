@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { GiftedChat, Bubble, Send, SystemMessage } from 'react-native-gifted-chat';
-import { View, StyleSheet, Alert } from 'react-native';
+import { View, StyleSheet, Alert, Platform, Dimensions } from 'react-native';
 import { IconButton } from 'react-native-paper';
 import * as firebase from 'firebase';
 
@@ -17,7 +17,10 @@ export default function ChatRoomScreen(props) {
   const userRef = db.ref(`users/${uid}/profile`);
 
   //components stuff
-  const thread = props.navigation.getParam('thread');
+  const threadId = props.navigation.getParam('threadId');
+  const originalThreadName = props.navigation.getParam('threadName');
+  const usersList = props.navigation.getParam('usersList');
+  const [threadName, setThreadName] = useState(originalThreadName);
   const [currentUser, setCurrentUser] = useState({});
   const [messages, setMessages] = useState([
     // system message
@@ -28,6 +31,30 @@ export default function ChatRoomScreen(props) {
     }
   ]);
   const [loading, setLoading] = useState(true);
+
+  //this is code to fix disappearing textbox on ios
+  const [bottomOffset, setBottomOffset] = useState(0)
+  const wrapper = useRef()
+  const handleLayout = useCallback(() => {
+    if (Platform.OS === 'android') {
+      return;
+    }
+    wrapper.current && wrapper.current.measureInWindow((_x, y, _width, height) => {
+      const nextBottomOffset = Dimensions.get('window').height - y - height
+      setBottomOffset(nextBottomOffset)
+    })
+  }, [])
+
+  const getThreadName = (members) => {
+    const otherUserId = members.filter((userId) => userId !== uid)[0];
+    const name = usersList.find((user) => user._id === otherUserId).name
+
+    if (members.length === 2) {
+      return name;
+    }
+
+    return `${name} +${members.length - 2} others`;
+  };
 
 
   //get user info
@@ -45,11 +72,46 @@ export default function ChatRoomScreen(props) {
     );
   }, [setCurrentUser]);
 
+  useEffect(() => {
+    props.navigation.setParams({ getName: threadName })
+  }, [threadName]);
+
+  //add listener for thread name, name can change when users are added/delete for private chat
+  useEffect(() => {
+    const unsubscribe = firebase.firestore()
+      .collection('THREADS')
+      .doc(threadId)
+      .onSnapshot((documentSnapshot) => {
+        const data = documentSnapshot.data();
+        let loadedThread = {};
+
+        loadedThread = {
+          _id: documentSnapshot.id,
+          ...data,
+        };
+
+        if (loadedThread.type === 'private') {
+          const name = getThreadName(loadedThread.members);
+          setThreadName(name);
+        } else {
+          setThreadName(loadedThread.name);
+        }
+
+      }, function (errorObject) {
+        console.log("The read failed: " + errorObject.code);
+        Alert.alert('Error', 'There was a problem loading the chat details');
+      });
+
+
+    //clean up listener
+    return () => unsubscribe();
+  }, []);
+
   //Load messages
   useEffect(() => {
     const messagesListener = firebase.firestore()
       .collection('MESSAGE')
-      .doc(thread._id)
+      .doc(threadId)
       .collection('messages')
       .orderBy('createdAt', 'desc')
       .onSnapshot(querySnapshot => {
@@ -88,7 +150,7 @@ export default function ChatRoomScreen(props) {
 
     firebase.firestore()
       .collection('MESSAGE')
-      .doc(thread._id)
+      .doc(threadId)
       .collection('messages')
       .add({
         text: text,
@@ -164,31 +226,50 @@ export default function ChatRoomScreen(props) {
     )
   }
 
+  function onAvatarClicked(user) {
+    props.navigation.navigate('UserProfileScreen', { ID: user._id });
+  }
+
   if (loading) {
     return <Loading />
   }
 
   return (
-    <GiftedChat
-      messages={messages}
-      onSend={newMessage => handleSend(newMessage)}
-      user={{ _id: uid, name: currentUser.name, avatar: currentUser.avatar }}
-      renderBubble={renderBubble}
-      placeholder='Type your message here...'
-      showUserAvatar
-      alwaysShowSend
-      renderSend={renderSend}
-      scrollToBottom
-      scrollToBottomComponent={scrollToBottomComponent}
-      renderSystemMessage={renderSystemMessage}
-    />
+    <View style={{ flex: 1 }} onLayout={handleLayout} ref={wrapper}>
+      <GiftedChat
+        messages={messages}
+        bottomOffset={Platform.OS === 'ios' ? bottomOffset : null}
+        onSend={newMessage => handleSend(newMessage)}
+        user={{ _id: uid, name: currentUser.name, avatar: currentUser.avatar }}
+        renderBubble={renderBubble}
+        placeholder='Type your message here...'
+        showUserAvatar
+        onPressAvatar={onAvatarClicked}
+        alwaysShowSend
+        renderSend={renderSend}
+        scrollToBottom
+        scrollToBottomComponent={scrollToBottomComponent}
+        renderSystemMessage={renderSystemMessage}
+      />
+    </View>
   );
 }
 
 ChatRoomScreen.navigationOptions = (navigationData) => {
-  const thread = navigationData.navigation.getParam('thread');
+  const threadId = navigationData.navigation.getParam('threadId');
+  const originalThreadName = navigationData.navigation.getParam('threadName');
+  const dynamicThreadName = navigationData.navigation.getParam('getName');
+
   return {
-    title: thread.name
+    title: dynamicThreadName || originalThreadName,
+    headerRight: () => (
+      <IconButton
+        icon='information-outline'
+        size={28}
+        color={Platform.OS === 'android' ? Colors.white : Colors.primaryColor}
+        onPress={() => navigationData.navigation.navigate('ChatDetail', { threadId: threadId })}
+      />
+    )
   }
 }
 

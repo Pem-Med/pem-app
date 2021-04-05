@@ -31,6 +31,7 @@ import DrawerComponent from "../components/DrawerComponent";
 import ChatRoomScreen from '../screens/ChatScreens/RoomScreen';
 import AddRoomScreen from '../screens/ChatScreens/AddRoomScreen';
 import AddPrivateChatScreen from '../screens/ChatScreens/AddPrivateChatScreen';
+import ChatDetailScreen from '../screens/ChatScreens/ChatDetailScreen';
 
 
 const defaultStackNavOptions = {
@@ -82,12 +83,9 @@ const ChatNavigator = createStackNavigator(
 
   {
     Chat: ChatTabScreen,
-    Room: {
-      screen: ChatRoomScreen,
-    },
-    UserProfile: {
-      screen: UserProfileScreen
-    },
+    Room: ChatRoomScreen,
+    UserProfile: UserProfileScreen,
+    ChatDetail: ChatDetailScreen
   },
   {
     defaultNavigationOptions: defaultStackNavOptions,
@@ -197,8 +195,9 @@ const MenuTabNavigator =
     : createBottomTabNavigator(
       tabScreenConfig,
       {
-        tabOptions: {
-          activeTinColor: Colors.accentColor,
+        tabBarOptions: {
+          activeTinColor: Colors.primaryColor,
+          keyboardHidesTabBar: !(Platform.OS === 'ios'),
         },
       },
       {
@@ -207,15 +206,16 @@ const MenuTabNavigator =
     );
 
 const HomeNavigator = createStackNavigator(
-  {    
+  {
     Home: {
-     screen: MenuTabNavigator,
-     navigationOptions:{
-       headerShown: false
-     }
+      screen: MenuTabNavigator,
+      navigationOptions: {
+        headerShown: false
+      }
     },
     AddRoom: AddRoomScreen,
-    AddPrivateChat: AddPrivateChatScreen
+    AddPrivateChat: AddPrivateChatScreen,
+    UserProfileScreen: UserProfileScreen
   },
   {
     mode: 'modal',
