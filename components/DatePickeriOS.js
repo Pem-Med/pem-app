@@ -6,10 +6,12 @@ import { Button, TextInput, Text } from "react-native-paper";
 
 const DatePickeriOS = (props) => {
   const [show, setShow] = useState(false);
-  const [month, setMonth] = useState(new Date());
-  const [day, setDay] = useState(new Date());
-  const [year, setYear] = useState(new Date());
-  const [date, setDate] = useState([]);
+  const [month, setMonth] = useState('');
+  const [day, setDay] = useState('');
+  const [year, setYear] = useState('');
+  const [date, setDate] = useState([dates]);
+
+  const dates = new Date(year,month,day);
 
   let months = [
     "Month",
