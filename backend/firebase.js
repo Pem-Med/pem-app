@@ -10,15 +10,11 @@ class Firebase {
    * Initializes Firebase.
    * The if...else is used so the app won't crash
    * with an error saying "Firebase has already
-   * been initialized." The initialization also runs
-   * this.counter() and this.whosOnline() to set those
-   * up for when people log in.
+   * been initialized."
    */
   init = () => {
     if (!firebase.apps.length) {
       firebase.initializeApp(config);
-      this.counter()
-      this.whosOnline()
     } else {
       console.log('Firebase app was already initialized!')
     }
@@ -80,72 +76,6 @@ class Firebase {
         console.log('There was an error removing the user from the chats: ', err);
       });
   };
-
-
-  /**
-   * Initializes the user counter. This is so we know how many people are online.
-   */
-  counter = () => {
-    firebase.database().ref('userCount').once('value').then(function (snapshot) {
-      if (snapshot.val() == null) {
-        firebase.database().ref('userCount').set({
-          count: 0
-        })
-      }
-    })
-  }
-
-  /**
-   * Initializes onlineUsers, which will be storing a list of the users that are online.
-   */
-  whosOnline = () => {
-    firebase.database().ref('onlineUsers').once('value').then(function (snapshot) {
-      if (snapshot.val() == null) {
-        firebase.database().ref('onlineUsers').set({
-          onlineUsers: 0 //This isn't supposed to be a number, but I can't set it to an
-          //empty array or empty object. So it'll be 0 until it gets set to
-          //an object later
-        })
-      }
-    })
-  }
-
-  /**
-   * Gets the user count. If it's -9999, there's been an error with Firebase
-   * getting the count.
-   */
-  get getUserCount() {
-    let count = -9999; // Using this large number to detect if it never changes
-    firebase.database().ref('userCount').on('value', function (snapshot) {
-      count = snapshot.val().count;
-    })
-    return count;
-  }
-
-  /**
-   * Sets the user count. It takes a parameter from screens where users can sign in
-   * and sign out (I think LoginScreen, ChatroomScreen, and SubCategoriesScreen). If
-   * the parameter is 1, that means the user is signing in and the count increments.
-   * Otherwise, the user is signing out and the count decrements.
-   */
-  set setUserCount(num) {
-    firebase.database().ref('userCount').once('value').then(function (snapshot) {
-      firebase.database().ref('userCount').set({
-        count: num == 1 ? snapshot.val().count + 1 : snapshot.val().count - 1
-      })
-    })
-  }
-
-  /**
-   * Gets the list of online users.
-   */
-  get getOnlineUsers() {
-    let onlineUsers = [];
-    firebase.database().ref('onlineUsers').on('value', function (snapshot) {
-      onlineUsers = snapshot.val().onlineUsers;
-    })
-    return onlineUsers;
-  }
 
   get uid() {
     return (firebase.auth().currentUser || {}).uid;

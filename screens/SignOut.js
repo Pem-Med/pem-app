@@ -17,7 +17,6 @@ class SignOut extends Component {
     signOut = (props) => {
       const signOutUser = Firebase.shared.userEmail
       firebase.auth().signOut().then(() => {
-        Firebase.shared.setUserCount = -1
         props.navigation.navigate('Login')
       }).catch(function (err) {
         this.displayOKAlert('Oh no!', `Sign out failed: ${err}`, false)
