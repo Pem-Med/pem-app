@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { View, StyleSheet, TouchableHighlight, Modal } from "react-native";
 import moment from "moment";
 import { Picker } from "react-native-wheel-pick";
-import { Button, TextInput, Text } from "react-native-paper";
+import { Button, Text } from "react-native-paper";
 
 const DatePickeriOS = (props) => {
   const [show, setShow] = useState(false);
@@ -82,7 +82,7 @@ const DatePickeriOS = (props) => {
 
   const onConfirm = () => {
     props.onConfirm(month, day, year);
-    const dates = moment().date(day).month(month).year(year).format("MM-DD-YYYY");
+    const dates = moment(new Date()).date(day).month(month).year(year).format("ll");
     setDate(dates);
     setShow(false);
   };

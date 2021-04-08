@@ -27,7 +27,7 @@ const AddCmeScreen = (props) => {
   const [image, setImage] = useState(null);
 
   //Capturing Expiration function
-  const [exp, setExp] = useState();
+  const [exp, setExp] = useState('');
 
 
 
@@ -48,8 +48,7 @@ const AddCmeScreen = (props) => {
   }, []);
 
   const onDateChange = (date) => {
-    const dates = new Date(date);
-    setExp(dates)
+    setExp(date);
   }
 
   const pickImage = async () => {
@@ -65,16 +64,14 @@ const AddCmeScreen = (props) => {
   };
 
   const onSubmit = () => {
-    console.log
     props.onSubmit(cert, exp, image);
     console.log("It submitted!");
   };
 
   const onConfirm = (month,day,year) => {
-    const dates = moment().date(day).month(month).year(year).format("MM-DD-YYYY")
-    const dateTime = new Date(dates)
-    console.log('Date added: ' + dateTime)
-    setExp(dateTime);
+    const dates = moment(new Date()).date(day).month(month).year(year).format("ll")
+    console.log('Date added: ' + dates)
+    setExp(dates);
   }
 
   const onClose = () =>{

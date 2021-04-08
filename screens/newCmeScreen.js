@@ -31,10 +31,11 @@ const newCmeScreen = (props) => {
   
 
   const onSubmit = (cert, exp, image) => {
+
     console.log(typeof exp);
     const timeDate = exp.getTime();
     const cmes = new Cmes(cert, timeDate, image);
-
+    
     console.log('Date: ' + exp)
 
     fb.AddCme(cmes).then(() => {
