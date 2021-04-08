@@ -8,13 +8,13 @@ import {
   FlatList,
   Image,
   ImageBackground,
-  TouchableOpacity
+  TouchableOpacity,
 } from "react-native";
 import Swipeout from "react-native-swipeout";
 
 import AddCmeScreen from "../components/addCmeScreen";
 import Cmes from "../models/cmes";
-import Colors from '../constants/Colors'
+import Colors from "../constants/Colors";
 
 import "firebase/firestore";
 import Firebase from "../backend/firebase";
@@ -28,15 +28,13 @@ const newCmeScreen = (props) => {
   const [isVisibleForm, setIsVisibleForm] = useState(false);
   const [list, setList] = useState([]);
   const [dataRow, setdataRow] = useState();
-  
 
   const onSubmit = (cert, exp, image) => {
-
     console.log(typeof exp);
     const timeDate = exp.getTime();
     const cmes = new Cmes(cert, timeDate, image);
-    
-    console.log('Date: ' + exp)
+
+    console.log("Date: " + exp);
 
     fb.AddCme(cmes).then(() => {
       Alert.alert(
@@ -73,11 +71,10 @@ const newCmeScreen = (props) => {
     const cmeRef = firebase
       .database()
       .ref(`userCmes/userId: ${firebase.auth().currentUser.uid}/cmes`)
-      .orderByChild('exp');
+      .orderByChild("exp");
     const onValuechange = cmeRef.on("value", (snapshot) => {
       const newList = [];
       snapshot.forEach((childSnapshot) => {
-
         const newDate = new Date(childSnapshot.val().exp);
 
         newList.push({
@@ -85,7 +82,7 @@ const newCmeScreen = (props) => {
           cert: childSnapshot.val().cert,
           exp: newDate,
           image: childSnapshot.val().image,
-          id: childSnapshot.val().id
+          id: childSnapshot.val().id,
         });
       });
       setList(newList);
@@ -95,40 +92,63 @@ const newCmeScreen = (props) => {
   }, []);
 
   function handleDelete() {
-
     //Deletes entire certification from Firebase > Realtime Database
     let deleteRef = firebase
       .database()
       .ref(
-        `userCmes/userId: ${firebase.auth().currentUser.uid}/cmes/${dataRow.key}`
+        `userCmes/userId: ${firebase.auth().currentUser.uid}/cmes/${
+          dataRow.key
+        }`
       );
-    deleteRef.remove().then(function () {
-    });
+    deleteRef.remove().then(function () {});
 
     //AND
 
     //Deletes image in Firebase > Storage > Uploads folder
-    let imageRef = firebase.storage().ref(`uploads/${firebase.auth().currentUser.uid}/${dataRow.id}.jpg`);
-    imageRef.delete().then(() =>{
-    });
-
+    let imageRef = firebase
+      .storage()
+      .ref(`uploads/${firebase.auth().currentUser.uid}/${dataRow.id}.jpg`);
+    imageRef.delete().then(() => {});
   }
 
   const renderItem = ({ item }) => {
-    return (
-      <View padding={10,10,10,10}>
-      <Swipeout
-        keyExtractor={(item) => item.key}
-        close ={item !== item.key}
-        right={swipeoutBtns}
-        onOpen={() => {setdataRow(item)}} //when button is open, get item.key
-      >
 
-      <Card elevation ={10}>
-        <Card.Cover source = {{uri: item.image}}/>
-        <Card.Title title = {item.cert} subtitle={'Expires: ' + item.exp}/>
-       </Card>
-      </Swipeout>
+    const monthNames = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+    const month = monthNames[item.exp.getMonth()];
+    const day = item.exp.getDate();
+    const year = item.exp.getFullYear();
+
+    return (
+      <View padding={(10, 10, 10, 10)}>
+        <Swipeout
+          keyExtractor={(item) => item.key}
+          close={item !== item.key}
+          right={swipeoutBtns}
+          onOpen={() => {
+            setdataRow(item);
+          }} //when button is open, get item.key
+        >
+          <Card elevation={10}>
+            <Card.Cover source={{ uri: item.image }} />
+            <Card.Title
+              title={item.cert}
+              subtitle={"Expires: " + month + ' ' + day + ", " + year}
+            />
+          </Card>
+        </Swipeout>
       </View>
     );
   };
@@ -147,10 +167,9 @@ const newCmeScreen = (props) => {
             onClose={onClose}
           />
           <TouchableOpacity style={styles.btn}>
-            <Text
-            style={styles.addBtn}
-            onPress={() => setIsVisibleForm(true)}
-            >Add Document</Text>
+            <Text style={styles.addBtn} onPress={() => setIsVisibleForm(true)}>
+              Add Document
+            </Text>
           </TouchableOpacity>
         </View>
 
@@ -175,7 +194,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
   },
-  addBtn:{
+  addBtn: {
     fontFamily: "open-sans-bold",
     textAlign: "center",
     color: Colors.androidCustomWhite,

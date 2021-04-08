@@ -27,7 +27,7 @@ const AddCmeScreen = (props) => {
   const [image, setImage] = useState(null);
 
   //Capturing Expiration function
-  const [exp, setExp] = useState('');
+  const [exp, setExp] = useState(new Date());
 
 
 
@@ -48,7 +48,9 @@ const AddCmeScreen = (props) => {
   }, []);
 
   const onDateChange = (date) => {
-    setExp(date);
+    const dates = new Date(date);
+    console.log( typeof dates);
+    setExp(dates);
   }
 
   const pickImage = async () => {
@@ -69,8 +71,12 @@ const AddCmeScreen = (props) => {
   };
 
   const onConfirm = (month,day,year) => {
-    const dates = moment(new Date()).date(day).month(month).year(year).format("ll")
-    console.log('Date added: ' + dates)
+    var dates = new Date(month + ' ' + day+ ', ' +year);
+
+    console.log(typeof month + '' + typeof day + '' + typeof year)
+    
+    //const dates = datess.moment().date(day).month(month).year(year).format("ll")
+    console.log('Date added: ' +  dates)
     setExp(dates);
   }
 

@@ -15,7 +15,7 @@ const DatePickeriOS = (props) => {
 
   let months = [
     "Month",
-    "January",
+    'January',
     "February",
     "March",
     "April",
