@@ -49,7 +49,6 @@ const AddCmeScreen = (props) => {
 
   const onDateChange = (date) => {
     const dates = new Date(date);
-    console.log( typeof dates);
     setExp(dates);
   }
 
@@ -67,16 +66,10 @@ const AddCmeScreen = (props) => {
 
   const onSubmit = () => {
     props.onSubmit(cert, exp, image);
-    console.log("It submitted!");
   };
 
   const onConfirm = (month,day,year) => {
     var dates = new Date(month + ' ' + day+ ', ' +year);
-
-    console.log(typeof month + '' + typeof day + '' + typeof year)
-    
-    //const dates = datess.moment().date(day).month(month).year(year).format("ll")
-    console.log('Date added: ' +  dates)
     setExp(dates);
   }
 

@@ -30,11 +30,8 @@ const newCmeScreen = (props) => {
   const [dataRow, setdataRow] = useState();
 
   const onSubmit = (cert, exp, image) => {
-    console.log(typeof exp);
     const timeDate = exp.getTime();
     const cmes = new Cmes(cert, timeDate, image);
-
-    console.log("Date: " + exp);
 
     fb.AddCme(cmes).then(() => {
       Alert.alert(
@@ -112,7 +109,7 @@ const newCmeScreen = (props) => {
   }
 
   const renderItem = ({ item }) => {
-
+    //list of months to get
     const monthNames = [
       "January",
       "February",
@@ -127,6 +124,7 @@ const newCmeScreen = (props) => {
       "November",
       "December",
     ];
+
     const month = monthNames[item.exp.getMonth()];
     const day = item.exp.getDate();
     const year = item.exp.getFullYear();
@@ -138,14 +136,15 @@ const newCmeScreen = (props) => {
           close={item !== item.key}
           right={swipeoutBtns}
           onOpen={() => {
+            //when button is open, get item.key
             setdataRow(item);
-          }} //when button is open, get item.key
+          }}
         >
           <Card elevation={10}>
             <Card.Cover source={{ uri: item.image }} />
             <Card.Title
               title={item.cert}
-              subtitle={"Expires: " + month + ' ' + day + ", " + year}
+              subtitle={"Expires: " + month + " " + day + ", " + year}
             />
           </Card>
         </Swipeout>
