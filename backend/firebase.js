@@ -1,6 +1,5 @@
 import * as firebase from 'firebase'
 import config from '../firebaseConfig'
-//import Cmes from '../models/cmes'
 
 class Firebase {
   constructor() {
@@ -29,11 +28,19 @@ class Firebase {
     firebase.auth().onAuthStateChanged(this.onAuthStateChanged);
   }
 
+  _currentUser = "";
   onAuthStateChanged = user => {
-    if (user) {
-      //console.log('-----USER:', user.email, '-----')
-    } else {
-      //console.log('-----NO USER-----')
+    Userstatus = ''
+    if (user != null) {
+      this._currentUser = user;
+      firebase.database().ref(`users/${user.uid}/profile`).update({
+        online: true
+      })
+    } else if (this._currentUser != null){
+      firebase.database().ref(`users/${this._currentUser.uid}/profile`).update({
+        online: false
+      })
+     this._currentUser = null;
     }
   }
 
@@ -110,23 +117,25 @@ class Firebase {
    * to that new array.
    * @param {string} userEmail
    */
-  addOnlineUser(userEmail) {
-    let userArr;
-    firebase.database().ref('onlineUsers').once('value').then(function (snapshot) {
-      userArr = snapshot.val().onlineUsers
-      if (userArr === 0) {
-        firebase.database().ref('onlineUsers').set({
-          onlineUsers: [userEmail]
-        })
-      } else {
-        userArr = snapshot.val().onlineUsers
-        userArr.push(userEmail)
-        firebase.database().ref('onlineUsers').set({
-          onlineUsers: userArr
-        })
-      }
-    })
-  }
+  // addOnlineUser(userEmail) {
+  //   let userArr;
+  //   firebase.database().ref('onlineUsers').once('value').then(function (snapshot) {
+  //     userArr = snapshot.val().onlineUsers
+  //     if (userArr === 0) {
+  //       firebase.database().ref('onlineUsers').set({
+  //         onlineUsers: [userEmail]
+  //       })
+  //     } else {
+  //       userArr = snapshot.val().onlineUsers
+  //       if(!userArr.includes(userEmail)) {
+  //         userArr.push(userEmail)
+  //       }
+  //       firebase.database().ref('onlineUsers').set({
+  //         onlineUsers: userArr
+  //       })
+  //     }
+  //   })
+  // }
 
   /**
    * Removes a user from the onlineUsers list. Firebase can't store an empty list. If
@@ -138,21 +147,23 @@ class Firebase {
    * equals userEmail. That new array becomes the value of onlineUsers.
    * @param {string} userEmail
    */
-  removeOnlineUser(userEmail) {
-    firebase.database().ref('onlineUsers').once('value').then(function (snapshot) {
-      if ((snapshot.val().onlineUsers).length === 1) {
-        firebase.database().ref('onlineUsers').set({
-          onlineUsers: 0
-        })
-      } else {
-        let userArr = snapshot.val().onlineUsers
-        userArr = userArr.filter(email => email != userEmail)
-        firebase.database().ref('onlineUsers').set({
-          onlineUsers: userArr
-        })
-      }
-    })
-  }
+  // removeOnlineUser(userEmail) {
+  //   console.log(`Removing ${userEmail} from online users.`)
+  //   firebase.database().ref('onlineUsers').once('value').then(function (snapshot) {
+  //     if ((snapshot.val().onlineUsers).length === 1) {
+  //       firebase.database().ref('onlineUsers').set({
+  //         onlineUsers: 0
+  //       })
+  //     } else {
+  //       let userArr = snapshot.val().onlineUsers
+  //       userArr = userArr.filter(email => email != userEmail)
+  //       console.log(userArr)
+  //       firebase.database().ref('onlineUsers').set({
+  //         onlineUsers: userArr
+  //       })
+  //     }
+  //   })
+  // }
 
   get uid() {
     return (firebase.auth().currentUser || {}).uid;

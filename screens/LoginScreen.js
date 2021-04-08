@@ -54,7 +54,6 @@ const Login = (props) => {
       .signInWithEmailAndPassword(email, password)
       .then(function () {
         Firebase.shared.setUserCount = 1;
-        Firebase.shared.addOnlineUser(email);
         props.navigation.navigate({ routeName: "Categories" });
       })
       .catch(function (err) {
