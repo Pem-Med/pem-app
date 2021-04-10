@@ -40,7 +40,6 @@ const ProfileScreen = (props) => {
   const [loading, setLoading] = useState(true)
 
   const [buttonColor, setButtonColor] = useState(Colors.active)
-  const [selected, setSelected] = useState(false)
 
   const uid = firebase.auth().currentUser.uid
   const db = firebase.database()
@@ -49,12 +48,12 @@ const ProfileScreen = (props) => {
 
   useEffect(() => {
     setLoading(true)
-    userRef.on(
+    const onValueChange = userRef.on(
       'value',
       (snapshot) => {
         // console.log(snapshot.val())
         const {
-          name, email, avatar, title, number, certs,
+          name, email, avatar, title, number, certs, status
         } = snapshot.val()
         setName(name)
         setEmail(email)
@@ -62,12 +61,19 @@ const ProfileScreen = (props) => {
         setTitle(title)
         setNumber(number)
         setCerts(certs)
+        setStatus(status)
+
+        //set button color
+        status === 'Active' ? setButtonColor(Colors.active) : setButtonColor(Colors.busy);
       },
       (err) => {
         console.log(`Encountered error: ${err}`)
         setLoading(false)
       },
-    )
+    );
+
+    //clean up listener
+    return () => userRef.off('value', onValueChange);
   }, [])
 
   const handleSignOut = () => {
@@ -93,24 +99,24 @@ const ProfileScreen = (props) => {
     props.navigation.navigate('CME')
   }
 
-  const menuArray = ['Turn On', 'Turn Off']
+  const menuArray = ['Active', 'Busy']
 
-  useEffect(() => {
-    if (selected === 'Turn On') {
+  const onSelectStatus = (value) => {
+    if (value === 'Active') {
       setButtonColor(Colors.active)
       setStatus('Active')
       userRef.update({
-        status,
+        status: 'Active'
       })
     }
-    if (selected === 'Turn Off') {
+    else if (value === 'Busy') {
       setButtonColor(Colors.busy)
       setStatus('Busy')
       userRef.update({
-        status,
+        status: 'Busy'
       })
     }
-  })
+  }
 
   if (loading) {
     <ActivityIndicator size={'large'} />
@@ -149,7 +155,7 @@ const ProfileScreen = (props) => {
                     dropdownTextStyle={{ fontSize: 0.04 * screenWidth, color: 'black' }}
                     textStyle={{ fontSize: 0.04 * screenWidth, color: 'black', alignSelf: 'center' }}
                     defaultValue={''}
-                    onSelect={(index, value) => { setSelected(value) }}
+                    onSelect={(index, value) => { onSelectStatus(value) }}
                   >
                     <View style={{ alignItems: 'center' }}>
                       <FontAwesome name={'smile-o'} size={20} color={'black'} />

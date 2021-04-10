@@ -35,16 +35,14 @@ const ChatTabScreen = (props) => {
             const loadedUsers = [];
             //transform the objects into array
             for (const key in data) {
-                if (uid === key) {
-                    //exclude current user from the list
-                    continue;
-                }
+
                 const profile = data[key].profile;
                 const user = {
                     _id: key,
                     avatar: profile.avatar,
                     name: profile.name,
-                    status: profile.status
+                    status: profile.status,
+                    online: profile.online
                 }
                 loadedUsers.push(user);
             }

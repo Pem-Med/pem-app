@@ -11,8 +11,9 @@ import Colors from '../../constants/Colors';
 
 export default AddPrivateChatScreen = props => {
     const uid = firebase.auth().currentUser.uid;
-    const initialList = props.navigation.getParam('usersList');
-    const [usersList, setUsersList] = useState(initialList);
+    const usersList = props.navigation.getParam('usersList');
+    const filteredList = usersList.filter(user => user.online === true && user._id !== uid);
+    const [onlineUsers, setOnlineUsers] = useState(filteredList);
     const [loading, setLoading] = useState(false);
     const [selectedCount, setSelectedCount] = useState(0);
 
@@ -20,7 +21,7 @@ export default AddPrivateChatScreen = props => {
         //unselect all users so that next time this component shows, it is reset.
         //called when the component unmounts
         return function cleanup() {
-            initialList.map(user => {
+            onlineUsers.map(user => {
                 delete user.selected;
                 return user;
             })
@@ -56,7 +57,7 @@ export default AddPrivateChatScreen = props => {
     };
 
     const onCreateHandler = async () => {
-        const selectedUsers = usersList.filter(user => user.selected === true);
+        const selectedUsers = onlineUsers.filter(user => user.selected === true);
         setLoading(true);
 
         if (selectedUsers.length === 0) {
@@ -70,7 +71,7 @@ export default AddPrivateChatScreen = props => {
 
             if (loadedThread) {
                 setLoading(false);
-                props.navigation.navigate('Room', { threadId: loadedThread._id, threadName: loadedThread.name, usersList:usersList });
+                props.navigation.navigate('Room', { threadId: loadedThread._id, threadName: loadedThread.name, usersList: usersList });
                 return;
             }
         }
@@ -92,7 +93,7 @@ export default AddPrivateChatScreen = props => {
                 setLoading(false);
                 thread._id = docRef.id;
                 thread.name = getThreadName(selectedUsers);
-                props.navigation.navigate('Room', { threadId: thread._id, threadName: thread.name, usersList:usersList });
+                props.navigation.navigate('Room', { threadId: thread._id, threadName: thread.name, usersList: usersList });
             })
             .catch((err) => {
                 console.log(err);
@@ -111,7 +112,7 @@ export default AddPrivateChatScreen = props => {
     const onSelectUser = (selectedUser) => {
         if (selectedUser.selected) {
             //unselect this user
-            setUsersList(prevList => prevList.map(user => {
+            setOnlineUsers(prevList => prevList.map(user => {
                 if (user._id === selectedUser._id) {
                     user.selected = false;
                     return user;
@@ -122,7 +123,7 @@ export default AddPrivateChatScreen = props => {
             setSelectedCount(count => count - 1);
         } else {
             //select this user
-            setUsersList(prevList => prevList.map(user => {
+            setOnlineUsers(prevList => prevList.map(user => {
                 if (user._id === selectedUser._id) {
                     user.selected = true;
                     return user;
@@ -152,13 +153,21 @@ export default AddPrivateChatScreen = props => {
         }
     }
 
+    if (onlineUsers.length === 0) {
+        return (
+            <View style={styles.emptyTextContainer}>
+                <Text style={styles.emptyText}>No users online, try again later!</Text>
+            </View>
+        );
+    }
+
     return (
         <View style={styles.screen}>
             <View style={styles.selectedCount}>
                 <Text>Selected: {selectedCount}</Text>
             </View>
             <FlatList
-                data={usersList}
+                data={onlineUsers}
                 keyExtractor={(item) => item._id}
                 ItemSeparatorComponent={() => <Divider />}
                 renderItem={({ item }) => (
@@ -207,6 +216,16 @@ AddPrivateChatScreen.navigationOptions = navigationData => {
 const styles = StyleSheet.create({
     screen: {
         flex: 1
+    },
+    emptyTextContainer: {
+        height: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingHorizontal: 30
+    },
+    emptyText: {
+        fontSize: 22,
+        textAlign: 'center'
     },
     itemContainer: {
         flexDirection: 'row',
