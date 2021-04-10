@@ -53,7 +53,6 @@ const Login = (props) => {
       .auth()
       .signInWithEmailAndPassword(email, password)
       .then(function () {
-        Firebase.shared.setUserCount = 1;
         props.navigation.navigate({ routeName: "Categories" });
       })
       .catch(function (err) {

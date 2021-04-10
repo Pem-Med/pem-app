@@ -35,16 +35,16 @@ const UserProfileScreen = (props) => {
   const [number, setNumber] = useState('')
   const [status, setStatus] = useState('')
   const [avatar, setAvatar] = useState('')
+  const [online, setOnline] = useState('');
 
   const userRef = db.ref(`users/${uid}/profile`)
 
   useEffect(() => {
-    userRef.on(
+    const onValueChange = userRef.on(
       'value',
       (snapshot) => {
-        // console.log(snapshot.val())
         const {
-          name, email, avatar, title, number, status,
+          name, email, avatar, title, number, status, online
         } = snapshot.val()
         setName(name)
         setEmail(email)
@@ -52,22 +52,29 @@ const UserProfileScreen = (props) => {
         setTitle(title)
         setNumber(number)
         setStatus(status)
+        setOnline(online)
       },
       (err) => {
         console.log(`Encountered error: ${err}`)
       },
-    )
+    );
+
+    //clean up listener
+    return () => userRef.off('value', onValueChange);
   }, [])
 
   const [buttonColor, setButtonColor] = useState('')
 
   useEffect(() => {
-    if (status === 'Active') {
+    if (!online) {
+      setButtonColor(Colors.offline)
+    } else if (status === 'Active') {
       setButtonColor(Colors.active)
     } else if (status === 'Busy') {
       setButtonColor(Colors.busy)
     }
-  })
+
+  }, [status, online])
 
   const image = avatar !== '' ? { uri: avatar } : require('../../components/img/default-profile-pic.jpg')
 
@@ -142,105 +149,105 @@ const styles = StyleSheet.create({
     // backgroundColor: "#fff",
   },
   responsiveBox: {
-    width:  screenWidth,
+    width: screenWidth,
     height: screenHeight,
   },
   background: {
-    width:  '100%',
+    width: '100%',
     height: '100%',
 
   },
   text: {
     fontFamily: 'open-sans',
-    color:      'black',
-    fontSize:   0.043 * screenWidth,
+    color: 'black',
+    fontSize: 0.043 * screenWidth,
   },
   avatar: {
-    flex:       1,
-    width:      null,
-    height:     null,
+    flex: 1,
+    width: null,
+    height: null,
     resizeMode: 'contain',
   },
   profileImage: {
-    width:        screenWidth * 0.40,
-    height:       screenHeight * 0.23,
+    width: screenWidth * 0.40,
+    height: screenHeight * 0.23,
     borderRadius: 100,
-    overflow:     'hidden',
-    marginTop:    '4%',
-    aspectRatio:  1,
-    borderWidth:  2,
-    borderColor:  'white',
+    overflow: 'hidden',
+    marginTop: '4%',
+    aspectRatio: 1,
+    borderWidth: 2,
+    borderColor: 'white',
   },
   active: {
-    position:     'absolute',
-    bottom:       20,
-    left:         5,
-    padding:      4,
-    height:       25,
-    width:        25,
+    position: 'absolute',
+    bottom: 20,
+    left: 5,
+    padding: 4,
+    height: 25,
+    width: 25,
     borderRadius: 15,
   },
   infoContainer: {
-    alignSelf:  'center',
+    alignSelf: 'center',
     alignItems: 'center',
-    marginTop:  '3%',
+    marginTop: '3%',
   },
   infoText: {
     marginBottom: '1%',
   },
   detailContainer: {
-    flexDirection:    'row',
-    alignItems:       'center',
-    height:           screenHeight * 0.101,
-    alignSelf:        'center',
-    marginTop:        '4%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: screenHeight * 0.101,
+    alignSelf: 'center',
+    marginTop: '4%',
     marginHorizontal: 25,
-    backgroundColor:  'whitesmoke',
-    shadowColor:      'gray',
-    shadowOffset:     {
-      width:  0,
+    backgroundColor: 'whitesmoke',
+    shadowColor: 'gray',
+    shadowOffset: {
+      width: 0,
       height: 5,
     },
     shadowOpacity: 0.34,
-    shadowRadius:  6.27,
-    elevation:     10,
-    borderRadius:  12,
-    opacity:       0.8,
+    shadowRadius: 6.27,
+    elevation: 10,
+    borderRadius: 12,
+    opacity: 0.8,
   },
   iconBox: {
-    flex:       0.3,
+    flex: 0.3,
     alignItems: 'flex-end',
   },
   detailBox: {
-    flex:            1,
-    alignItems:      'center',
-    borderColor:     'silver',
+    flex: 1,
+    alignItems: 'center',
+    borderColor: 'silver',
     borderLeftWidth: 1,
-    marginLeft:      40,
+    marginLeft: 40,
   },
   subText: {
-    fontSize:      0.038 * screenWidth,
-    color:         '#AEB5BC',
+    fontSize: 0.038 * screenWidth,
+    color: '#AEB5BC',
     textTransform: 'uppercase',
-    fontWeight:    '500',
-    marginTop:     5,
+    fontWeight: '500',
+    marginTop: 5,
   },
   buttonStyle: {
-    marginTop:    screenHeight * 0.050,
+    marginTop: screenHeight * 0.050,
     alignContent: 'center',
-    alignSelf:    'center',
+    alignSelf: 'center',
   },
   button: {
     backgroundColor: 'steelblue',
-    borderColor:     'cornflowerblue',
-    borderWidth:     1,
-    borderRadius:    10,
-    color:           'white',
-    fontSize:        0.038 * screenWidth,
-    fontWeight:      'bold',
-    overflow:        'hidden',
-    padding:         15,
-    textAlign:       'center',
+    borderColor: 'cornflowerblue',
+    borderWidth: 1,
+    borderRadius: 10,
+    color: 'white',
+    fontSize: 0.038 * screenWidth,
+    fontWeight: 'bold',
+    overflow: 'hidden',
+    padding: 15,
+    textAlign: 'center',
   },
 
 })

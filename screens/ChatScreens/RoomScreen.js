@@ -46,8 +46,14 @@ export default function ChatRoomScreen(props) {
   }, [])
 
   const getThreadName = (members) => {
+    let name;
+    
+    if(members.length === 1){
+      return usersList.find((user) => user._id === members[0]).name;
+    }
+
     const otherUserId = members.filter((userId) => userId !== uid)[0];
-    const name = usersList.find((user) => user._id === otherUserId).name
+    name = usersList.find((user) => user._id === otherUserId).name
 
     if (members.length === 2) {
       return name;

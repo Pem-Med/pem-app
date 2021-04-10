@@ -1,4 +1,4 @@
-import * as firebase from 'firebase'
+import * as firebase from 'firebase';
 import config from '../firebaseConfig'
 
 class Firebase {
@@ -10,15 +10,11 @@ class Firebase {
    * Initializes Firebase.
    * The if...else is used so the app won't crash
    * with an error saying "Firebase has already
-   * been initialized." The initialization also runs
-   * this.counter() and this.whosOnline() to set those
-   * up for when people log in.
+   * been initialized."
    */
   init = () => {
     if (!firebase.apps.length) {
       firebase.initializeApp(config);
-      this.counter()
-      this.whosOnline()
     } else {
       console.log('Firebase app was already initialized!')
     }
@@ -28,142 +24,58 @@ class Firebase {
     firebase.auth().onAuthStateChanged(this.onAuthStateChanged);
   }
 
-  _currentUser = "";
+  _currentUser = null;
   onAuthStateChanged = user => {
-    Userstatus = ''
     if (user != null) {
       this._currentUser = user;
       firebase.database().ref(`users/${user.uid}/profile`).update({
         online: true
       })
-    } else if (this._currentUser != null){
+    } else if (this._currentUser != null) {
       firebase.database().ref(`users/${this._currentUser.uid}/profile`).update({
         online: false
-      })
-     this._currentUser = null;
+      });
+      
+      this.removeUserFromAllThreads(this._currentUser.uid);
+
+      this._currentUser = null;
     }
   }
 
-  /**
-   * Initializes the user counter. This is so we know how many people are online.
-   */
-  counter = () => {
-    firebase.database().ref('userCount').once('value').then(function (snapshot) {
-      if (snapshot.val() == null) {
-        firebase.database().ref('userCount').set({
-          count: 0
-        })
-      }
-    })
-  }
 
   /**
-   * Initializes onlineUsers, which will be storing a list of the users that are online.
+   * Removes the user from any chat threads that they are a part of
+   * @param {string} uid 
    */
-  whosOnline = () => {
-    firebase.database().ref('onlineUsers').once('value').then(function (snapshot) {
-      if (snapshot.val() == null) {
-        firebase.database().ref('onlineUsers').set({
-          onlineUsers: 0 //This isn't supposed to be a number, but I can't set it to an
-          //empty array or empty object. So it'll be 0 until it gets set to
-          //an object later
-        })
-      }
-    })
-  }
+  removeUserFromAllThreads = (uid) => {
+    let threadQuery = firebase.firestore().collection('THREADS').where('members', 'array-contains', uid);
 
-  /**
-   * Gets the user count. If it's -9999, there's been an error with Firebase
-   * getting the count.
-   */
-  get getUserCount() {
-    let count = -9999; // Using this large number to detect if it never changes
-    firebase.database().ref('userCount').on('value', function (snapshot) {
-      count = snapshot.val().count;
-    })
-    return count;
-  }
+    threadQuery.get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          
+          const docRef = firebase.firestore().collection("THREADS").doc(doc.id);
+          const thread = doc.data();
 
-  /**
-   * Sets the user count. It takes a parameter from screens where users can sign in
-   * and sign out (I think LoginScreen, ChatroomScreen, and SubCategoriesScreen). If
-   * the parameter is 1, that means the user is signing in and the count increments.
-   * Otherwise, the user is signing out and the count decrements.
-   */
-  set setUserCount(num) {
-    firebase.database().ref('userCount').once('value').then(function (snapshot) {
-      firebase.database().ref('userCount').set({
-        count: num == 1 ? snapshot.val().count + 1 : snapshot.val().count - 1
+          //if chat currently has only 1 users, delete the whole thread
+          if (thread.members.length === 1) {
+            this.deleteThreadMessagesSubCollection(doc.id, 500)
+              .then(() => {
+                //delete thread document
+                docRef.delete();
+              })
+          } else {
+            //remove the user from the thread
+            docRef.update({
+              members: firebase.firestore.FieldValue.arrayRemove(uid)
+            });
+          }
+        });
       })
-    })
-  }
-
-  /**
-   * Gets the list of online users.
-   */
-  get getOnlineUsers() {
-    let onlineUsers = [];
-    firebase.database().ref('onlineUsers').on('value', function (snapshot) {
-      onlineUsers = snapshot.val().onlineUsers;
-    })
-    return onlineUsers;
-  }
-
-  /**
-   * Adds an online user to the onlineUsers list in Firebase. Since onlineUsers was
-   * initialized originally with a value of 0, I have to check for that. If it's 0,
-   * set onlineUsers to an array with just the userEmail inside it. Otherwise,
-   * take the current value of onlineUsers, push userEmail onto it, and set onlineUsers
-   * to that new array.
-   * @param {string} userEmail
-   */
-  // addOnlineUser(userEmail) {
-  //   let userArr;
-  //   firebase.database().ref('onlineUsers').once('value').then(function (snapshot) {
-  //     userArr = snapshot.val().onlineUsers
-  //     if (userArr === 0) {
-  //       firebase.database().ref('onlineUsers').set({
-  //         onlineUsers: [userEmail]
-  //       })
-  //     } else {
-  //       userArr = snapshot.val().onlineUsers
-  //       if(!userArr.includes(userEmail)) {
-  //         userArr.push(userEmail)
-  //       }
-  //       firebase.database().ref('onlineUsers').set({
-  //         onlineUsers: userArr
-  //       })
-  //     }
-  //   })
-  // }
-
-  /**
-   * Removes a user from the onlineUsers list. Firebase can't store an empty list. If
-   * you try to store an empty list, it'll simply store nothing. So the length of
-   * onlineUsers is checked before any removal. If the length is 1, it won't remove,
-   * because that will just destroy the list entirely. Instead, it will set onlineUsers
-   * to 0. If the length of the list is 2 or more, it will take the array of onlineUsers
-   * and use the filter method to yield the exact same array excluding the element that
-   * equals userEmail. That new array becomes the value of onlineUsers.
-   * @param {string} userEmail
-   */
-  // removeOnlineUser(userEmail) {
-  //   console.log(`Removing ${userEmail} from online users.`)
-  //   firebase.database().ref('onlineUsers').once('value').then(function (snapshot) {
-  //     if ((snapshot.val().onlineUsers).length === 1) {
-  //       firebase.database().ref('onlineUsers').set({
-  //         onlineUsers: 0
-  //       })
-  //     } else {
-  //       let userArr = snapshot.val().onlineUsers
-  //       userArr = userArr.filter(email => email != userEmail)
-  //       console.log(userArr)
-  //       firebase.database().ref('onlineUsers').set({
-  //         onlineUsers: userArr
-  //       })
-  //     }
-  //   })
-  // }
+      .catch((err) => {
+        console.log('There was an error removing the user from the chats: ', err);
+      });
+  };
 
   get uid() {
     return (firebase.auth().currentUser || {}).uid;
@@ -180,7 +92,7 @@ class Firebase {
     return firebase.database.ServerValue.TIMESTAMP;
   }
 
-  
+
   /**
  * Adds the CME info to the list.
  */
