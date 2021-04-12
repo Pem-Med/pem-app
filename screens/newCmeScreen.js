@@ -8,13 +8,13 @@ import {
   FlatList,
   Image,
   ImageBackground,
-  TouchableOpacity
+  TouchableOpacity,
 } from "react-native";
 import Swipeout from "react-native-swipeout";
 
 import AddCmeScreen from "../components/addCmeScreen";
 import Cmes from "../models/cmes";
-import Colors from '../constants/Colors'
+import Colors from "../constants/Colors";
 
 import "firebase/firestore";
 import Firebase from "../backend/firebase";
@@ -28,10 +28,11 @@ const newCmeScreen = (props) => {
   const [isVisibleForm, setIsVisibleForm] = useState(false);
   const [list, setList] = useState([]);
   const [dataRow, setdataRow] = useState();
-  
 
   const onSubmit = (cert, exp, image) => {
-    const cmes = new Cmes(cert, exp, image);
+    const timeDate = exp.getTime();
+    const cmes = new Cmes(cert, timeDate, image);
+
     fb.AddCme(cmes).then(() => {
       Alert.alert(
         "Success",
@@ -44,15 +45,6 @@ const newCmeScreen = (props) => {
 
   const onClose = () => {
     setIsVisibleForm(false);
-  };
-
-  const onDismiss = () => {
-    Alert.alert(
-      "Oops",
-      "You sure you want to cancel?",
-      [{ text: "Yes, cancel", onPress: () => setIsVisibleForm(false) }],
-      { cancelable: false }
-    );
   };
 
   var swipeoutBtns = (id = [
@@ -75,16 +67,19 @@ const newCmeScreen = (props) => {
   useEffect(() => {
     const cmeRef = firebase
       .database()
-      .ref(`userCmes/userId: ${firebase.auth().currentUser.uid}/cmes`);
+      .ref(`userCmes/userId: ${firebase.auth().currentUser.uid}/cmes`)
+      .orderByChild("exp");
     const onValuechange = cmeRef.on("value", (snapshot) => {
       const newList = [];
       snapshot.forEach((childSnapshot) => {
+        const newDate = new Date(childSnapshot.val().exp);
+
         newList.push({
           key: childSnapshot.key,
           cert: childSnapshot.val().cert,
-          exp: childSnapshot.val().exp,
+          exp: newDate,
           image: childSnapshot.val().image,
-          id: childSnapshot.val().id
+          id: childSnapshot.val().id,
         });
       });
       setList(newList);
@@ -94,45 +89,65 @@ const newCmeScreen = (props) => {
   }, []);
 
   function handleDelete() {
-
+    //Deletes entire certification from Firebase > Realtime Database
     let deleteRef = firebase
       .database()
       .ref(
-        `userCmes/userId: ${firebase.auth().currentUser.uid}/cmes/${dataRow.key}`
+        `userCmes/userId: ${firebase.auth().currentUser.uid}/cmes/${
+          dataRow.key
+        }`
       );
-    deleteRef.remove().then(function () {
-    });
+    deleteRef.remove().then(function () {});
 
-    let imageRef = firebase.storage().ref(`uploads/${firebase.auth().currentUser.uid}/${dataRow.id}.jpg`);
-    imageRef.delete().then(() =>{
-    });
+    //AND
 
+    //Deletes image in Firebase > Storage > Uploads folder
+    let imageRef = firebase
+      .storage()
+      .ref(`uploads/${firebase.auth().currentUser.uid}/${dataRow.id}.jpg`);
+    imageRef.delete().then(() => {});
   }
 
   const renderItem = ({ item }) => {
+    //list of months to get
+    const monthNames = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+
+    const month = monthNames[item.exp.getMonth()];
+    const day = item.exp.getDate();
+    const year = item.exp.getFullYear();
+
     return (
-      <View padding={10,10,10,10}>
-      <Swipeout
-        keyExtractor={(item) => item.key}
-        close ={item !== item.key}
-        right={swipeoutBtns}
-        onOpen={() => {setdataRow(item)}} //when button is open, get item.key
-      >
-
-      <Card elevation ={10}>
-        <Card.Cover source = {{uri: item.image}}/>
-        <Card.Title title = {item.cert} subtitle={'Expires: ' + item.exp}/>
-       </Card>
-
-        {/* <View style={{ flexDirection: "row", marginVertical: "5%" }}>
-          <Text style={styles.cmeItem}>Cert: {item.cert}</Text>
-          <Text style={styles.cmeItem}>Exp: {item.exp}</Text>
-          <Image
-            style={{ flex: 2, height: 150 }}
-            source={{ uri: item.image }}
-          />
-        </View> */}
-      </Swipeout>
+      <View padding={(10, 10, 10, 10)}>
+        <Swipeout
+          keyExtractor={(item) => item.key}
+          close={item !== item.key}
+          right={swipeoutBtns}
+          onOpen={() => {
+            //when button is open, get item.key
+            setdataRow(item);
+          }}
+        >
+          <Card elevation={10}>
+            <Card.Cover source={{ uri: item.image }} />
+            <Card.Title
+              title={item.cert}
+              subtitle={"Expires: " + month + " " + day + ", " + year}
+            />
+          </Card>
+        </Swipeout>
       </View>
     );
   };
@@ -149,13 +164,11 @@ const newCmeScreen = (props) => {
             header="Add Document"
             onSubmit={onSubmit}
             onClose={onClose}
-            onDismiss={onDismiss}
           />
           <TouchableOpacity style={styles.btn}>
-            <Text
-            style={styles.addBtn}
-            onPress={() => setIsVisibleForm(true)}
-            >Add Document</Text>
+            <Text style={styles.addBtn} onPress={() => setIsVisibleForm(true)}>
+              Add Document
+            </Text>
           </TouchableOpacity>
         </View>
 
@@ -180,7 +193,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
   },
-  addBtn:{
+  addBtn: {
     fontFamily: "open-sans-bold",
     textAlign: "center",
     color: Colors.androidCustomWhite,

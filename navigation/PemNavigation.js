@@ -16,7 +16,6 @@ import SignUpScreen from '../screens/SignUpScreen';
 import ResetPasswordScreen from '../screens/ResetPasswordScreen';
 import FavoritesScreen from '../screens/FavoritesScreen';
 import UserProfileScreen from '../screens/ProfileScreens/UserProfileScreen';
-//import CMEScreen from '../screens/CMEScreen';
 import NewCmeScreen from '../screens/newCmeScreen'
 import SearchScreen from '../screens/SearchScreen';
 import AdminCategoriesScreen from '../screens/AdminScreens/AdminCategoriesScreen';

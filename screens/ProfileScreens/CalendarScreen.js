@@ -5,7 +5,7 @@ import {
 import * as Calendar from 'expo-calendar'
 import * as Permissions from 'expo-permissions'
 import moment from 'moment'
-import DateTimePicker from '@react-native-community/datetimepicker'
+//import DateTimePicker from '@react-native-community/datetimepicker'
 import DateTimePickerModal from 'react-native-modal-datetime-picker'
 import { MaterialIcons } from '@expo/vector-icons'
 import Colors from '../../constants/Colors'

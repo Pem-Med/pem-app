@@ -35,7 +35,6 @@ const ProfileScreen = (props) => {
   const [title, setTitle] = useState('')
   const [number, setNumber] = useState('')
   const [status, setStatus] = useState('')
-  const [certs, setCerts] = useState([])
   const [avatar, setAvatar] = useState('')
   const [loading, setLoading] = useState(true)
 
@@ -53,14 +52,13 @@ const ProfileScreen = (props) => {
       (snapshot) => {
         // console.log(snapshot.val())
         const {
-          name, email, avatar, title, number, certs, status
+          name, email, avatar, title, number, status
         } = snapshot.val()
         setName(name)
         setEmail(email)
         setAvatar(avatar)
         setTitle(title)
         setNumber(number)
-        setCerts(certs)
         setStatus(status)
 
         //set button color
@@ -81,21 +79,8 @@ const ProfileScreen = (props) => {
     new SignOut().signOut(props)
   }
 
-  useEffect(() => {
-    const cmeRef = firebase.database().ref(`userCmes/userId:${uid}`)
-    cmeRef.orderByChild('cmes').on('value', (snapshot) => {
-      snapshot.forEach((childSnapshot) => {
-        const childData = childSnapshot.val()
-        childData.key = childSnapshot.key
-        setCerts(childData)
-      })
-    })
-  }, [])
-
+  //Navigates to Certification (CME) screen
   const handleCerts = () => {
-    userRef.update({
-      certs,
-    })
     props.navigation.navigate('CME')
   }
 

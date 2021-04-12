@@ -105,7 +105,6 @@ const Login = (props) => {
                       avatar: "",
                       title: "Job Title",
                       status: "Active",
-                      certs: "",
                       isVisible: false,
                     },
                   });
