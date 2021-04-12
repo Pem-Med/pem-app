@@ -84,7 +84,15 @@ const ChatDetailScreen = props => {
         });
 
         Promise.all(promises)
-            .then(loadedUsers => setUsers(loadedUsers))
+            .then(loadedUsers => {
+                setUsers(loadedUsers);
+
+                //if value is empty still, fetch it
+                //could be empty because owner of chat left the chat and we did not get their info with the code above.
+                if(!createdByName){
+                    getCreatedByName(loadedThread);
+                }
+            })
             .catch(err => {
                 console.log(err);
                 Alert.alert("Error", "There was an error loading the users.");
