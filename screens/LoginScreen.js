@@ -16,7 +16,6 @@ import Firebase from "../backend/firebase";
 import * as Google from "expo-google-app-auth";
 import Colors from "../constants/Colors";
 // import _ from "lodash";
-import * as Facebook from "expo-facebook";
 
 function displayOKAlert(title, message) {
   Alert.alert(title, message);
@@ -43,10 +42,6 @@ const Login = (props) => {
     if (showLoginScreen)
       setDisabledLoginButton(!userInfo.password || !userInfo.username);
   }, [userInfo]);
-
-  useEffect(() => {
-    Facebook.initializeAsync("3384537118298352", "med-app");
-  }, []);
 
   function logUserIn(email, password) {
     firebase
@@ -161,60 +156,6 @@ const Login = (props) => {
   //   setImageLoadStatus(false);
   // }
   // export async function loginWithFacebook()
-
-  const loginWithFacebook = async () => {
-    const appId = "3384537118298352";
-    const permissions = ["public_profile", "email"]; // Permissions required, consult Facebook docs
-
-    const { type, token } = await Facebook.logInWithReadPermissionsAsync(
-      appId,
-      { permissions }
-    );
-
-    switch (type) {
-      case "success": {
-        await firebase
-          .auth()
-          .setPersistence(firebase.auth.Auth.Persistence.LOCAL); // Set persistent auth state
-        const credential = firebase.auth.FacebookAuthProvider.credential(token);
-        const userInfo = await firebase.auth().signInWithCredential(credential);  // Sign in with Facebook credential
-        firebase
-        .database()
-        .ref(`/users/${userInfo.user.uid}`)
-        .equalTo(userInfo.user.email)
-        .once("value")
-        .then((snapshot) => {
-          if (!snapshot.val()) {
-            const userRef = firebase
-              .database()
-              .ref(`/users/${userInfo.user.uid}`);
-            userRef.update({
-              profile: {
-                name: userInfo.user.displayName,
-                email: userInfo.user.email,
-                number: "(###) ###-####",
-                avatar: "",
-                title: "Job Title",
-                status: "Active",
-                certs: "",
-                isVisible: false,
-              },
-            });
-          }
-        });
-      alert(`Welcome ${userInfo.user.displayName}`);
-      props.navigation.navigate({ routeName: "Categories" });
-    
-        // Do something with Facebook profile data
-        // OR you have subscribed to auth state change, authStateChange handler will process the profile data
-
-        return Promise.resolve({ type: "success" });
-      }
-      case "cancel": {
-        return Promise.reject({ type: "cancel" });
-      }
-    }
-  };
 
   const loginScreenHandler = () => {
     if (showLoginScreen) logUserIn(userInfo.username, userInfo.password);
