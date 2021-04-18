@@ -11,7 +11,6 @@ import {
   Dimensions,
   ImageBackground,
 } from "react-native";
-import { List, ListItem } from "react-native-elements";
 //import styles from "react-native-phone-input/lib/styles";
 import Colors from "../constants/Colors";
 

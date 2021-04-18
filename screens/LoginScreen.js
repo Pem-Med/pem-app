@@ -15,7 +15,7 @@ import "firebase/firestore";
 import Firebase from "../backend/firebase";
 import * as Google from "expo-google-app-auth";
 import Colors from "../constants/Colors";
-import _ from "lodash";
+// import _ from "lodash";
 import * as Facebook from "expo-facebook";
 
 function displayOKAlert(title, message) {
