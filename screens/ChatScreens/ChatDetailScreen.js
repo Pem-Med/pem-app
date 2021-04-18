@@ -202,7 +202,7 @@ const ChatDetailScreen = props => {
                                 >
                                     <View>
                                         <View style={styles.profileImage}>
-                                            <Image source={getProfileImage(item)} style={styles.avatar} resizeMode={'cover'} width={40} height={40} />
+                                            <Image source={getProfileImage(item)} style={styles.avatar} resizeMode={'cover'} />
                                         </View>
                                     </View>
                                     <Text style={styles.userName}>{item.name}</Text>
@@ -337,10 +337,15 @@ const styles = StyleSheet.create({
     profileImage: {
         borderRadius: 100,
         overflow: 'hidden',
-        aspectRatio: 1,
-        borderWidth: 2,
+        // aspectRatio: 1,
+        // borderWidth: 2,
         borderColor: 'white',
         marginRight: 15,
+        backgroundColor:'pink'
+    },
+    avatar:{
+        height: 40,
+        width: 40
     },
     userName: {
         fontSize: 15
