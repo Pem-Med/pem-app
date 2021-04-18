@@ -1,11 +1,9 @@
 import React, { useState, Component } from 'react';
 //import { LogBox } from 'react-native'
 import _ from 'lodash';
-//import { Text, View } from 'react-native';
 import * as Font from 'expo-font';
 import { AppLoading } from 'expo';
 
-//import { createStackNavigator } from 'react-navigation-stack';
 
 //import MealsNavigator from './navigation/MealsNavigation';
 import PemNavigation from './navigation/PemNavigation';
@@ -23,7 +21,6 @@ import {decode, encode} from 'base-64'
 if (!global.btoa) {  global.btoa = encode }
 
 if (!global.atob) { global.atob = decode }
-
 
 /*
 I've been getting an error ever since I ran npm `install react-native-dialog-input`.

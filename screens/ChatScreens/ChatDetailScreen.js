@@ -84,7 +84,15 @@ const ChatDetailScreen = props => {
         });
 
         Promise.all(promises)
-            .then(loadedUsers => setUsers(loadedUsers))
+            .then(loadedUsers => {
+                setUsers(loadedUsers);
+
+                //if value is empty still, fetch it
+                //could be empty because owner of chat left the chat and we did not get their info with the code above.
+                if(!createdByName){
+                    getCreatedByName(loadedThread);
+                }
+            })
             .catch(err => {
                 console.log(err);
                 Alert.alert("Error", "There was an error loading the users.");
@@ -194,7 +202,7 @@ const ChatDetailScreen = props => {
                                 >
                                     <View>
                                         <View style={styles.profileImage}>
-                                            <Image source={getProfileImage(item)} style={styles.avatar} resizeMode={'cover'} width={40} height={40} />
+                                            <Image source={getProfileImage(item)} style={styles.avatar} resizeMode={'cover'} />
                                         </View>
                                     </View>
                                     <Text style={styles.userName}>{item.name}</Text>
@@ -329,10 +337,15 @@ const styles = StyleSheet.create({
     profileImage: {
         borderRadius: 100,
         overflow: 'hidden',
-        aspectRatio: 1,
-        borderWidth: 2,
+        // aspectRatio: 1,
+        // borderWidth: 2,
         borderColor: 'white',
         marginRight: 15,
+        backgroundColor:'pink'
+    },
+    avatar:{
+        height: 40,
+        width: 40
     },
     userName: {
         fontSize: 15
