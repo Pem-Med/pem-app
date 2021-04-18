@@ -8,7 +8,7 @@ const initialState = {
   categoriesContent: CATCONTENT,
 }
 
-export default (state = initialState, action) => {
+const catContentReducer = (state = initialState, action) => {
   switch (action.type) {
     case SET_CATCONTENT:
       return {
@@ -63,3 +63,5 @@ export default (state = initialState, action) => {
   }
   return state
 }
+
+export default catContentReducer;

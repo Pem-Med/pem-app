@@ -23,7 +23,7 @@ function displayOKAlert(title, message) {
 }
 
 
-const CreateAccount = props => {
+const SignUpScreen = props => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [displayName, setDisplayName] = useState("");
@@ -289,4 +289,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default CreateAccount;
+export default SignUpScreen;

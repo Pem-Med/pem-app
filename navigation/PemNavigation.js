@@ -172,7 +172,7 @@ const tabScreenConfig = {
     navigationOptions: {
       tabBarIcon: ({ tintColor }) => (
         <Ionicons
-          name={Platform.OS === 'android' ? 'md-chatboxes' : 'ios-chatboxes'}
+          name='chatbox'
           color={tintColor}
           size={24}
         />
@@ -266,4 +266,6 @@ const SwitchNavigator = createSwitchNavigator(
   }
 );
 
-export default createAppContainer(SwitchNavigator);
+const PemNavigation = createAppContainer(SwitchNavigator);
+
+export default PemNavigation;

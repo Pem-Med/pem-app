@@ -341,7 +341,6 @@ const styles = StyleSheet.create({
         // borderWidth: 2,
         borderColor: 'white',
         marginRight: 15,
-        backgroundColor:'pink'
     },
     avatar:{
         height: 40,

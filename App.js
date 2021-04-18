@@ -1,8 +1,8 @@
 import React, { useState, Component } from 'react';
-import { YellowBox } from 'react-native'
+import { YellowBox, Alert } from 'react-native'
 import _ from 'lodash';
 import * as Font from 'expo-font';
-import { AppLoading } from 'expo';
+import AppLoading from 'expo-app-loading';
 
 
 //import MealsNavigator from './navigation/MealsNavigation';
@@ -127,7 +127,7 @@ const rootReducer = combineReducers({
 
 const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
 
-export default function App() {
+const App = () => {
   const [fontLoaded, setFontLoaded] = useState(false);
 
   //used for batch delete in firestore
@@ -138,13 +138,16 @@ export default function App() {
       <AppLoading
         startAsync={fetchFonts}
         onFinish={() => setFontLoaded(true)}
+        onError={(err)=> Alert.alert('Error','There was an error loading the app, try again later')}
       />
     );
   }
-
+  
   return (
     <Provider store={store}>
       <PemNavigation />
     </Provider>
   );
 };
+
+export default App;
