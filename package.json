@@ -27,7 +27,7 @@
     "buffer": "^6.0.3",
     "dot-env": "0.0.1",
     "dotenv": "^8.2.0",
-    "expo": "^37.0.0",
+    "expo": "^38.0.0",
     "expo-calendar": "~8.1.0",
     "expo-facebook": "~8.1.0",
     "expo-font": "~8.1.0",
