@@ -1,11 +1,11 @@
 import React, { useState, Component } from 'react';
-import { YellowBox } from 'react-native'
+//import { LogBox } from 'react-native'
 import _ from 'lodash';
-import { Text, View } from 'react-native';
+//import { Text, View } from 'react-native';
 import * as Font from 'expo-font';
 import { AppLoading } from 'expo';
 
-import { createStackNavigator } from 'react-navigation-stack';
+//import { createStackNavigator } from 'react-navigation-stack';
 
 //import MealsNavigator from './navigation/MealsNavigation';
 import PemNavigation from './navigation/PemNavigation';
@@ -102,16 +102,16 @@ to dig through all the warnings for my console.log statements that I use
 to debug. As you can imagine, this is annoying. The following few lines of
 code are what stop that warning from showing up, so I can debug more easily.
 */
-YellowBox.ignoreWarnings(['Setting a timer']);
-YellowBox.ignoreWarnings(['Setting a timer', 'Deprecation in'])
-const _console = _.clone(console);
-console.ignoredYellowBox = ['Setting a timer'];
-console.disableYellowBox = true
-console.warn = message => {
-  if (message.indexOf('Setting a timer') <= -1) {
-    _console.warn(message);
-  }
-};
+// LogBox.ignoreAllLogs(['Setting a timer']);
+// LogBox.ignoreAllLogs(['Setting a timer', 'Deprecation in'])
+// const _console = _.clone(console);
+// console.ignoreLogs = ['Setting a timer'];
+// console.ignoreLogs = true
+// console.warn = message => {
+//   if (message.indexOf('Setting a timer') <= -1) {
+//     _console.warn(message);
+//   }
+// };
 
 enableScreens();//not necesary for this app
 const fetchFonts = () => {

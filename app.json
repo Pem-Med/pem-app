@@ -22,9 +22,6 @@
     "assetBundlePatterns": [
       "**/*"
     ],
-    "facebookScheme": "fb3384537118298352",
-    "facebookAppId": "3384537118298352",
-    "facebookDisplayName": "med-app",
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.fiu.pemmed",

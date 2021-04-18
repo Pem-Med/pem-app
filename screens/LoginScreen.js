@@ -44,9 +44,9 @@ const Login = (props) => {
       setDisabledLoginButton(!userInfo.password || !userInfo.username);
   }, [userInfo]);
 
-  useEffect(() => {
-    Facebook.initializeAsync("3384537118298352", "med-app");
-  }, []);
+  // useEffect(() => {
+  //   Facebook.initializeAsync("3384537118298352", "med-app");
+  // }, []);
 
   function logUserIn(email, password) {
     firebase
@@ -162,59 +162,59 @@ const Login = (props) => {
   // }
   // export async function loginWithFacebook()
 
-  const loginWithFacebook = async () => {
-    const appId = "3384537118298352";
-    const permissions = ["public_profile", "email"]; // Permissions required, consult Facebook docs
+  // const loginWithFacebook = async () => {
+  //   const appId = "3384537118298352";
+  //   const permissions = ["public_profile", "email"]; // Permissions required, consult Facebook docs
 
-    const { type, token } = await Facebook.logInWithReadPermissionsAsync(
-      appId,
-      { permissions }
-    );
+  //   const { type, token } = await Facebook.logInWithReadPermissionsAsync(
+  //     appId,
+  //     { permissions }
+  //   );
 
-    switch (type) {
-      case "success": {
-        await firebase
-          .auth()
-          .setPersistence(firebase.auth.Auth.Persistence.LOCAL); // Set persistent auth state
-        const credential = firebase.auth.FacebookAuthProvider.credential(token);
-        const userInfo = await firebase.auth().signInWithCredential(credential);  // Sign in with Facebook credential
-        firebase
-        .database()
-        .ref(`/users/${userInfo.user.uid}`)
-        .equalTo(userInfo.user.email)
-        .once("value")
-        .then((snapshot) => {
-          if (!snapshot.val()) {
-            const userRef = firebase
-              .database()
-              .ref(`/users/${userInfo.user.uid}`);
-            userRef.update({
-              profile: {
-                name: userInfo.user.displayName,
-                email: userInfo.user.email,
-                number: "(###) ###-####",
-                avatar: "",
-                title: "Job Title",
-                status: "Active",
-                certs: "",
-                isVisible: false,
-              },
-            });
-          }
-        });
-      alert(`Welcome ${userInfo.user.displayName}`);
-      props.navigation.navigate({ routeName: "Categories" });
+  //   switch (type) {
+  //     case "success": {
+  //       await firebase
+  //         .auth()
+  //         .setPersistence(firebase.auth.Auth.Persistence.LOCAL); // Set persistent auth state
+  //       const credential = firebase.auth.FacebookAuthProvider.credential(token);
+  //       const userInfo = await firebase.auth().signInWithCredential(credential);  // Sign in with Facebook credential
+  //       firebase
+  //       .database()
+  //       .ref(`/users/${userInfo.user.uid}`)
+  //       .equalTo(userInfo.user.email)
+  //       .once("value")
+  //       .then((snapshot) => {
+  //         if (!snapshot.val()) {
+  //           const userRef = firebase
+  //             .database()
+  //             .ref(`/users/${userInfo.user.uid}`);
+  //           userRef.update({
+  //             profile: {
+  //               name: userInfo.user.displayName,
+  //               email: userInfo.user.email,
+  //               number: "(###) ###-####",
+  //               avatar: "",
+  //               title: "Job Title",
+  //               status: "Active",
+  //               certs: "",
+  //               isVisible: false,
+  //             },
+  //           });
+  //         }
+  //       });
+  //     alert(`Welcome ${userInfo.user.displayName}`);
+  //     props.navigation.navigate({ routeName: "Categories" });
     
-        // Do something with Facebook profile data
-        // OR you have subscribed to auth state change, authStateChange handler will process the profile data
+  //       // Do something with Facebook profile data
+  //       // OR you have subscribed to auth state change, authStateChange handler will process the profile data
 
-        return Promise.resolve({ type: "success" });
-      }
-      case "cancel": {
-        return Promise.reject({ type: "cancel" });
-      }
-    }
-  };
+  //       return Promise.resolve({ type: "success" });
+  //     }
+  //     case "cancel": {
+  //       return Promise.reject({ type: "cancel" });
+  //     }
+  //   }
+  // };
 
   const loginScreenHandler = () => {
     if (showLoginScreen) logUserIn(userInfo.username, userInfo.password);
