@@ -252,20 +252,16 @@ const styles = StyleSheet.create({
     fontSize:   0.043 * screenWidth,
   },
   avatar: {
-    flex:       1,
-    width:      null,
-    height:     null,
-    resizeMode: 'contain',
-  },
-  profileImage: {
     width:        screenWidth * 0.30,
     height:       screenHeight * 0.20,
+    aspectRatio: 1,
+    overflow: 'hidden',
     borderRadius: 100,
-    overflow:     'hidden',
+    borderWidth: 2,
+    borderColor: 'white',
+  },
+  profileImage: {
     marginTop:    '4%',
-    aspectRatio:  1,
-    borderWidth:  2,
-    borderColor:  'white',
   },
   active: {
     position:     'absolute',

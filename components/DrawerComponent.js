@@ -17,8 +17,6 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Colors from '../constants/Colors';
 import SignOut from '../screens/SignOut';
 import * as firebase from 'firebase';
-import {color} from "react-native-reanimated";
-import {backgroundColor} from "react-native-calendars/src/style";
 
 const DrawerComponent = (props) => {
   const user = firebase.auth().currentUser

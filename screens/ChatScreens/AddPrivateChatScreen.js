@@ -183,7 +183,7 @@ export default AddPrivateChatScreen = props => {
                                 :
                                 <View>
                                     <View style={styles.profileImage}>
-                                        <Image source={getProfileImage(item)} style={styles.avatar} resizeMode={'cover'} width={40} height={40} />
+                                        <Image source={getProfileImage(item)} style={styles.avatar} resizeMode={'cover'} />
                                     </View>
                                     <View>
                                         <View style={styles.active} backgroundColor={getStatus(item)} />
@@ -249,6 +249,10 @@ const styles = StyleSheet.create({
         marginRight: 15,
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    avatar:{
+        height: 40,
+        width: 40
     },
     profileImage: {
         borderRadius: 100,

@@ -12,8 +12,6 @@ import { useSelector, useDispatch } from "react-redux";
 import * as CatContentActions from ".././store/actions/catContent";
 import Colors from "../constants/Colors";
 import SubCatListItem from "./SubCatListItem";
-import AtoZList from "react-native-atoz-list";
-import { backgroundColor } from "react-native-calendars/src/style";
 
 import AlphabeticalDivider from "../components/AlphabeticalDivider";
 import AlphaScrollFlatList from "alpha-scroll-flat-list";
