@@ -25,7 +25,7 @@ const CategoriesScreen = props => {
     <FlatList
       data={categories}
       keyExtractor={item => item.id}
-      numColumns={2}
+      numColumns={1}
       renderItem={itemData =>
         <CategoryGridTile
           title={itemData.item.title}
@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
 
     screenContainer :{
         height: '100%',
-        backgroundColor: Colors.darkBackgroundColor
+        backgroundColor: Colors.lightBackgroundColor
     },
 
     separator :{
