@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     flex: 1,
     //marginTop: 20,
     paddingBottom: 5,
-    height: 175,
+    height: 135,
   },
   container: {
     flex: 1,
