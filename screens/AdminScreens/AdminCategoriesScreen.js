@@ -25,7 +25,7 @@ const AdminCategoriesScreen = (props) => {
       <FlatList
         data={categories}
         keyExtractor={(item) => item.id}
-        numColumns={1}
+        numColumns={2}
         renderItem={(itemData) => (
           <CategoryGridTile
             title={itemData.item.title}
