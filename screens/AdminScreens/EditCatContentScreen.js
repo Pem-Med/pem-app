@@ -95,7 +95,7 @@ const EditCatContentScreen = props => {
                     <TextInput
                         style={{ ...styles.input, ...{ width: textBoxWidth } }}
                         value={title}
-                        onChangeText={text => setTitle(text)}
+                        onChangeText={text => setTitle(text.replace(/^ +/gm, ''))} //Regex to eliminate leading spaces
                         //keyboardType="default"
                         autoCapitalize="sentences"
                         returnKeyType="next"
