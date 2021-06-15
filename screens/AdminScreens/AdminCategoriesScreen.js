@@ -1,5 +1,6 @@
 import React from 'react'
-import { FlatList, Platform, Text } from 'react-native'
+// import { FlatList, Platform, Text } from 'react-native'
+import { View, Text, StyleSheet, Button, FlatList, TouchableOpacity } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons'
 import { useSelector, useDispatch } from 'react-redux'
 import CategoryGridTile from '../../components/CategoryGridTile'
@@ -20,12 +21,12 @@ const AdminCategoriesScreen = (props) => {
   }
   // fix this
   return (
-    <>
-      <Text style={styles.adminText}>Admin mode active</Text>
+    <View style={styles.screenContainer}>
+      <Text style={styles.adminText}>Admin Mode Active</Text>
       <FlatList
         data={categories}
         keyExtractor={(item) => item.id}
-        numColumns={2}
+        numColumns={1}
         renderItem={(itemData) => (
           <CategoryGridTile
             title={itemData.item.title}
@@ -37,7 +38,7 @@ const AdminCategoriesScreen = (props) => {
           />
         )}
       />
-    </>
+    </View>
   )
 }
 AdminCategoriesScreen.navigationOptions = (navigationdata) => ({
@@ -55,15 +56,22 @@ AdminCategoriesScreen.navigationOptions = (navigationdata) => ({
   ),
 })
 
-const styles = {
+const styles = StyleSheet.create({
   adminText: {
     color:           'white',
     backgroundColor: Colors.secondaryColor,
     fontWeight:      'bold',
+    fontStyle:       'italic',
     textAlign:       'center',
     height:          20,
 
   },
-}
+
+  screenContainer :{
+    height: '100%',
+    backgroundColor: Colors.darkBackgroundColor
+  }
+
+});
 
 export default AdminCategoriesScreen
