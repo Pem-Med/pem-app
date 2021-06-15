@@ -13,6 +13,7 @@ export default function AlphabeticalDivider(props) {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.grey,
+    opacity: 0.7,
     flex: 1,
     height: 25,
   },
