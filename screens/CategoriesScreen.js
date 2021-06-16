@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
 
     screenContainer :{
         height: '100%',
-        backgroundColor: Colors.lightBackgroundColor
+        backgroundColor: Colors.darkBackgroundColor
     },
 
     separator :{

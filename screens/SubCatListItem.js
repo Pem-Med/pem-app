@@ -94,8 +94,7 @@ const SubCatListItem = (props) => {
 const styles = StyleSheet.create({
   gridItem: {
     flex: 1,
-    marginTop: 5, //10
-    marginBottom: 10, //10
+     marginBottom: 8, //10
   },
   container: {
     flex: 1,
@@ -106,6 +105,7 @@ const styles = StyleSheet.create({
     elevation: 5,
     width: "98%", //80
     height: 50, //60
+    padding: 17,
     marginLeft: "1%", //10
     marginRight: "1%", //5
     marginHorizontal: 1,
@@ -133,8 +133,7 @@ const styles = StyleSheet.create({
   title: {
     justifyContent: "flex-start",
     fontFamily: "helvetica",
-    fontSize: 15,
-    marginTop: 10,
+    fontSize: 17,
     marginLeft: 10,
     fontWeight: "bold",
   },
