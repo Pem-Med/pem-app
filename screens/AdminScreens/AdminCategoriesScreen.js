@@ -27,11 +27,7 @@ const AdminCategoriesScreen = (props) => {
         data={categories}
         keyExtractor={(item) => item.id}
         numColumns={1}
-<<<<<<< HEAD
         renderItem={(itemData) => (
-=======
-        renderItem={itemData =>
->>>>>>> 310dc2dde1f0a803cd9478e67d682ecb9d402bc2
           <CategoryGridTile
             title={itemData.item.title}
             color={itemData.item.color}
@@ -40,7 +36,7 @@ const AdminCategoriesScreen = (props) => {
               selectCategoryHandler(itemData.item.id, itemData.item.title)
             }}
           />
-        }
+        )}
       />
     </View>
   )
@@ -65,32 +61,14 @@ const styles = StyleSheet.create({
     color:           'white',
     backgroundColor: Colors.secondaryColor,
     fontWeight:      'bold',
-<<<<<<< HEAD
-    fontStyle:       'italic',
-=======
-    fontStyle:  'italic',
->>>>>>> 310dc2dde1f0a803cd9478e67d682ecb9d402bc2
     textAlign:       'center',
     height:          20,
   },
-<<<<<<< HEAD
 
   screenContainer :{
-    height: '100%',
     backgroundColor: Colors.darkBackgroundColor
-  }
-
-=======
+},
   
-  screenContainer :{
-    height: '100%',
-    backgroundColor: Colors.darkBackgroundColor
-  },
-
-  separator :{
-    marginTop: 5,
-  }
->>>>>>> 310dc2dde1f0a803cd9478e67d682ecb9d402bc2
 });
 
 export default AdminCategoriesScreen

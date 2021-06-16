@@ -15,7 +15,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.grey,
     opacity: 0.7,
     flex: 1,
-    height: 25,
+    height: 20,
+    marginBottom:8
   },
   text: {
     fontSize: 18,
