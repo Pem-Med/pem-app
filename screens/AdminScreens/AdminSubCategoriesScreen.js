@@ -62,6 +62,20 @@ const AdminSubCategoriesScreen = (props) => {
       </View>
     )
   }
+
+  //sort subcategories alphabetically
+  selectedSubCategories.sort(function(a,b) {
+    let itemA = a.title.toUpperCase();
+    let itemB = b.title.toUpperCase();
+    if (itemA < itemB) {
+      return -1;
+    }
+    if (itemA > itemB) {
+      return 1;
+    }
+    return 0;
+  });
+
   return (
 
     <FlatList
