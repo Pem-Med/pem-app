@@ -19,7 +19,7 @@ const AdminCategoriesScreen = (props) => {
       params:    { categoryId: id, categoryTitle: title },
     })
   }
-  // fix this
+
   return (
     <View style={styles.screenContainer}>
       <Text style={styles.adminText}>Admin Mode Active</Text>
@@ -66,8 +66,9 @@ const styles = StyleSheet.create({
   },
 
   screenContainer :{
+    height: '100%',
     backgroundColor: Colors.darkBackgroundColor
-},
+  }
   
 });
 
