@@ -3,6 +3,7 @@ import {
   View, Text, StyleSheet, Button, TouchableOpacity, TouchableNativeFeedback, Platform,
 } from 'react-native'
 import Colors from '../constants/Colors'
+import Hyperlink from 'react-native-hyperlink'
 
 const CatContentLayout = (props) => {
   const [showDetails, setShowDetails] = useState(false)
@@ -10,6 +11,18 @@ const CatContentLayout = (props) => {
   if (Platform.OS === 'android' && Platform.Version >= 21) {
     TouchableCmp = TouchableNativeFeedback
   }
+
+const defaultLink = () => 
+  <Hyperlink linkDefault={ true } linkStyle={ { color: '#2980b9'} }>
+      <Text style={styles.textSize}>
+        {props.evaluation}
+        {props.management}
+        {props.medications}
+        {props.signs}
+        {props.references}
+      </Text>
+  </Hyperlink>
+
 
   return (
     <View style={styles.orderItem}>
@@ -26,14 +39,7 @@ const CatContentLayout = (props) => {
         {showDetails
                     && (
                       <View style={styles.detailItems}>
-                        <Text style={styles.textSize}>
-                          {props.evaluation}
-                          {props.management}
-                          {props.medications}
-                          {props.signs}
-                          {props.references}
-                        </Text>
-
+                        { defaultLink() }
                       </View>
                     )}
       </View>
