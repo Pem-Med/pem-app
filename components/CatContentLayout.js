@@ -12,7 +12,7 @@ const CatContentLayout = (props) => {
     TouchableCmp = TouchableNativeFeedback
   }
 
-const defaultLink = () => 
+const contentAutolinkWrapper = () => 
   <Hyperlink linkDefault={ true } linkStyle={ { color: '#2980b9'} }>
       <Text style={styles.textSize}>
         {props.evaluation}
@@ -39,7 +39,7 @@ const defaultLink = () =>
         {showDetails
                     && (
                       <View style={styles.detailItems}>
-                        { defaultLink() }
+                        { contentAutolinkWrapper() }
                       </View>
                     )}
       </View>
